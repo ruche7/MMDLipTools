@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1E9AFFFD-E67A-4E18-B1BB-7C661C1B7632}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ruche.mmd</RootNamespace>
+    <AssemblyName>MMDLipCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\gui\lip\MorphInfoSetViewModel.cs" />
+    <Compile Include="src\gui\lip\MorphPreset.cs" />
+    <Compile Include="src\gui\lip\MorphPresetDialog.xaml.cs">
+      <DependentUpon>MorphPresetDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\gui\lip\MorphPresetDialogViewModel.cs" />
+    <Compile Include="src\gui\lip\MorphPresetList.cs" />
+    <Compile Include="src\morph\converters\KeyFrameTableMaker.cs" />
+    <Compile Include="src\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
+    <Compile Include="src\morph\lip\converters\DigitKanaConverter.cs" />
+    <Compile Include="src\morph\lip\converters\KatakanaConverter.cs" />
+    <Compile Include="src\morph\lip\converters\KatakanaLipConverter.cs" />
+    <Compile Include="src\morph\lip\converters\LipKanaMaker.cs" />
+    <Compile Include="src\morph\lip\converters\LipSyncMaker.cs" />
+    <Compile Include="src\morph\lip\converters\TimelineSetMaker.cs" />
+    <Compile Include="src\morph\lip\converters\MorphTimelineTableMaker.cs" />
+    <Compile Include="src\morph\lip\converters\PhoneticConverter.cs" />
+    <Compile Include="src\morph\lip\KanaDefine.cs" />
+    <Compile Include="src\morph\lip\LinkType.cs" />
+    <Compile Include="src\morph\lip\LipId.cs" />
+    <Compile Include="src\morph\lip\MorphInfoSet.cs" />
+    <Compile Include="src\morph\lip\LipSyncUnit.cs" />
+    <Compile Include="src\morph\lip\TimelineSet.cs" />
+    <Compile Include="src\morph\KeyFrame.cs" />
+    <Compile Include="src\morph\MorphInfo.cs" />
+    <Compile Include="src\morph\lip\MorphInfoTable.cs" />
+    <Compile Include="src\morph\MorphWeightData.cs" />
+    <Compile Include="src\morph\MorphWeightDataList.cs" />
+    <Compile Include="src\morph\TimelineKeyArea.cs" />
+    <Compile Include="src\morph\MorphTimelineTable.cs" />
+    <Compile Include="src\morph\Timeline.cs" />
+    <Compile Include="src\morph\TimelineTableBase.cs" />
+    <Compile Include="src\util\TextElementEnumerable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="src\gui\lip\MorphPresetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ruche.wpf\ruche.wpf.csproj">
+      <Project>{a5dc2bbd-74fd-45df-9352-d017ae45b02d}</Project>
+      <Name>ruche.wpf</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
