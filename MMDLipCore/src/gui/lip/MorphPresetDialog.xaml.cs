@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ruche.mmd.gui.lip
 {
     /// <summary>
-    /// MorphPresetDialog.xaml の相互作用ロジック
+    /// MorphPresetDialog の View クラス。
     /// </summary>
     public partial class MorphPresetDialog : Window
     {
@@ -61,11 +60,7 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // ダイアログ結果値を true に設定
             this.DialogResult = true;
-
-            // ウィンドウを閉じる
-            this.Close();
         }
     }
 }

@@ -216,9 +216,9 @@ namespace ruche.mmd.morph.lip.converters
             }
             else if (prevUnit != null && prevUnit.LipId == id)
             {
-                // 直前と同じ口形状ならば接続ウェイト値の1/2を開始ウェイト値とする
-                var lw = DecideSameLipLinkWeight(prevUnit, unit);
-                area.AddPointAfter(openHalfPos, lw / 2);
+                // 直前と同じ口形状ならば開口時間の1/2まで経過してから開口開始
+                // 接続ウェイト値は直前の口形状の終端部で設定済み
+                area.AddPointAfter(openHalfPos, 0);
             }
             else
             {
@@ -320,12 +320,12 @@ namespace ruche.mmd.morph.lip.converters
                 long closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
                 closeHalfPos = Math.Max(closeHalfPos, linkPos);
 
-                // 接続ウェイト値の1/2を終端ウェイト値とする
-                // 最大開口終端キーのウェイト値に比例させる
-                var lw = DecideSameLipLinkWeight(areaUnits[0], nextUnit);
-                lw = lw * area.Points.Last().Value / 2;
+                // 接続ウェイト値を終端値とする
+                // 最大開口終端キーのウェイト値に比例させる(長音対応)
+                var weight = DecideSameLipLinkWeight(areaUnits[0], nextUnit);
+                weight *= area.Points.Last().Value;
 
-                area.AddPointAfter(closeHalfPos, lw);
+                area.AddPointAfter(closeHalfPos, weight);
             }
             else
             {
