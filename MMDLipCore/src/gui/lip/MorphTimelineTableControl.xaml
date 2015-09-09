@@ -1,0 +1,9 @@
+﻿<UserControl
+    x:Class="ruche.mmd.gui.lip.MorphTimelineTableControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ruche.mmd.gui.lip">
+    <Grid>
+            
+    </Grid>
+</UserControl>

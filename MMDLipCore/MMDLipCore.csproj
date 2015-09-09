@@ -65,6 +65,7 @@
     <Compile Include="src\gui\lip\MorphTimelineTableControl.xaml.cs">
       <DependentUpon>MorphTimelineTableControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="src\gui\lip\MorphTimelineTableControlViewModel.cs" />
     <Compile Include="src\morph\converters\KeyFrameTableMaker.cs" />
     <Compile Include="src\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
     <Compile Include="src\morph\lip\converters\DigitKanaConverter.cs" />

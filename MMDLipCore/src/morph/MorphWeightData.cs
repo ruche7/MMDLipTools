@@ -8,7 +8,8 @@ namespace ruche.mmd.morph
     /// モーフ名とそのウェイト値を保持する構造体。
     /// </summary>
     [DataContract(Namespace = "")]
-    public class MorphWeightData : INotifyPropertyChanged, ICloneable
+    public class MorphWeightData
+        : INotifyPropertyChanged, IEquatable<MorphWeightData>, ICloneable
     {
         /// <summary>
         /// コンストラクタ。
@@ -30,7 +31,7 @@ namespace ruche.mmd.morph
                 if (v != _morphName)
                 {
                     _morphName = v;
-                    this.OnPropertyChanged("MorphName");
+                    this.NotifyPropertyChanged("MorphName");
                 }
             }
         }
@@ -49,7 +50,7 @@ namespace ruche.mmd.morph
                 if (v != _weight)
                 {
                     _weight = v;
-                    this.OnPropertyChanged("Weight");
+                    this.NotifyPropertyChanged("Weight");
                 }
             }
         }
@@ -59,6 +60,38 @@ namespace ruche.mmd.morph
         /// プロパティの変更時に呼び出されるイベント。
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
+        /// </summary>
+        /// <param name="other">調べるオブジェクト。</param>
+        /// <returns>等しいならば true 。そうでなければ false 。</returns>
+        public bool Equals(MorphWeightData other)
+        {
+            return (
+                other != null &&
+                this.MorphName == other.MorphName &&
+                this.Weight == other.Weight);
+        }
+
+        /// <summary>
+        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
+        /// </summary>
+        /// <param name="obj">調べるオブジェクト。</param>
+        /// <returns>等しいならば true 。そうでなければ false 。</returns>
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as MorphWeightData);
+        }
+
+        /// <summary>
+        /// ハッシュコードを取得する。
+        /// </summary>
+        /// <returns>ハッシュコード。</returns>
+        public override int GetHashCode()
+        {
+            return (this.MorphName.GetHashCode() ^ this.Weight.GetHashCode());
+        }
 
         /// <summary>
         /// 自身のクローンを作成する。
@@ -78,7 +111,7 @@ namespace ruche.mmd.morph
         /// プロパティの変更時に呼び出される。
         /// </summary>
         /// <param name="propertyName">プロパティ名。</param>
-        private void OnPropertyChanged(string propertyName)
+        private void NotifyPropertyChanged(string propertyName)
         {
             if (this.PropertyChanged != null)
             {

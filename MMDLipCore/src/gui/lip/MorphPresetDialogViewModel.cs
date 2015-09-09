@@ -30,9 +30,6 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public MorphPresetDialogViewModel() : base()
         {
-            // 既定のプリセットを追加
-            this.MorphPresets.Add(new MorphPreset());
-
             // モーフ情報セット ViewModel 初期化
             this.EditingMorphInfoSet = new MorphInfoSetViewModel();
 
@@ -61,7 +58,19 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// メッセージボックスの表示処理を行うデリゲートを取得または設定する。
         /// </summary>
-        public MessageBoxDelegate MessageBoxShower { get; set; }
+        public MessageBoxDelegate MessageBoxShower
+        {
+            get { return _messageBoxShower; }
+            set
+            {
+                if (value != _messageBoxShower)
+                {
+                    _messageBoxShower = value;
+                    this.NotifyPropertyChanged("MessageBoxShower");
+                }
+            }
+        }
+        private MessageBoxDelegate _messageBoxShower = null;
 
         /// <summary>
         /// 口パクモーフプリセットリストを取得または設定する。
@@ -72,14 +81,27 @@ namespace ruche.mmd.gui.lip
             set
             {
                 var v = value ?? (new MorphPresetList());
-                if (v != _morphPresets)
+                if (!v.SequenceEqual(_morphPresets))
                 {
                     _morphPresets = v;
+
+                    // 選択中インデックスも必要に応じて更新
+                    bool indexChanged = (_selectedMorphPresetIndex >= v.Count);
+                    if (indexChanged)
+                    {
+                        _selectedMorphPresetIndex = v.Count - 1;
+                    }
+
                     this.NotifyPropertyChanged("MorphPresets");
+                    if (indexChanged)
+                    {
+                        this.NotifyPropertyChanged("SelectedMorphPresetIndex");
+                    }
                 }
             }
         }
-        private MorphPresetList _morphPresets = new MorphPresetList();
+        private MorphPresetList _morphPresets =
+            new MorphPresetList(new[] { new MorphPreset() });
 
         /// <summary>
         /// 現在選択中の口パクモーフプリセットのインデックスを取得または設定する。
@@ -230,12 +252,8 @@ namespace ruche.mmd.gui.lip
                     this.EditingMorphInfoSet.Source.Clone());
 
             // 同名のプリセットを検索
-            var old =
-                this.MorphPresets
-                    .Select((p, i) => new { Preset = p, Index = i })
-                    .Where(v => v.Preset.Name == preset.Name)
-                    .FirstOrDefault();
-            if (old == null)
+            int sameNameIndex = this.MorphPresets.FindIndex(preset.Name);
+            if (sameNameIndex < 0)
             {
                 // 新規追加
                 this.MorphPresets.Add(preset);
@@ -252,10 +270,10 @@ namespace ruche.mmd.gui.lip
                 if (yes)
                 {
                     // 置換
-                    this.MorphPresets[old.Index] = preset;
+                    this.MorphPresets[sameNameIndex] = preset;
 
                     // 置換先を選択
-                    this.SelectedMorphPresetIndex = old.Index;
+                    this.SelectedMorphPresetIndex = sameNameIndex;
                 }
             }
         }

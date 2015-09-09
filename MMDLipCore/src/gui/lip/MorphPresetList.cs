@@ -29,6 +29,27 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
+        /// 指定したプリセット名を持つプリセットのインデックスを検索する。
+        /// </summary>
+        /// <param name="name">プリセット名。</param>
+        /// <returns>インデックス。見つからなかった場合は -1 。</returns>
+        public int FindIndex(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            var found =
+                this
+                    .Select((p, i) => new { Preset = p, Index = i })
+                    .Where(v => v.Preset.Name == name)
+                    .FirstOrDefault();
+
+            return (found == null) ? -1 : found.Index;
+        }
+
+        /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
