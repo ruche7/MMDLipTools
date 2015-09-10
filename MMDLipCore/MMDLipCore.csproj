@@ -36,6 +36,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -55,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\gui\lip\LipSpanRange.cs" />
+    <Compile Include="src\gui\lip\LipSpanUnit.cs" />
     <Compile Include="src\gui\lip\MorphInfoSetViewModel.cs" />
     <Compile Include="src\gui\lip\MorphPreset.cs" />
     <Compile Include="src\gui\lip\MorphPresetDialog.xaml.cs">

@@ -35,7 +35,7 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("1.0.0.*")]
 
 // XML名前空間
-[assembly: XmlnsDefinition("http://ruche-home.net/xaml/wpf", "ruche.wpf")]
-[assembly: XmlnsDefinition("http://ruche-home.net/xaml/wpf/converters", "ruche.wpf.converters")]
-[assembly: XmlnsDefinition("http://ruche-home.net/xaml/wpf/view", "ruche.wpf.view")]
-[assembly: XmlnsDefinition("http://ruche-home.net/xaml/wpf/viewModel", "ruche.wpf.viewModel")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf", "ruche.wpf")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/converters", "ruche.wpf.converters")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/view", "ruche.wpf.view")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/viewModel", "ruche.wpf.viewModel")]

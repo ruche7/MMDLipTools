@@ -84,18 +84,12 @@ namespace ruche.mmd.gui.lip
                 if (!v.SequenceEqual(_morphPresets))
                 {
                     _morphPresets = v;
+                    this.NotifyPropertyChanged("MorphPresets");
 
                     // 選択中インデックスも必要に応じて更新
-                    bool indexChanged = (_selectedMorphPresetIndex >= v.Count);
-                    if (indexChanged)
+                    if (this.SelectedMorphPresetIndex >= v.Count)
                     {
-                        _selectedMorphPresetIndex = v.Count - 1;
-                    }
-
-                    this.NotifyPropertyChanged("MorphPresets");
-                    if (indexChanged)
-                    {
-                        this.NotifyPropertyChanged("SelectedMorphPresetIndex");
+                        this.SelectedMorphPresetIndex = v.Count - 1;
                     }
                 }
             }
