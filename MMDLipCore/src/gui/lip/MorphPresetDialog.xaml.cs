@@ -46,7 +46,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// ウィンドウの初期化完了時に呼び出される。
         /// </summary>
-        private void Window_Initialized(object sender, EventArgs e)
+        private void OnInitialized(object sender, EventArgs e)
         {
             // メッセージボックス表示処理デリゲートを設定
             var vm = this.GetOrBindViewModel();
@@ -58,7 +58,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// OKボタンの押下時に呼び出される。
         /// </summary>
-        private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void OnCloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.DialogResult = true;
         }

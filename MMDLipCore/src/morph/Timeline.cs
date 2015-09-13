@@ -35,7 +35,7 @@ namespace ruche.mmd.morph
         /// </summary>
         /// <param name="place">キー位置。</param>
         /// <returns>ウェイト値。</returns>
-        public float GetWeight(long place)
+        public float GetWeight(decimal place)
         {
             return this.KeyAreas.Sum(a => a.GetWeight(place));
         }
@@ -44,7 +44,7 @@ namespace ruche.mmd.morph
         /// 一番最初のキー位置を取得する。
         /// </summary>
         /// <returns>一番最初のキー位置。キーが1つも無いならば 0 。</returns>
-        public long GetBeginPlace()
+        public decimal GetBeginPlace()
         {
             return this.IsEmpty ? 0 : this.KeyAreas.Min(a => a.BeginPlace);
         }
@@ -53,7 +53,7 @@ namespace ruche.mmd.morph
         /// 一番最後のキー位置を取得する。
         /// </summary>
         /// <returns>一番最後のキー位置。キーが1つも無いならば 0 。</returns>
-        public long GetEndPlace()
+        public decimal GetEndPlace()
         {
             return this.IsEmpty ? 0 : this.KeyAreas.Max(a => a.EndPlace);
         }
@@ -66,7 +66,7 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も小さい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindFirstPlace(Func<long, bool> predicate)
+        public decimal? FindFirstPlace(Func<decimal, bool> predicate)
         {
             return this.KeyAreas.Min(a => a.FindFirstPlace(predicate));
         }
@@ -79,7 +79,7 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も大きい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindLastPlace(Func<long, bool> predicate)
+        public decimal? FindLastPlace(Func<decimal, bool> predicate)
         {
             return this.KeyAreas.Max(a => a.FindLastPlace(predicate));
         }

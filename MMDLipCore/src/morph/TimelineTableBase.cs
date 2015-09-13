@@ -42,7 +42,7 @@ namespace ruche.mmd.morph
         /// 一番最初のキー位置を取得する。
         /// </summary>
         /// <returns>一番最初のキー位置。キーが1つも無いならば 0 。</returns>
-        public long GetBeginPlace()
+        public decimal GetBeginPlace()
         {
             return (this.Table.Count > 0) ?
                 this.Table.Min(it => it.Value.GetBeginPlace()) :
@@ -53,7 +53,7 @@ namespace ruche.mmd.morph
         /// 一番最後のキー位置を取得する。
         /// </summary>
         /// <returns>一番最後のキー位置。キーが1つも無いならば 0 。</returns>
-        public long GetEndPlace()
+        public decimal GetEndPlace()
         {
             return (this.Table.Count > 0) ?
                 this.Table.Max(it => it.Value.GetEndPlace()) :
@@ -72,8 +72,8 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も小さい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindFirstPlace(
-            Func<long, bool> predicate,
+        public decimal? FindFirstPlace(
+            Func<decimal, bool> predicate,
             List<TId> ids = null)
         {
             // 各タイムラインを検索し、値が見つかったものを抽出
@@ -114,8 +114,8 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も大きい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindLastPlace(
-            Func<long, bool> predicate,
+        public decimal? FindLastPlace(
+            Func<decimal, bool> predicate,
             List<TId> ids = null)
         {
             // 各タイムラインを検索し、値が見つかったものを抽出

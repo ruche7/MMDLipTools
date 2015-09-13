@@ -61,12 +61,10 @@ namespace ruche.mmd.morph.lip.converters
             bool e2ai = (morphEtoAI && morphWeight.MorphName == "え");
 
             // キー領域作成
-            var area = new TimelineKeyArea();
-            foreach (var p in lipKeyArea.Points)
+            var area = lipKeyArea.Clone();
+            foreach (var p in area.Points.Keys)
             {
-                area.AddPointAfter(
-                    p.Key,
-                    p.Value * morphWeight.Weight * (e2ai ? 0.5f : 1.0f));
+                area.Points[p] *= morphWeight.Weight * (e2ai ? 0.5f : 1.0f);
             }
 
             // タイムラインに追加

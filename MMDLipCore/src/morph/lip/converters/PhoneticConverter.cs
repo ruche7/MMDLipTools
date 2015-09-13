@@ -11,9 +11,9 @@ namespace ruche.mmd.morph.lip.converters
         #region COM定義
 
         private const int S_OK = 0;
-        private const int FELANG_REQ_REV = 0x00030000;
-        private const int FELANG_CMODE_PINYIN = 0x00000100;
-        private const int FELANG_CMODE_NOINVISIBLECHAR = 0x40000000;
+        private const int CLSCTX_INPROC_SERVER = 1;
+        private const int CLSCTX_LOCAL_SERVER = 4;
+        private const int CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER;
 
         /// <summary>
         /// IFELanguage COMインタフェース。
@@ -36,6 +36,17 @@ namespace ruche.mmd.morph.lip.converters
                 [MarshalAs(UnmanagedType.BStr)] out string dest);
         }
 
+        /// <summary>
+        /// COMオブジェクトを生成する。
+        /// </summary>
+        [DllImport("ole32.dll")]
+        private static extern int CoCreateInstance(
+            [MarshalAs(UnmanagedType.LPStruct)] Guid rclsid,
+            IntPtr pUnkOuter,
+            uint dwClsContext,
+            [MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+            out IntPtr ppv);
+
         #endregion
 
         /// <summary>
@@ -43,24 +54,49 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="src">文字列。</param>
         /// <returns>文字列の読み仮名。失敗した場合は null 。</returns>
+        /// <remarks>
+        /// メインスレッドから呼び出さなければ失敗する。
+        /// </remarks>
         public string ConvertFrom(string src)
         {
             // IFELanguage COMインタフェース型取得
-            Type langType = Type.GetTypeFromProgID("MSIME.Japan");
-            if (langType == null)
+            Type langComType = Type.GetTypeFromProgID("MSIME.Japan");
+            if (langComType == null)
             {
                 throw new NotSupportedException();
             }
 
-            // 型からインスタンスを生成
-            var langIf = Activator.CreateInstance(langType) as IFELanguage;
-            if (langIf == null)
+            // IFELanguage の Guid 属性から IID 値作成
+            var langIfType = typeof(IFELanguage);
+            var attrs =
+                langIfType.GetCustomAttributes(typeof(GuidAttribute), false)
+                    as GuidAttribute[];
+            var langIid = new Guid(attrs[0].Value);
+
+            // COMオブジェクト生成
+            IntPtr ppv;
+            var res =
+                CoCreateInstance(
+                    langComType.GUID,
+                    IntPtr.Zero,
+                    CLSCTX_SERVER,
+                    langIid,
+                    out ppv);
+            if (res != S_OK)
+            {
+                throw new InvalidOperationException();
+            }
+
+            // IFELanguage COMインタフェース取得
+            var langIfObj = Marshal.GetTypedObjectForIUnknown(ppv, langIfType);
+            if (langIfObj == null)
             {
                 throw new NotSupportedException();
             }
+            var langIf = langIfObj as IFELanguage;
 
-            string dest = null;
             bool opened = false;
+            string dest = null;
             try
             {
                 // 開く
@@ -78,11 +114,14 @@ namespace ruche.mmd.morph.lip.converters
             }
             finally
             {
+                // 閉じる
                 if (opened)
                 {
-                    // 閉じる
                     langIf.Close();
                 }
+
+                // COMオブジェクトを解放
+                Marshal.ReleaseComObject(langIfObj);
             }
 
             return dest;

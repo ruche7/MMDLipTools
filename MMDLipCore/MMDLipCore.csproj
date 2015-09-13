@@ -65,10 +65,10 @@
     </Compile>
     <Compile Include="src\gui\lip\MorphPresetDialogViewModel.cs" />
     <Compile Include="src\gui\lip\MorphPresetList.cs" />
-    <Compile Include="src\gui\lip\MorphTimelineTableControl.xaml.cs">
-      <DependentUpon>MorphTimelineTableControl.xaml</DependentUpon>
+    <Compile Include="src\gui\lip\LipEditControl.xaml.cs">
+      <DependentUpon>LipEditControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\lip\MorphTimelineTableControlViewModel.cs" />
+    <Compile Include="src\gui\lip\LipEditControlViewModel.cs" />
     <Compile Include="src\morph\converters\KeyFrameTableMaker.cs" />
     <Compile Include="src\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
     <Compile Include="src\morph\lip\converters\DigitKanaConverter.cs" />
@@ -104,7 +104,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="src\gui\lip\MorphTimelineTableControl.xaml">
+    <Page Include="src\gui\lip\LipEditControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

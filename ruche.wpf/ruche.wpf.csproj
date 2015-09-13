@@ -62,6 +62,7 @@
     <Compile Include="src\converters\RangedRealStringConverter.cs" />
     <Compile Include="src\converters\RangedSingleStringConverter.cs" />
     <Compile Include="src\viewModel\ViewModelBase.cs" />
+    <Compile Include="src\view\DependencyPropertyFactory.cs" />
     <Compile Include="src\view\FrameworkElementBehavior.cs" />
     <Compile Include="src\view\ItemsAutoScrollBehavior.cs" />
   </ItemGroup>

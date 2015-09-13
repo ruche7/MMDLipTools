@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ruche.mmd.morph.lip.converters
 {
@@ -40,21 +42,41 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="src">入力文。</param>
         /// <returns>口パク用の読み仮名。</returns>
+        /// <remarks>
+        /// メインスレッドから呼び出さなければ一部処理が失敗する。
+        /// </remarks>
         public string Make(string src)
         {
+            return this.MakeAsync(src).Result;
+        }
+
+        /// <summary>
+        /// 入力文から口パク用の読み仮名を非同期で作成する。
+        /// </summary>
+        /// <param name="src">入力文。</param>
+        /// <returns>口パク用の読み仮名作成タスク。</returns>
+        /// <remarks>
+        /// メインスレッドから呼び出さなければ一部処理が失敗する。
+        /// </remarks>
+        public Task<string> MakeAsync(string src)
+        {
             // 読み仮名取得(一部文字を除く)
+            // この処理はメインスレッドで行う必要がある
             var text = rexToPhonetic.Replace(src, m => GetPhonetic(m.Value));
 
-            // 数字列を読み仮名に変換
-            text = _digitConv.ConvertFrom(text);
+            return
+                Task.Factory.StartNew(
+                    () =>
+                    {
+                        // 数字列を読み仮名に変換
+                        var t = _digitConv.ConvertFrom(text);
 
-            // 英字と記号を読み仮名に変換
-            text = _alpGlyConv.ConvertFrom(text);
+                        // 英字と記号を読み仮名に変換
+                        t = _alpGlyConv.ConvertFrom(t);
 
-            // カタカナに変換。
-            text = _kataConv.ConvertFrom(text);
-
-            return text;
+                        // カタカナに変換。
+                        return _kataConv.ConvertFrom(t);
+                    });
         }
 
         /// <summary>

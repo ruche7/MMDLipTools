@@ -17,7 +17,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 文章全体の長さを指定する。
         /// </summary>
-        [Display(Name = "入力文全体で")]
+        [Display(Name = "読み仮名全体で")]
         All,
     }
 }

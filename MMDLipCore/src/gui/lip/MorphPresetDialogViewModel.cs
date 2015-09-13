@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using ruche.wpf.viewModel;
@@ -81,7 +80,7 @@ namespace ruche.mmd.gui.lip
             set
             {
                 var v = value ?? (new MorphPresetList());
-                if (!v.SequenceEqual(_morphPresets))
+                if (v != _morphPresets)
                 {
                     _morphPresets = v;
                     this.NotifyPropertyChanged("MorphPresets");
@@ -105,9 +104,7 @@ namespace ruche.mmd.gui.lip
             get { return _selectedMorphPresetIndex; }
             set
             {
-                var v =
-                    (value < this.MorphPresets.Count) ?
-                        value : (this.MorphPresets.Count - 1);
+                var v = Math.Min(Math.Max(-1, value), this.MorphPresets.Count - 1);
                 if (v != _selectedMorphPresetIndex)
                 {
                     _selectedMorphPresetIndex = v;

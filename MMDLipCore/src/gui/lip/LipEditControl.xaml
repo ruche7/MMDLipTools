@@ -1,0 +1,288 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:cvt="http://schemas.ruche-home.net/xaml/wpf/converters"
+    xmlns:local="clr-namespace:ruche.mmd.gui.lip"
+    x:Class="ruche.mmd.gui.lip.LipEditControl"
+    x:Name="root"
+    DataContextChanged="OnDataContextChanged">
+    <UserControl.DataContext>
+        <local:LipEditControlViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type xctk:DecimalUpDown}">
+            <Setter Property="Padding" Value="4,1,2,1" />
+            <Setter Property="MinWidth" Value="64" />
+            <Setter Property="MaxWidth" Value="160" />
+        </Style>
+        <Style TargetType="{x:Type xctk:SingleUpDown}">
+            <Setter Property="Padding" Value="4,1,2,1" />
+            <Setter Property="MinWidth" Value="64" />
+            <Setter Property="MaxWidth" Value="160" />
+        </Style>
+        <Style x:Key="textAreaStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
+        </Style>
+
+        <cvt:BooleanVisibilityConverter x:Key="boolVisibiliyConv" />
+        <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
+
+        <ObjectDataProvider
+            x:Key="lipSpanRange"
+            MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:LipSpanRange" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider
+            x:Key="lipSpanUnit"
+            MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:LipSpanUnit" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- row 0 -->
+        <Label
+			Content="入力文(_T):"
+			Target="{Binding ElementName=textInput}"
+			Visibility="{Binding IsTextVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+			Grid.Row="0" />
+
+        <!-- row 1 -->
+        <TextBox
+			x:Name="textInput"
+			Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+			Visibility="{Binding IsTextVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+			Style="{StaticResource textAreaStyle}"
+			Grid.Row="1" />
+
+        <!-- row 2 -->
+        <StackPanel
+			Visibility="{Binding IsTextVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+			Height="8"
+			Grid.Row="2" />
+
+        <!-- row 3 -->
+        <WrapPanel
+			Visibility="{Binding IsTextToLipKanaVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+            Margin="0,0,0,8"
+            Grid.Row="3">
+            <Button
+				Content="↓入力文を読み仮名に変換(_C)"
+				Command="{Binding TextToLipKanaCommand}" />
+            <CheckBox
+				Content="自動変換(_A)"
+				IsChecked="{Binding IsAutoLipKana}"
+				Margin="8,0,0,0"
+				VerticalAlignment="Center" />
+        </WrapPanel>
+
+        <!-- row 4 -->
+        <Label
+			Content="読み仮名(_K):"
+			Target="{Binding ElementName=textLipKana}"
+			Grid.Row="4" />
+
+        <!-- row 5 -->
+        <TextBox
+			x:Name="textLipKana"
+			Text="{Binding LipKana, UpdateSourceTrigger=PropertyChanged}"
+			Style="{StaticResource textAreaStyle}"
+			Grid.Row="5" />
+
+        <!-- row 6 -->
+        <Label
+			Content="口パクデータ:"
+			Target="{Binding ElementName=textLipSync}"
+			Margin="0,4,0,0"
+			Grid.Row="6" />
+
+        <!-- row 7 -->
+        <TextBox
+			x:Name="textLipSync"
+			Text="{Binding LipSyncText, Mode=OneWay}"
+			Style="{StaticResource textAreaStyle}"
+			IsReadOnly="True"
+			Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+			Grid.Row="7" />
+
+        <!-- row 8 -->
+        <Grid Margin="0,8,0,0" Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+				Content="プリセット(_P):"
+				Target="{Binding ElementName=comboPresets}"
+				Grid.Column="0" />
+            <ComboBox
+				x:Name="comboPresets"
+				ItemsSource="{Binding MorphPresets}"
+				SelectedIndex="{Binding SelectedMorphPresetIndex}"
+				DisplayMemberPath="Name"
+				Margin="4,0,0,0"
+                MinWidth="100"
+				Grid.Column="1" />
+            <Button
+				Content="プリセット編集(_E)"
+				Command="{Binding MorphPresetsEditCommand}"
+                Visibility="{Binding IsMorphPresetsEditable, Converter={StaticResource boolVisibiliyConv}}"
+				Margin="4,0,0,0"
+				Grid.Column="2" />
+        </Grid>
+
+        <!-- row 9 -->
+        <Grid Margin="0,8,0,0" Grid.Row="9">
+            <Grid.Resources>
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                    <Setter Property="ItemTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentPresenter
+									Content="{Binding Converter={StaticResource enumDisplayConv}}" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Content="長さ:" Grid.Column="0" Margin="0,3" />
+            <ComboBox
+				ItemsSource="{Binding Source={StaticResource lipSpanRange}}"
+				SelectedValue="{Binding SpanRange}"
+				Margin="4,0,0,0"
+				Grid.Column="1" />
+            <xctk:DecimalUpDown
+				Value="{Binding SpanValue}"
+				Minimum="{Binding MinSpanValue}"
+				Maximum="{Binding MaxSpanValue}"
+				Increment="{Binding SpanValueIncrement}"
+				FormatString="{Binding SpanValueFormat}"
+				Grid.Column="2" />
+            <ComboBox
+				ItemsSource="{Binding Source={StaticResource lipSpanUnit}}"
+				SelectedValue="{Binding SpanUnit}"
+				Grid.Column="3" />
+        </Grid>
+
+        <!-- row 10 -->
+        <WrapPanel
+			Visibility="{Binding IsFpsVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+            Margin="0,4,0,0"
+            Grid.Row="10">
+            <Label Content="FPS(_F):" />
+            <xctk:DecimalUpDown
+				Value="{Binding Fps}"
+				Minimum="{Binding MinFps}"
+				Maximum="{Binding MaxFps}"
+				Increment="1"
+				FormatString="0.###"
+				Margin="4,0,0,0" />
+        </WrapPanel>
+
+        <xctk:DropDownButton
+        	Content="詳細設定(_D)"
+			Visibility="{Binding IsDetailVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
+        	Padding="8,2"
+        	Margin="0,8,0,0"
+        	HorizontalAlignment="Left"
+        	Grid.Row="11">
+            <xctk:DropDownButton.DropDownContent>
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- row 0 -->
+                    <Label
+        				Content="口の開閉時間％(_L):"
+        				Target="{Binding ElementName=upDownLinkLength}"
+        				Grid.Row="0" Grid.Column="0" />
+                    <xctk:DecimalUpDown
+        				x:Name="upDownLinkLength"
+        				Value="{Binding LinkLengthPercent}"
+        				Minimum="{Binding MinLinkLengthPercent}"
+        				Maximum="{Binding MaxLinkLengthPercent}"
+        				Increment="5"
+        				FormatString="0.###"
+        				Margin="4,0,0,0"
+        				Grid.Row="0" Grid.Column="1" />
+
+                    <!-- row 2 -->
+                    <Label
+        				Content="長音終端ウェイト割合％(_W):"
+        				Target="{Binding ElementName=upDownLongSound}"
+        				Grid.Row="2" Grid.Column="0" />
+                    <xctk:SingleUpDown
+        				x:Name="upDownLongSound"
+        				Value="{Binding LongSoundLastWeightPercent}"
+        				Minimum="{Binding MinLongSoundLastWeightPercent}"
+        				Maximum="{Binding MaxLongSoundLastWeightPercent}"
+        				Increment="5"
+        				FormatString="0.###"
+        				Margin="4,0,0,0"
+        				Grid.Row="2" Grid.Column="1" />
+
+                    <!-- row 3 -->
+                    <CheckBox
+        				Content="&quot;え&quot; のモーフを &quot;あ&quot;+&quot;い&quot; に変換(_M)"
+        				IsChecked="{Binding IsMorphEtoAI}"
+        				Margin="0,8,0,0"
+        				Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" />
+                </Grid>
+            </xctk:DropDownButton.DropDownContent>
+        </xctk:DropDownButton>
+    </Grid>
+</UserControl>

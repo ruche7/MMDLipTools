@@ -7,20 +7,20 @@ namespace ruche.mmd.morph
     /// <summary>
     /// キー位置とそのウェイト値のリストで構成されるモーフキー領域を保持するクラス。
     /// </summary>
-    public class TimelineKeyArea
+    public class TimelineKeyArea : ICloneable
     {
         /// <summary>
         /// コンストラクタ。
         /// </summary>
         public TimelineKeyArea()
         {
-            this.Points = new SortedList<long, float>();
+            this.Points = new SortedList<decimal, float>();
         }
 
         /// <summary>
         /// キー位置とそのウェイト値のリストを取得する。
         /// </summary>
-        public SortedList<long, float> Points { get; private set; }
+        public SortedList<decimal, float> Points { get; private set; }
 
         /// <summary>
         /// Points が空であるか否かを取得する。
@@ -33,7 +33,7 @@ namespace ruche.mmd.morph
         /// <summary>
         /// 一番最初のキー位置を取得する。空ならば 0 を返す。
         /// </summary>
-        public long BeginPlace
+        public decimal BeginPlace
         {
             get { return this.IsEmpty ? 0 : this.Points.Keys[0]; }
         }
@@ -41,7 +41,7 @@ namespace ruche.mmd.morph
         /// <summary>
         /// 一番最後のキー位置を取得する。空ならば 0 を返す。
         /// </summary>
-        public long EndPlace
+        public decimal EndPlace
         {
             get
             {
@@ -52,7 +52,7 @@ namespace ruche.mmd.morph
         /// <summary>
         /// キー領域の長さを取得する。
         /// </summary>
-        public long Length
+        public decimal Length
         {
             get { return (this.EndPlace - this.BeginPlace); }
         }
@@ -62,7 +62,7 @@ namespace ruche.mmd.morph
         /// </summary>
         /// <param name="place">キー位置。</param>
         /// <returns>ウェイト値。範囲外ならば 0 。</returns>
-        public float GetWeight(long place)
+        public float GetWeight(decimal place)
         {
             // 範囲外ならば 0 を返す
             if (this.IsEmpty || place < this.BeginPlace || place > this.EndPlace)
@@ -83,27 +83,35 @@ namespace ruche.mmd.morph
             var gt = this.Points.FirstOrDefault(p => (p.Key > place));
 
             // 補間したウェイト値を返す
-            long placeDiff = gt.Key - lt.Key;
+            decimal placeDiff = gt.Key - lt.Key;
             float weightDiff = gt.Value - lt.Value;
-            float weightInt = weightDiff * (place - lt.Key) / placeDiff;
+            float weightInt =
+                (float)((decimal)weightDiff * (place - lt.Key) / placeDiff);
             return (lt.Value + weightInt);
         }
 
         /// <summary>
-        /// 指定したキー位置以降に新しいキー位置およびウェイト値を追加する。
+        /// 指定したキー位置にウェイト値を設定する。
         /// </summary>
         /// <param name="place">キー位置。</param>
         /// <param name="weight">ウェイト値。</param>
-        /// <returns>実際に追加されたキー位置。</returns>
-        public long AddPointAfter(long place, float weight)
+        /// <returns>設定できたならば true 。そうでなければ false 。</returns>
+        /// <remarks>
+        /// 既にウェイト値が設定されている場合、より大きいウェイト値を優先する。
+        /// </remarks>
+        public bool SetWeight(decimal place, float weight)
         {
-            while (this.Points.ContainsKey(place))
+            float currentWeight = 0;
+            if (
+                this.Points.TryGetValue(place, out currentWeight) &&
+                currentWeight >= weight)
             {
-                ++place;
+                return false;
             }
-            this.Points.Add(place, weight);
 
-            return place;
+            this.Points[place] = weight;
+
+            return true;
         }
 
         /// <summary>
@@ -114,12 +122,12 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も小さい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindFirstPlace(Func<long, bool> predicate)
+        public decimal? FindFirstPlace(Func<decimal, bool> predicate)
         {
             return (
                 from p in this.Points.Keys
                 where predicate(p)
-                select (long?)p)
+                select (decimal?)p)
                 .FirstOrDefault();
         }
 
@@ -131,13 +139,33 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も大きい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public long? FindLastPlace(Func<long, bool> predicate)
+        public decimal? FindLastPlace(Func<decimal, bool> predicate)
         {
             return (
                 from p in this.Points.Keys
                 where predicate(p)
-                select (long?)p)
+                select (decimal?)p)
                 .LastOrDefault();
         }
+
+        /// <summary>
+        /// 自身のクローンを作成する。
+        /// </summary>
+        /// <returns>自身のクローン。</returns>
+        public TimelineKeyArea Clone()
+        {
+            var dest = new TimelineKeyArea();
+            dest.Points = new SortedList<decimal, float>(this.Points);
+            return dest;
+        }
+
+        #region ICloneable の明示的実装
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+
+        #endregion
     }
 }

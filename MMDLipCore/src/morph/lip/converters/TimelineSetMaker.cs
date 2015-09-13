@@ -18,40 +18,28 @@ namespace ruche.mmd.morph.lip.converters
     /// <summary>
     /// 口形状種別ごとのタイムラインを作成するクラス。
     /// </summary>
+    /// <remarks>
+    /// ユニット基準長(「ア」の長さ)を 1.0 とする時間単位のタイムラインを作成する。
+    /// </remarks>
     public class TimelineSetMaker
     {
-        /// <summary>
-        /// ユニットの基準長に対応するタイムライン長の既定値。
-        /// </summary>
-        public static readonly long DefaultLengthPerUnit = 1600;
-
-        /// <summary>
-        /// ユニットの基準長に対応するタイムライン長の最小値。
-        /// </summary>
-        public static readonly long LengthPerUnitMin = 32;
-
-        /// <summary>
-        /// ユニットの基準長に対応するタイムライン長の最大値。
-        /// </summary>
-        public static readonly long LengthPerUnitMax = 64000000L;
-
         /// <summary>
         /// 前後のユニットと重なる長さの既定パーセント値。
         /// 対象ユニットの長さに対するパーセント値で示す。
         /// </summary>
-        public static readonly int DefaultLinkLengthPercent = 50;
+        public static readonly decimal DefaultLinkLengthPercent = 50;
 
         /// <summary>
         /// 前後のユニットと重なる長さの最小パーセント値。
         /// 対象ユニットの長さに対するパーセント値で示す。
         /// </summary>
-        public static readonly int LinkLengthPercentMin = 0;
+        public static readonly decimal MinLinkLengthPercent = 0.01m;
 
         /// <summary>
         /// 前後のユニットと重なる長さの最大パーセント値。
         /// 対象ユニットの長さに対するパーセント値で示す。
         /// </summary>
-        public static readonly int LinkLengthPercentMax = 100;
+        public static readonly decimal MaxLinkLengthPercent = 100;
 
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値の既定値。
@@ -86,24 +74,9 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         public TimelineSetMaker()
         {
-            this.LengthPerUnit = DefaultLengthPerUnit;
             this.LinkLengthPercent = DefaultLinkLengthPercent;
             this.LongSoundLastWeight = DefaultLongSoundLastWeight;
         }
-
-        /// <summary>
-        /// ユニットの基準長に対応するタイムライン長を取得または設定する。
-        /// </summary>
-        public long LengthPerUnit
-        {
-            get { return _lengthPerUnit; }
-            set
-            {
-                _lengthPerUnit =
-                    Math.Min(Math.Max(LengthPerUnitMin, value), LengthPerUnitMax);
-            }
-        }
-        private long _lengthPerUnit = DefaultLengthPerUnit;
 
         /// <summary>
         /// 前後のユニットと重なる長さ。対象ユニットの長さに対するパーセント値で示す。
@@ -120,18 +93,18 @@ namespace ruche.mmd.morph.lip.converters
         /// 最後に 50 ミリ秒かけて閉口する動作となる。
         /// </par>
         /// </remarks>
-        public int LinkLengthPercent
+        public decimal LinkLengthPercent
         {
             get { return _linkLengthPercent; }
             set
             {
                 _linkLengthPercent =
                     Math.Min(
-                        Math.Max(LinkLengthPercentMin, value),
-                        LinkLengthPercentMax);
+                        Math.Max(MinLinkLengthPercent, value),
+                        MaxLinkLengthPercent);
             }
         }
-        private int _linkLengthPercent = DefaultLinkLengthPercent;
+        private decimal _linkLengthPercent = DefaultLinkLengthPercent;
 
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値を取得または設定する。
@@ -154,7 +127,7 @@ namespace ruche.mmd.morph.lip.converters
             var tlSet = new TimelineSet();
             var areaUnits = new List<LipSyncUnit>();
             LipSyncUnit prevUnit = null;
-            long place = 0;
+            decimal place = 0;
 
             foreach (var unit in units)
             {
@@ -186,9 +159,9 @@ namespace ruche.mmd.morph.lip.converters
         /// <param name="prevUnit">先行発声ユニット。無いならば null 。</param>
         /// <param name="nextUnit">後続発声ユニット。無いならば null 。</param>
         /// <returns>後続のキー領域を開始すべきキー位置。</returns>
-        private long AddAreaUnitList(
+        private decimal AddAreaUnitList(
             TimelineSet tlSet,
-            long beginPlace,
+            decimal beginPlace,
             IList<LipSyncUnit> areaUnits,
             LipSyncUnit prevUnit,
             LipSyncUnit nextUnit)
@@ -205,32 +178,32 @@ namespace ruche.mmd.morph.lip.converters
             var area = new TimelineKeyArea();
 
             // 開口および閉口の長さを算出
-            long openCloseLen = CalcOpenCloseLength(unit);
+            var openCloseLen = CalcOpenCloseLength(unit);
 
             // 開始キーを追加
-            long openHalfPos = beginPlace + openCloseLen / 2;
+            var openHalfPos = beginPlace + openCloseLen / 2;
             if (prevUnit != null && unit.LinkType != LinkType.Normal)
             {
                 // 一旦口を(半分)閉じるならば開口時間の1/2まで経過してから開口開始
-                area.AddPointAfter(openHalfPos, 0);
+                area.SetWeight(openHalfPos, 0);
             }
             else if (prevUnit != null && prevUnit.LipId == id)
             {
                 // 直前と同じ口形状ならば開口時間の1/2まで経過してから開口開始
                 // 接続ウェイト値は直前の口形状の終端部で設定済み
-                area.AddPointAfter(openHalfPos, 0);
+                area.SetWeight(openHalfPos, 0);
             }
             else
             {
-                area.AddPointAfter(beginPlace, 0);
+                area.SetWeight(beginPlace, 0);
             }
 
             // 最大開口開始キーを追加
-            long maxBeginPos = beginPlace + openCloseLen;
-            maxBeginPos = area.AddPointAfter(maxBeginPos, 1);
+            var maxBeginPos = beginPlace + openCloseLen;
+            area.SetWeight(maxBeginPos, 1);
 
             // 次の音開始位置(＝最大開口終了位置)を算出
-            long linkPos = maxBeginPos + CalcMaxOpenLength(unit);
+            var linkPos = maxBeginPos + CalcMaxOpenLength(unit);
 
             // 最初のユニットをカット
             var units = areaUnits.Skip(1);
@@ -252,7 +225,7 @@ namespace ruche.mmd.morph.lip.converters
                 }
 
                 // 長音終端キーを追加
-                linkPos = area.AddPointAfter(linkPos, this.LongSoundLastWeight);
+                area.SetWeight(linkPos, this.LongSoundLastWeight);
                 maxEndAdded = true;
 
                 // 長音部分をカット
@@ -273,7 +246,7 @@ namespace ruche.mmd.morph.lip.converters
                 }
 
                 // 促音終端キーを追加
-                linkPos = area.AddPointAfter(linkPos, area.Points.Last().Value);
+                area.SetWeight(linkPos, area.Points.Last().Value);
                 maxEndAdded = true;
 
                 // 長音部分をカット
@@ -286,7 +259,7 @@ namespace ruche.mmd.morph.lip.converters
             // 最大開口終端キーが追加されていなければ追加
             if (!maxEndAdded)
             {
-                linkPos = area.AddPointAfter(linkPos, area.Points.Last().Value);
+                area.SetWeight(linkPos, area.Points.Last().Value);
             }
 
             // 継続部分を計算
@@ -301,13 +274,13 @@ namespace ruche.mmd.morph.lip.converters
             }
 
             // 終端キーを追加
-            long endPos = linkPos + openCloseLen;
+            var endPos = linkPos + openCloseLen;
             if (nextUnit != null && nextUnit.LinkType == LinkType.PreClose)
             {
                 // 一旦口を閉じるならば次の音の開口時間の1/2だけ終端を早める
-                long closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
+                var closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
                 closeHalfPos = Math.Max(closeHalfPos, linkPos);
-                area.AddPointAfter(closeHalfPos, 0);
+                area.SetWeight(closeHalfPos, 0);
             }
             else if (
                 nextUnit != null &&
@@ -317,7 +290,7 @@ namespace ruche.mmd.morph.lip.converters
                 // 後続と同じ口形状の場合
 
                 // 次の音の開口時間の1/2だけ終端を早める
-                long closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
+                var closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
                 closeHalfPos = Math.Max(closeHalfPos, linkPos);
 
                 // 接続ウェイト値を終端値とする
@@ -325,11 +298,11 @@ namespace ruche.mmd.morph.lip.converters
                 var weight = DecideSameLipLinkWeight(areaUnits[0], nextUnit);
                 weight *= area.Points.Last().Value;
 
-                area.AddPointAfter(closeHalfPos, weight);
+                area.SetWeight(closeHalfPos, weight);
             }
             else
             {
-                area.AddPointAfter(endPos, 0);
+                area.SetWeight(endPos, 0);
             }
 
             // タイムラインに追加
@@ -360,13 +333,9 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>開口および閉口の長さ。</returns>
-        private long CalcOpenCloseLength(LipSyncUnit unit)
+        private decimal CalcOpenCloseLength(LipSyncUnit unit)
         {
-            return (
-                this.LengthPerUnit *
-                unit.LengthPercent *
-                this.LinkLengthPercent /
-                10000L);
+            return ((decimal)unit.LengthPercent * this.LinkLengthPercent / 10000);
         }
 
         /// <summary>
@@ -374,9 +343,9 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>開口開始位置から最大開口終了位置までの長さ。</returns>
-        private long CalcUnitLength(LipSyncUnit unit)
+        private decimal CalcUnitLength(LipSyncUnit unit)
         {
-            return (this.LengthPerUnit * unit.LengthPercent / 100);
+            return (unit.LengthPercent / 100m);
         }
 
         /// <summary>
@@ -384,7 +353,7 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>最大開口の長さ。</returns>
-        private long CalcMaxOpenLength(LipSyncUnit unit)
+        private decimal CalcMaxOpenLength(LipSyncUnit unit)
         {
             return (CalcUnitLength(unit) - CalcOpenCloseLength(unit));
         }

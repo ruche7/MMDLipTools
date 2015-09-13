@@ -85,8 +85,9 @@ namespace ruche.mmd.gui.lip
                 set
                 {
                     var v =
-                        (value < this.Info.MorphWeights.Count) ?
-                            value : (this.Info.MorphWeights.Count - 1);
+                        Math.Min(
+                            Math.Max(-1, value),
+                            this.Info.MorphWeights.Count - 1);
                     if (v != _selectedMorphWeightIndex)
                     {
                         _selectedMorphWeightIndex = v;

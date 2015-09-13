@@ -15,12 +15,12 @@
     Height="400"
     MinWidth="560"
     MinHeight="280"
-    Initialized="Window_Initialized">
+    Initialized="OnInitialized">
     <Window.DataContext>
         <local:MorphPresetDialogViewModel />
     </Window.DataContext>
     <Window.CommandBindings>
-        <CommandBinding Command="Close" Executed="CloseCommand_Executed" />
+        <CommandBinding Command="Close" Executed="OnCloseCommandExecuted" />
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Gesture="Alt+Right" Command="{Binding EditCommand}" />
@@ -284,7 +284,7 @@
                                                         Path=Weight,
                                                         Mode=TwoWay,
                                                         UpdateSourceTrigger=PropertyChanged}"
-                                                    FormatString="F2"
+                                                    FormatString="0.00####"
                                                     Minimum="0"
                                                     Maximum="1"
                                                     Increment="0.1"
@@ -306,46 +306,6 @@
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
-                                <!--
-                                <DataGrid
-                                    ItemsSource="{Binding Info.MorphWeights}"
-                                    SelectedIndex="{Binding SelectedMorphWeightIndex}"
-                                    SelectionMode="Single"
-                                    AutoGenerateColumns="False"
-                                    CanUserAddRows="False"
-                                    CanUserDeleteRows="True"
-                                    CanUserReorderColumns="False"
-                                    CanUserResizeColumns="True"
-                                    CanUserResizeRows="False"
-                                    CanUserSortColumns="False"
-                                    Grid.Row="0">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn
-                                            Binding="{Binding MorphName}"
-                                            Header="モーフ名"
-                                            Width="*" />
-                                        <DataGridTemplateColumn
-                                            Header="ウェイト値"
-                                            IsReadOnly="True"
-                                            Width="*">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <xctk:SingleUpDown
-                                                        Value="{Binding
-                                                            Path=Weight,
-                                                            Mode=TwoWay,
-                                                            UpdateSourceTrigger=PropertyChanged}"
-                                                        FormatString="F2"
-                                                        Minimum="0"
-                                                        Maximum="1"
-                                                        Increment="0.1"
-                                                        BorderThickness="0" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                                -->
                                 <Grid Grid.Row="4">
                                     <Grid.Resources>
                                         <Style TargetType="Button">

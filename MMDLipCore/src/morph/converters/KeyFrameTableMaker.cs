@@ -9,14 +9,9 @@ namespace ruche.mmd.morph.converters
     public class KeyFrameTableMaker
     {
         /// <summary>
-        /// 実フレーム位置への変換に用いられる基準タイムライン長の既定値。
+        /// ユニット基準長(「ア」の長さ)に相当するフレーム長の既定値。
         /// </summary>
-        public static readonly long DefaultBaseTimelineLength = 1600;
-
-        /// <summary>
-        /// 実フレーム位置への変換に用いられる基準フレーム長の既定値。
-        /// </summary>
-        public static readonly decimal DefaultBaseFrameLength = 10;
+        public static readonly decimal DefaultUnitFrameLength = 10;
 
         /// <summary>
         /// 指定したキーの値を取得または新規追加する。
@@ -49,51 +44,25 @@ namespace ruche.mmd.morph.converters
         /// </summary>
         public KeyFrameTableMaker()
         {
-            this.BaseTimelineLength = DefaultBaseTimelineLength;
-            this.BaseFrameLength = DefaultBaseFrameLength;
+            this.UnitFrameLength = DefaultUnitFrameLength;
         }
 
         /// <summary>
-        /// 実フレーム位置への変換に用いられる基準タイムライン長を取得または設定する。
+        /// ユニット基準長(「ア」の長さ)に相当するフレーム長を取得または設定する。
         /// </summary>
-        /// <remarks>
-        /// BaseFrameLength プロパティとこのプロパティが
-        /// 同一の実時間長であるものとして実フレーム位置の算出が行われる。
-        /// </remarks>
-        public long BaseTimelineLength
+        public decimal UnitFrameLength
         {
-            get { return _baseTimelineLength; }
+            get { return _unitFrameLength; }
             set
             {
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException("value");
                 }
-                _baseTimelineLength = value;
+                _unitFrameLength = value;
             }
         }
-        private long _baseTimelineLength = DefaultBaseTimelineLength;
-
-        /// <summary>
-        /// 実フレーム位置への変換に用いられる基準フレーム長を取得または設定する。
-        /// </summary>
-        /// <remarks>
-        /// BaseTimelineLength プロパティとこのプロパティが
-        /// 同一の実時間長であるものとして実フレーム位置の算出が行われる。
-        /// </remarks>
-        public decimal BaseFrameLength
-        {
-            get { return _baseFrameLength; }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("value");
-                }
-                _baseFrameLength = value;
-            }
-        }
-        private decimal _baseFrameLength = DefaultBaseFrameLength;
+        private decimal _unitFrameLength = DefaultUnitFrameLength;
 
         /// <summary>
         /// モーフ別タイムラインテーブルを基にモーフ別キーフレームテーブルを作成する。
@@ -101,13 +70,17 @@ namespace ruche.mmd.morph.converters
         /// <param name="tlTable">モーフ別タイムラインテーブル。</param>
         /// <param name="beginFrame">開始実フレーム位置。</param>
         /// <returns>モーフ別キーフレームテーブル。</returns>
+        /// <remarks>
+        /// モーフ別タイムラインテーブルは、ユニット基準長(「ア」の長さ)を
+        /// 1.0 とする時間単位であるものとして処理する。
+        /// </remarks>
         public Dictionary<string, List<KeyFrame>> Make(
             MorphTimelineTable tlTable,
             long beginFrame)
         {
             var dest = new Dictionary<string, List<KeyFrame>>();
 
-            long? srcPos = long.MinValue;
+            decimal? srcPos = decimal.MinValue;
             long destPos = long.MinValue;
             var names = new List<string>();
 
@@ -119,7 +92,7 @@ namespace ruche.mmd.morph.converters
                 {
                     // 実フレーム位置決定
                     // 前回の位置より最低でも1フレームは進める
-                    destPos = Math.Max(CalcNativeFrame(srcPos.Value), destPos + 1);
+                    destPos = Math.Max(CalcFrame(srcPos.Value), destPos + 1);
 
                     // 登録キーのあるモーフ名ごとに処理
                     names.ForEach(
@@ -149,10 +122,9 @@ namespace ruche.mmd.morph.converters
         /// </summary>
         /// <param name="place">タイムラインのキー位置。</param>
         /// <returns>実フレーム位置。</returns>
-        private long CalcNativeFrame(long place)
+        private long CalcFrame(decimal place)
         {
-            return
-                (long)(place * this.BaseFrameLength / this.BaseTimelineLength + 0.5m);
+            return (long)(place * this.UnitFrameLength + 0.5m);
         }
     }
 }
