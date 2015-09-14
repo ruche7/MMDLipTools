@@ -60,23 +60,25 @@ namespace ruche.mmd.morph.lip.converters
         /// </remarks>
         public Task<string> MakeAsync(string src)
         {
-            // 読み仮名取得(一部文字を除く)
-            // この処理はメインスレッドで行う必要がある
-            var text = rexToPhonetic.Replace(src, m => GetPhonetic(m.Value));
-
             return
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        // 数字列を読み仮名に変換
-                        var t = _digitConv.ConvertFrom(text);
+                Task.Factory
+                    .StartNew(
+                        () => rexToPhonetic.Replace(src, m => GetPhonetic(m.Value)),
+                        CancellationToken.None,
+                        TaskCreationOptions.None,
+                        TaskScheduler.FromCurrentSynchronizationContext())
+                    .ContinueWith(
+                        t =>
+                        {
+                            // 数字列を読み仮名に変換
+                            var dest = _digitConv.ConvertFrom(t.Result);
 
-                        // 英字と記号を読み仮名に変換
-                        t = _alpGlyConv.ConvertFrom(t);
+                            // 英字と記号を読み仮名に変換
+                            dest = _alpGlyConv.ConvertFrom(dest);
 
-                        // カタカナに変換。
-                        return _kataConv.ConvertFrom(t);
-                    });
+                            // カタカナに変換。
+                            return _kataConv.ConvertFrom(dest);
+                        });
         }
 
         /// <summary>

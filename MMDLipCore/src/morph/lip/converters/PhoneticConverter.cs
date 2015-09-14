@@ -10,10 +10,10 @@ namespace ruche.mmd.morph.lip.converters
     {
         #region COM定義
 
+        /// <summary>
+        /// COM API での処理成功を表す値。
+        /// </summary>
         private const int S_OK = 0;
-        private const int CLSCTX_INPROC_SERVER = 1;
-        private const int CLSCTX_LOCAL_SERVER = 4;
-        private const int CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER;
 
         /// <summary>
         /// IFELanguage COMインタフェース。
@@ -36,17 +36,6 @@ namespace ruche.mmd.morph.lip.converters
                 [MarshalAs(UnmanagedType.BStr)] out string dest);
         }
 
-        /// <summary>
-        /// COMオブジェクトを生成する。
-        /// </summary>
-        [DllImport("ole32.dll")]
-        private static extern int CoCreateInstance(
-            [MarshalAs(UnmanagedType.LPStruct)] Guid rclsid,
-            IntPtr pUnkOuter,
-            uint dwClsContext,
-            [MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-            out IntPtr ppv);
-
         #endregion
 
         /// <summary>
@@ -54,9 +43,6 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="src">文字列。</param>
         /// <returns>文字列の読み仮名。失敗した場合は null 。</returns>
-        /// <remarks>
-        /// メインスレッドから呼び出さなければ失敗する。
-        /// </remarks>
         public string ConvertFrom(string src)
         {
             // IFELanguage COMインタフェース型取得
@@ -66,39 +52,22 @@ namespace ruche.mmd.morph.lip.converters
                 throw new NotSupportedException();
             }
 
-            // IFELanguage の Guid 属性から IID 値作成
-            var langIfType = typeof(IFELanguage);
-            var attrs =
-                langIfType.GetCustomAttributes(typeof(GuidAttribute), false)
-                    as GuidAttribute[];
-            var langIid = new Guid(attrs[0].Value);
+            // IUnknown COMオブジェクト生成
+            var langIfUnk = Activator.CreateInstance(langComType);
 
-            // COMオブジェクト生成
-            IntPtr ppv;
-            var res =
-                CoCreateInstance(
-                    langComType.GUID,
-                    IntPtr.Zero,
-                    CLSCTX_SERVER,
-                    langIid,
-                    out ppv);
-            if (res != S_OK)
-            {
-                throw new InvalidOperationException();
-            }
-
-            // IFELanguage COMインタフェース取得
-            var langIfObj = Marshal.GetTypedObjectForIUnknown(ppv, langIfType);
-            if (langIfObj == null)
-            {
-                throw new NotSupportedException();
-            }
-            var langIf = langIfObj as IFELanguage;
-
+            IFELanguage langIf = null;
             bool opened = false;
             string dest = null;
             try
             {
+                // IFELanguage COMオブジェクト生成
+                langIf = langIfUnk as IFELanguage;
+                if (langIf == null)
+                {
+                    // STAThread でメインスレッドから呼ばないとここで失敗する
+                    throw new InvalidOperationException();
+                }
+
                 // 開く
                 if (langIf.Open() != S_OK)
                 {
@@ -120,8 +89,8 @@ namespace ruche.mmd.morph.lip.converters
                     langIf.Close();
                 }
 
-                // COMオブジェクトを解放
-                Marshal.ReleaseComObject(langIfObj);
+                // IUnknown COMオブジェクト解放
+                Marshal.ReleaseComObject(langIfUnk);
             }
 
             return dest;
