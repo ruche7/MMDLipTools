@@ -7,7 +7,7 @@
     <ProjectGuid>{1E9AFFFD-E67A-4E18-B1BB-7C661C1B7632}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ruche.mmd</RootNamespace>
+    <RootNamespace>ruche</RootNamespace>
     <AssemblyName>MMDLipCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -56,65 +56,64 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\gui\lip\LipSpanRange.cs" />
-    <Compile Include="src\gui\lip\LipSpanUnit.cs" />
-    <Compile Include="src\gui\lip\MorphInfoSetViewModel.cs" />
-    <Compile Include="src\gui\lip\MorphPreset.cs" />
-    <Compile Include="src\gui\lip\MorphPresetDialog.xaml.cs">
+    <Compile Include="src\mmd\gui\lip\LipSpanRange.cs" />
+    <Compile Include="src\mmd\gui\lip\LipSpanUnit.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphInfoSetViewModel.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPreset.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetDialog.xaml.cs">
       <DependentUpon>MorphPresetDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\lip\MorphPresetDialogViewModel.cs" />
-    <Compile Include="src\gui\lip\MorphPresetList.cs" />
-    <Compile Include="src\gui\lip\LipEditControl.xaml.cs">
+    <Compile Include="src\mmd\gui\lip\MorphPresetDialogViewModel.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetList.cs" />
+    <Compile Include="src\mmd\gui\lip\LipEditControl.xaml.cs">
       <DependentUpon>LipEditControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\lip\LipEditControlViewModel.cs" />
-    <Compile Include="src\morph\converters\KeyFrameListMaker.cs" />
-    <Compile Include="src\morph\converters\VmdWriter.cs" />
-    <Compile Include="src\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
-    <Compile Include="src\morph\lip\converters\DigitKanaConverter.cs" />
-    <Compile Include="src\morph\lip\converters\KatakanaConverter.cs" />
-    <Compile Include="src\morph\lip\converters\KatakanaLipConverter.cs" />
-    <Compile Include="src\morph\lip\converters\LipKanaMaker.cs" />
-    <Compile Include="src\morph\lip\converters\LipSyncMaker.cs" />
-    <Compile Include="src\morph\lip\converters\TimelineSetMaker.cs" />
-    <Compile Include="src\morph\lip\converters\MorphTimelineTableMaker.cs" />
-    <Compile Include="src\morph\lip\converters\PhoneticConverter.cs" />
-    <Compile Include="src\morph\lip\KanaDefine.cs" />
-    <Compile Include="src\morph\lip\LinkType.cs" />
-    <Compile Include="src\morph\lip\LipId.cs" />
-    <Compile Include="src\morph\lip\MorphInfoSet.cs" />
-    <Compile Include="src\morph\lip\LipSyncUnit.cs" />
-    <Compile Include="src\morph\lip\TimelineSet.cs" />
-    <Compile Include="src\morph\KeyFrame.cs" />
-    <Compile Include="src\morph\MorphInfo.cs" />
-    <Compile Include="src\morph\lip\MorphInfoTable.cs" />
-    <Compile Include="src\morph\MorphWeightData.cs" />
-    <Compile Include="src\morph\MorphWeightDataList.cs" />
-    <Compile Include="src\morph\TimelineKeyArea.cs" />
-    <Compile Include="src\morph\MorphTimelineTable.cs" />
-    <Compile Include="src\morph\Timeline.cs" />
-    <Compile Include="src\morph\TimelineTableBase.cs" />
+    <Compile Include="src\mmd\gui\lip\LipEditControlViewModel.cs" />
+    <Compile Include="src\mmd\morph\converters\KeyFrameListMaker.cs" />
+    <Compile Include="src\mmd\morph\converters\VmdWriter.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\DigitKanaConverter.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\KatakanaConverter.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\KatakanaLipConverter.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\LipKanaMaker.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\LipSyncMaker.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\TimelineSetMaker.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\MorphTimelineTableMaker.cs" />
+    <Compile Include="src\mmd\morph\lip\converters\PhoneticConverter.cs" />
+    <Compile Include="src\mmd\morph\lip\KanaDefine.cs" />
+    <Compile Include="src\mmd\morph\lip\LinkType.cs" />
+    <Compile Include="src\mmd\morph\lip\LipId.cs" />
+    <Compile Include="src\mmd\morph\lip\MorphInfoSet.cs" />
+    <Compile Include="src\mmd\morph\lip\LipSyncUnit.cs" />
+    <Compile Include="src\mmd\morph\lip\TimelineSet.cs" />
+    <Compile Include="src\mmd\morph\KeyFrame.cs" />
+    <Compile Include="src\mmd\morph\MorphInfo.cs" />
+    <Compile Include="src\mmd\morph\lip\MorphInfoTable.cs" />
+    <Compile Include="src\mmd\morph\MorphWeightData.cs" />
+    <Compile Include="src\mmd\morph\MorphWeightDataList.cs" />
+    <Compile Include="src\mmd\morph\TimelineKeyArea.cs" />
+    <Compile Include="src\mmd\morph\MorphTimelineTable.cs" />
+    <Compile Include="src\mmd\morph\Timeline.cs" />
+    <Compile Include="src\mmd\morph\TimelineTableBase.cs" />
     <Compile Include="src\util\TextElementEnumerable.cs" />
+    <Compile Include="src\wpf\converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="src\wpf\converters\EnumValueDisplayConverter.cs" />
+    <Compile Include="src\wpf\DependencyPropertyFactory.cs" />
+    <Compile Include="src\wpf\viewModel\DelegateCommand.cs" />
+    <Compile Include="src\wpf\viewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="src\gui\lip\MorphPresetDialog.xaml">
+    <Page Include="src\mmd\gui\lip\MorphPresetDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="src\gui\lip\LipEditControl.xaml">
+    <Page Include="src\mmd\gui\lip\LipEditControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ruche.wpf\ruche.wpf.csproj">
-      <Project>{a5dc2bbd-74fd-45df-9352-d017ae45b02d}</Project>
-      <Name>ruche.wpf</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

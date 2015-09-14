@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace ruche.wpf.view
+namespace ruche.wpf
 {
     /// <summary>
     /// DependencyProperty を簡単に作成するためのメソッドを提供する静的クラス。

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace ruche.mmd.util
+namespace ruche.util
 {
     /// <summary>
     /// 文字列に対するUnicode文字の列挙子を公開するクラス。

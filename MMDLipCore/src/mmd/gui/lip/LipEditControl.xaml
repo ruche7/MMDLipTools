@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:cvt="http://schemas.ruche-home.net/xaml/wpf/converters"
+    xmlns:cvt="clr-namespace:ruche.wpf.converters"
     xmlns:local="clr-namespace:ruche.mmd.gui.lip"
     x:Class="ruche.mmd.gui.lip.LipEditControl"
     x:Name="root"

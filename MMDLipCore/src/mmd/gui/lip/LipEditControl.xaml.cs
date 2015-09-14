@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using ruche.wpf.view;
+using ruche.wpf;
 
 namespace ruche.mmd.gui.lip
 {

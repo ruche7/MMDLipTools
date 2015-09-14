@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ruche.mmd.util;
+using ruche.util;
 
 namespace ruche.mmd.morph.lip.converters
 {
