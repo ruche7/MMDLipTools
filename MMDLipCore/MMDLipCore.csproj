@@ -69,7 +69,8 @@
       <DependentUpon>LipEditControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\gui\lip\LipEditControlViewModel.cs" />
-    <Compile Include="src\morph\converters\KeyFrameTableMaker.cs" />
+    <Compile Include="src\morph\converters\KeyFrameListMaker.cs" />
+    <Compile Include="src\morph\converters\VmdWriter.cs" />
     <Compile Include="src\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
     <Compile Include="src\morph\lip\converters\DigitKanaConverter.cs" />
     <Compile Include="src\morph\lip\converters\KatakanaConverter.cs" />

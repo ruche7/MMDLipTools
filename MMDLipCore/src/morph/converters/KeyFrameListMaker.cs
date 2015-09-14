@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace ruche.mmd.morph.converters
 {
     /// <summary>
-    /// モーフ別キーフレームテーブルを作成するクラス。
+    /// モーフのキーフレームリストを作成するクラス。
     /// </summary>
-    public class KeyFrameTableMaker
+    public class KeyFrameListMaker
     {
         /// <summary>
         /// ユニット基準長(「ア」の長さ)に相当するフレーム長の既定値。
@@ -14,35 +14,9 @@ namespace ruche.mmd.morph.converters
         public static readonly decimal DefaultUnitFrameLength = 10;
 
         /// <summary>
-        /// 指定したキーの値を取得または新規追加する。
-        /// </summary>
-        /// <typeparam name="TKey">キー型。</typeparam>
-        /// <typeparam name="TValue">値型。</typeparam>
-        /// <param name="table">テーブル。</param>
-        /// <param name="key">キー。</param>
-        /// <param name="createNew">
-        /// 新規追加時のインスタンス生成デリゲート。
-        /// null ならば default(TValue) を追加する。
-        /// </param>
-        /// <returns>取得または新規作成した値。</returns>
-        private static TValue GetOrCreate<TKey, TValue>(
-            IDictionary<TKey, TValue> table,
-            TKey key,
-            Func<TValue> createNew = null)
-        {
-            TValue value;
-            if (!table.TryGetValue(key, out value))
-            {
-                value = (createNew == null) ? default(TValue) : createNew();
-                table.Add(key, value);
-            }
-            return value;
-        }
-
-        /// <summary>
         /// コンストラクタ。
         /// </summary>
-        public KeyFrameTableMaker()
+        public KeyFrameListMaker()
         {
             this.UnitFrameLength = DefaultUnitFrameLength;
         }
@@ -65,20 +39,20 @@ namespace ruche.mmd.morph.converters
         private decimal _unitFrameLength = DefaultUnitFrameLength;
 
         /// <summary>
-        /// モーフ別タイムラインテーブルを基にモーフ別キーフレームテーブルを作成する。
+        /// モーフ別タイムラインテーブルを基にキーフレームリストを作成する。
         /// </summary>
         /// <param name="tlTable">モーフ別タイムラインテーブル。</param>
         /// <param name="beginFrame">開始実フレーム位置。</param>
-        /// <returns>モーフ別キーフレームテーブル。</returns>
+        /// <returns>キーフレームリスト。</returns>
         /// <remarks>
         /// モーフ別タイムラインテーブルは、ユニット基準長(「ア」の長さ)を
         /// 1.0 とする時間単位であるものとして処理する。
         /// </remarks>
-        public Dictionary<string, List<KeyFrame>> Make(
+        public List<KeyFrame> Make(
             MorphTimelineTable tlTable,
             long beginFrame)
         {
-            var dest = new Dictionary<string, List<KeyFrame>>();
+            var dest = new List<KeyFrame>();
 
             decimal? srcPos = decimal.MinValue;
             long destPos = long.MinValue;
@@ -94,23 +68,14 @@ namespace ruche.mmd.morph.converters
                     // 前回の位置より最低でも1フレームは進める
                     destPos = Math.Max(CalcFrame(srcPos.Value), destPos + 1);
 
-                    // 登録キーのあるモーフ名ごとに処理
-                    names.ForEach(
-                        name =>
-                        {
-                            // フレームデータリスト取得or新規追加
-                            var frames =
-                                GetOrCreate(
-                                    dest,
-                                    name,
-                                    () => new List<KeyFrame>());
-
-                            // フレームデータ追加
-                            frames.Add(
+                    // キーフレーム群追加
+                    dest.AddRange(
+                        names.ConvertAll(
+                            name =>
                                 new KeyFrame(
+                                    name,
                                     beginFrame + destPos,
-                                    tlTable[name].GetWeight(srcPos.Value)));
-                        });
+                                    tlTable[name].GetWeight(srcPos.Value))));
                 }
             }
 

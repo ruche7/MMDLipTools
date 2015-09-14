@@ -90,10 +90,10 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
-        /// モーフ別キーフレームテーブルを作成する。
+        /// キーフレームリストを作成する。
         /// </summary>
-        /// <returns>モーフ別キーフレームテーブル。</returns>
-        private static Dictionary<string, List<KeyFrame>> MakeKeyFrameTableCore(
+        /// <returns>キーフレームリスト。</returns>
+        private static List<KeyFrame> MakeKeyFrameListCore(
             IEnumerable<LipSyncUnit> units,
             decimal linkLengthPercent,
             float longSoundLastWeight,
@@ -133,10 +133,10 @@ namespace ruche.mmd.gui.lip
                 }
             }
 
-            // モーフ別キーフレームテーブル作成
-            Dictionary<string, List<KeyFrame>> dest = null;
+            // キーフレームリスト作成
+            List<KeyFrame> dest = null;
             {
-                var maker = new KeyFrameTableMaker();
+                var maker = new KeyFrameListMaker();
                 maker.UnitFrameLength = frames;
                 dest = maker.Make(tlTable, beginFrame);
             }
@@ -641,25 +641,25 @@ namespace ruche.mmd.gui.lip
         private bool _morphEtoAI = false;
 
         /// <summary>
-        /// 現在の設定値からモーフ別キーフレームテーブルを作成する。
+        /// 現在の設定値からキーフレームリストを作成する。
         /// </summary>
         /// <param name="beginFrame">開始フレーム位置。</param>
-        /// <returns>モーフ別キーフレームテーブル。</returns>
-        public Dictionary<string, List<KeyFrame>> MakeKeyFrameTable(long beginFrame)
+        /// <returns>キーフレームリスト。</returns>
+        public List<KeyFrame> MakeKeyFrameList(long beginFrame)
         {
-            return this.MakeKeyFrameTableAsync(beginFrame).Result;
+            return this.MakeKeyFrameListAsync(beginFrame).Result;
         }
 
         /// <summary>
-        /// 現在の設定値からモーフ別キーフレームテーブルを非同期で作成する。
+        /// 現在の設定値からキーフレームリストを非同期で作成する。
         /// </summary>
         /// <param name="beginFrame">開始フレーム位置。</param>
-        /// <returns>モーフ別キーフレームテーブル作成タスク。</returns>
+        /// <returns>キーフレームリスト作成タスク。</returns>
         /// <remarks>
         /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
         /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
         /// </remarks>
-        public Task<Dictionary<string, List<KeyFrame>>> MakeKeyFrameTableAsync(
+        public Task<List<KeyFrame>> MakeKeyFrameListAsync(
             long beginFrame)
         {
             var linkLengthPercent = this.LinkLengthPercent;
@@ -696,7 +696,7 @@ namespace ruche.mmd.gui.lip
                         {
                             // 実処理
                             return
-                                MakeKeyFrameTableCore(
+                                MakeKeyFrameListCore(
                                     t.Result,
                                     linkLengthPercent,
                                     longSoundLastWeight,
