@@ -12,53 +12,38 @@
         <local:LipEditControlViewModel />
     </UserControl.DataContext>
     <UserControl.Resources>
-        <Style TargetType="{x:Type Label}">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="8,2" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-        <Style TargetType="{x:Type ComboBox}">
-            <Setter Property="Padding" Value="8,3" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-        <Style TargetType="{x:Type xctk:DecimalUpDown}">
-            <Setter Property="Padding" Value="4,1,2,1" />
-            <Setter Property="MinWidth" Value="64" />
-            <Setter Property="MaxWidth" Value="160" />
-        </Style>
-        <Style TargetType="{x:Type xctk:SingleUpDown}">
-            <Setter Property="Padding" Value="4,1,2,1" />
-            <Setter Property="MinWidth" Value="64" />
-            <Setter Property="MaxWidth" Value="160" />
-        </Style>
-        <Style x:Key="textAreaStyle" TargetType="{x:Type TextBox}">
-            <Setter Property="AcceptsReturn" Value="True" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../resources/common.xaml" />
+                <ResourceDictionary>
+                    <Style x:Key="textAreaStyle" TargetType="{x:Type TextBox}">
+                        <Setter Property="AcceptsReturn" Value="True" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
+                    </Style>
 
-        <cvt:BooleanVisibilityConverter x:Key="boolVisibiliyConv" />
-        <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
+                    <cvt:BooleanVisibilityConverter x:Key="boolVisibiliyConv" />
+                    <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
 
-        <ObjectDataProvider
-            x:Key="lipSpanRange"
-            MethodName="GetValues"
-            ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="local:LipSpanRange" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider
-            x:Key="lipSpanUnit"
-            MethodName="GetValues"
-            ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="local:LipSpanUnit" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+                    <ObjectDataProvider
+                        x:Key="lipSpanRange"
+                        MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="local:LipSpanRange" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <ObjectDataProvider
+                        x:Key="lipSpanUnit"
+                        MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="local:LipSpanUnit" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>

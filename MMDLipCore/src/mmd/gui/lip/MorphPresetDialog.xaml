@@ -27,59 +27,11 @@
         <KeyBinding Gesture="Alt+Left" Command="{Binding ApplyCommand}" />
     </Window.InputBindings>
     <Window.Resources>
-        <Style TargetType="{x:Type xctk:WatermarkTextBox}">
-            <Setter Property="Padding" Value="2" />
-        </Style>
-        <Style TargetType="{x:Type ListBoxItem}">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border Name="border" Padding="2" SnapsToDevicePixels="true">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True" />
-                                    <Condition
-                                        Property="Selector.IsSelectionActive"
-                                        Value="True" />
-                                </MultiTrigger.Conditions>
-                                <Setter
-                                    Property="Foreground"
-                                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                                <Setter
-                                    TargetName="border"
-                                    Property="Background"
-                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True" />
-                                    <Condition
-                                        Property="Selector.IsSelectionActive"
-                                        Value="False" />
-                                </MultiTrigger.Conditions>
-                                <Setter
-                                    TargetName="border"
-                                    Property="BorderBrush"
-                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                                <Setter
-                                    TargetName="border"
-                                    Property="BorderThickness"
-                                    Value="1" />
-                                <Setter
-                                    TargetName="border"
-                                    Property="Padding"
-                                    Value="1" />
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../resources/common.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <DockPanel Margin="8,4">
@@ -308,9 +260,11 @@
                                 </ListBox>
                                 <Grid Grid.Row="4">
                                     <Grid.Resources>
-                                        <Style TargetType="Button">
+                                        <Style
+                                            TargetType="Button"
+                                            BasedOn="{StaticResource {x:Type Button}}">
                                             <Style.Setters>
-                                                <Setter Property="Padding" Value="16,1"/>
+                                                <Setter Property="Padding" Value="16,2"/>
                                             </Style.Setters>
                                         </Style>
                                     </Grid.Resources>
