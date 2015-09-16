@@ -102,7 +102,7 @@ namespace ruche.mmd.gui.lip
             object sender,
             DependencyPropertyChangedEventArgs e)
         {
-            var vm = this.DataContext as LipEditControlViewModel;
+            var vm = e.NewValue as LipEditControlViewModel;
             if (vm != null && vm.MorphPresetDialogShower == null)
             {
                 // 口パクモーフプリセット編集ダイアログ表示デリゲートを設定

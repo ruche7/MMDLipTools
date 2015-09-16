@@ -10,6 +10,7 @@ using ruche.mmd.morph;
 using ruche.mmd.morph.converters;
 using ruche.mmd.morph.lip;
 using ruche.mmd.morph.lip.converters;
+using ruche.util;
 using ruche.wpf.viewModel;
 
 namespace ruche.mmd.gui.lip
@@ -360,6 +361,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクの時間指定範囲種別を取得または設定する。
         /// </summary>
+        [ConfigValue]
         public LipSpanRange SpanRange
         {
             get { return _spanRange; }
@@ -385,6 +387,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクの時間指定値を取得または設定する。
         /// </summary>
+        [ConfigValue]
         public decimal SpanValue
         {
             get { return _spanValue; }
@@ -404,6 +407,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクの時間指定単位種別を取得または設定する。
         /// </summary>
+        [ConfigValue]
         public LipSpanUnit SpanUnit
         {
             get { return _spanUnit; }
@@ -514,6 +518,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 実フレーム値への変換に用いるFPS値を取得または設定する。
         /// </summary>
+        [ConfigValue]
         public decimal Fps
         {
             get { return _fps; }
@@ -548,6 +553,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合のパーセント値を取得または設定する。
         /// </summary>
+        [ConfigValue]
         public decimal LinkLengthPercent
         {
             get { return _linkLengthPercent; }
@@ -586,6 +592,7 @@ namespace ruche.mmd.gui.lip
         /// 長音の最大開口終端位置におけるウェイト値割合のパーセント値を
         /// 取得または設定する。
         /// </summary>
+        [ConfigValue]
         public float LongSoundLastWeightPercent
         {
             get { return _longSoundLastWeightPercent; }
@@ -626,6 +633,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
+        [ConfigValue]
         public bool IsMorphEtoAI
         {
             get { return _morphEtoAI; }

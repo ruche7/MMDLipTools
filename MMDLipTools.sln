@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMDLipCore", "MMDLipCore\MM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMaker", "LipVmdMaker\LipVmdMaker.csproj", "{3059B2D6-AB54-4B22-85BE-046753C27987}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMakerCommon", "LipVmdMakerCommon\LipVmdMakerCommon.csproj", "{604C331C-F714-4199-8C85-DDB86637C0B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMakerLite", "LipVmdMakerLite\LipVmdMakerLite.csproj", "{E3206463-00F1-4D9B-8514-A20EFEC37AAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{3059B2D6-AB54-4B22-85BE-046753C27987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3059B2D6-AB54-4B22-85BE-046753C27987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3059B2D6-AB54-4B22-85BE-046753C27987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{604C331C-F714-4199-8C85-DDB86637C0B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{604C331C-F714-4199-8C85-DDB86637C0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{604C331C-F714-4199-8C85-DDB86637C0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{604C331C-F714-4199-8C85-DDB86637C0B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3206463-00F1-4D9B-8514-A20EFEC37AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3206463-00F1-4D9B-8514-A20EFEC37AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3206463-00F1-4D9B-8514-A20EFEC37AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3206463-00F1-4D9B-8514-A20EFEC37AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using ruche.mmd.tools;
 
-namespace LipVmdMaker
+namespace LipVmdMakerLite
 {
     /// <summary>
     /// MainWindow の View クラス。
@@ -15,6 +16,15 @@ namespace LipVmdMaker
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// ViewModel を取得または設定する。
+        /// </summary>
+        public LipVmdControlViewModel ViewModel
+        {
+            get { return this.DataContext as LipVmdControlViewModel; }
+            set { this.DataContext = value ?? (new LipVmdControlViewModel()); }
         }
 
         /// <summary>

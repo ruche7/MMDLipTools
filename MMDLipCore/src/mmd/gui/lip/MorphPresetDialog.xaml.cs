@@ -22,37 +22,25 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public MorphPresetList MorphPresets
         {
-            get { return GetOrBindViewModel().MorphPresets; }
-            set { GetOrBindViewModel().MorphPresets = value; }
+            get { return ((dynamic)this.DataContext).MorphPresets; }
+            set { ((dynamic)this.DataContext).MorphPresets = value; }
         }
 
         /// <summary>
-        /// ViewModel を取得する。未バインドであればバインドする。
+        /// DataContext の変更時に呼び出される。
         /// </summary>
-        /// <returns>ViewModel 。</returns>
-        private MorphPresetDialogViewModel GetOrBindViewModel()
+        private void OnDataContextChanged(
+            object sender,
+            DependencyPropertyChangedEventArgs e)
         {
-            var vm = this.DataContext as MorphPresetDialogViewModel;
-
-            if (vm == null)
+            var vm = e.NewValue as MorphPresetDialogViewModel;
+            if (vm != null && vm.MessageBoxShower == null)
             {
-                vm = new MorphPresetDialogViewModel();
-                this.DataContext = vm;
+                // メッセージボックス表示処理デリゲートを設定
+                vm.MessageBoxShower =
+                    (message, caption, button, icon) =>
+                        MessageBox.Show(this, message, caption, button, icon);
             }
-
-            return vm;
-        }
-
-        /// <summary>
-        /// ウィンドウの初期化完了時に呼び出される。
-        /// </summary>
-        private void OnInitialized(object sender, EventArgs e)
-        {
-            // メッセージボックス表示処理デリゲートを設定
-            var vm = this.GetOrBindViewModel();
-            vm.MessageBoxShower =
-                (message, caption, button, icon) =>
-                    MessageBox.Show(this, message, caption, button, icon);
         }
 
         /// <summary>

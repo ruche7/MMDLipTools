@@ -95,6 +95,10 @@
     <Compile Include="src\mmd\morph\MorphTimelineTable.cs" />
     <Compile Include="src\mmd\morph\Timeline.cs" />
     <Compile Include="src\mmd\morph\TimelineTableBase.cs" />
+    <Compile Include="src\util\Config.cs" />
+    <Compile Include="src\util\ConfigValueAttribute.cs" />
+    <Compile Include="src\util\ConfigValueContainerAttribute.cs" />
+    <Compile Include="src\util\ObservableStringCollection.cs" />
     <Compile Include="src\util\TextElementEnumerable.cs" />
     <Compile Include="src\wpf\converters\BooleanVisibilityConverter.cs" />
     <Compile Include="src\wpf\converters\EnumValueDisplayConverter.cs" />

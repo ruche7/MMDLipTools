@@ -5,11 +5,11 @@ using System.Windows.Markup;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("MMDLipCore")]
-[assembly: AssemblyDescription("Core API for the lip-morph of MMD models.")]
+[assembly: AssemblyTitle("LipVmdMakerCommon")]
+[assembly: AssemblyDescription("Common library for LipVmdMaker.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ruche-home")]
-[assembly: AssemblyProduct("MMDLipCore")]
+[assembly: AssemblyProduct("LipVmdMakerCommon")]
 [assembly: AssemblyCopyright("Copyright (C) ruche.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Windows.Markup;
 [assembly: ComVisible(false)]
 
 // このプロジェクトが COM に公開される場合、次の GUID が typelib の ID になります
-[assembly: Guid("1e9afffd-e67a-4e18-b1bb-7c661c1b7632")]
+[assembly: Guid("604c331c-f714-4199-8c85-ddb86637c0b1")]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //
@@ -35,7 +35,4 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("1.0.0.*")]
 
 // XML名前空間
-[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/mmd/gui/lip", "ruche.mmd.gui.lip")]
-[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf", "ruche.wpf")]
-[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/view", "ruche.wpf.view")]
-[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/converters", "ruche.wpf.converters")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/mmd/tools", "ruche.mmd.tools")]
