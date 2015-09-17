@@ -7,7 +7,7 @@ namespace ruche.mmd.gui.lip
     /// <summary>
     /// 口パクモーフプリセットクラス。
     /// </summary>
-    [DataContract(Name = "Preset", Namespace = "")]
+    [DataContract(Namespace = "")]
     [KnownType(typeof(MorphInfoSet))]
     public sealed class MorphPreset : IEquatable<MorphPreset>, ICloneable
     {

@@ -35,14 +35,14 @@
             </Grid.ColumnDefinitions>
 
             <xctk:WatermarkComboBox
-                ItemsSource="{Binding VmdFilePathes}"
-                Text="{Binding VmdFilePath, UpdateSourceTrigger=PropertyChanged}"
+                ItemsSource="{Binding FilePathes}"
+                Text="{Binding ActiveFilePath, UpdateSourceTrigger=PropertyChanged}"
                 Watermark="&lt;新しい保存先...&gt;"
                 IsEditable="True"
                 Grid.Column="0" />
             <Button
                 Content="←に保存(_S)"
-                Command="{Binding VmdFileSaveCommand}"
+                Command="{Binding FileSaveCommand}"
                 Margin="2,0,0,0"
                 Grid.Column="1" />
         </Grid>
@@ -50,7 +50,7 @@
         <!-- row 2 -->
         <CheckBox
             Content="上書き確認(_W)"
-            IsChecked="{Binding IsVmdFileOverwriteConfirmed}"
+            IsChecked="{Binding IsOverwriteConfirmed}"
             HorizontalAlignment="Left"
             Margin="0,4,0,0"
             Grid.Row="2" />

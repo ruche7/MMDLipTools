@@ -9,7 +9,7 @@ namespace ruche.mmd.gui.lip
     /// <summary>
     /// 口パクモーフプリセットリストクラス。
     /// </summary>
-    [CollectionDataContract(Name = "PresetList", ItemName = "Item", Namespace = "")]
+    [CollectionDataContract(ItemName = "Item", Namespace = "")]
     [KnownType(typeof(MorphPreset))]
     public sealed class MorphPresetList
         : ObservableCollection<MorphPreset>, ICloneable
@@ -35,11 +35,6 @@ namespace ruche.mmd.gui.lip
         /// <returns>インデックス。見つからなかった場合は -1 。</returns>
         public int FindIndex(string name)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException("name");
-            }
-
             var found =
                 this
                     .Select((p, i) => new { Preset = p, Index = i })

@@ -7,7 +7,8 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using ruche.mmd.tools;
-using ruche.util;
+using ruche.mmd.gui.lip;
+using System.ComponentModel;
 
 namespace LipVmdMakerLite
 {
@@ -17,28 +18,22 @@ namespace LipVmdMakerLite
     public partial class App : Application
     {
         /// <summary>
-        /// LipVmdControlViewModel 設定保存ファイルパス。
-        /// </summary>
-        private static readonly string LipVmdControlViewModelConfigFilePath =
-            Path.Combine(
-                Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData),
-                @"ruche-home\MMDLipTools\ruche.mmd.tools.LipVmdControlViewModel.xaml");
-
-        /// <summary>
-        /// MorphPresetList 設定保存ファイルパス。
-        /// </summary>
-        private static readonly string MorphPresetListConfigFilePath =
-            Path.Combine(
-                Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData),
-                @"ruche-home\MMDLipTools\ruche.mmd.gui.lip.MorphPresetList.xaml");
-
-        /// <summary>
         /// 多重起動防止用ミューテクス。
         /// </summary>
         private Mutex mutexForBoot =
             new Mutex(false, "{0975DE42-5DA7-460E-BEAC-D91909EDD7BC}");
+
+        private ConfigKeeper<MainWindowConfig> windowConfig =
+            new ConfigKeeper<MainWindowConfig>();
+
+        private ConfigKeeper<LipVmdConfig> vmdConfig =
+            new ConfigKeeper<LipVmdConfig>();
+
+        private ConfigKeeper<LipEditConfig> editConfig =
+            new ConfigKeeper<LipEditConfig>();
+
+        private ConfigKeeper<MorphPresetConfig> presetConfig =
+            new ConfigKeeper<MorphPresetConfig>();
 
         /// <summary>
         /// メインウィンドウの ViewModel を取得または設定する。
@@ -59,14 +54,40 @@ namespace LipVmdMakerLite
                 return;
             }
 
-            // ViewModel 作成＆設定ロード
-            // ロード失敗しても構わない
-            this.WindowViewModel = new LipVmdControlViewModel();
-            Config.Load(LipVmdControlViewModelConfigFilePath, this.WindowViewModel);
+            // 設定をロード
+            if (!this.windowConfig.Load())
+            {
+                this.windowConfig.Value = new MainWindowConfig();
+            }
+            if (!this.vmdConfig.Load())
+            {
+                this.vmdConfig.Value = new LipVmdConfig();
+            }
+            if (!this.editConfig.Load())
+            {
+                this.editConfig.Value = new LipEditConfig();
+            }
+            if (!this.presetConfig.Load())
+            {
+                this.presetConfig.Value = new MorphPresetConfig();
+            }
 
-            // メインウィンドウ作成＆表示開始
+            // ViewModel 作成
+            var vm = new LipVmdControlViewModel(this.vmdConfig.Value);
+            vm.EditViewModel =
+                new LipEditControlViewModel(
+                    this.editConfig.Value,
+                    this.presetConfig.Value);
+
+            // メインウィンドウ作成
             var window = new MainWindow();
-            window.ViewModel = this.WindowViewModel;
+
+            // パラメータ設定
+            this.windowConfig.Value.ApplyTo(window);
+            window.ViewModel = vm;
+            window.Closing += this.OnMainWindowClosing;
+
+            // メインウィンドウ表示開始
             window.Show();
         }
 
@@ -77,14 +98,30 @@ namespace LipVmdMakerLite
         {
             base.OnExit(e);
 
-            // ViewModel 設定セーブ
-            Config.Save(this.WindowViewModel, LipVmdControlViewModelConfigFilePath);
+            // 設定をセーブ
+            this.vmdConfig.Save();
+            this.editConfig.Save();
+            this.presetConfig.Save();
 
             // ミューテクス破棄
             if (this.mutexForBoot != null)
             {
                 this.mutexForBoot.Dispose();
                 this.mutexForBoot = null;
+            }
+        }
+
+        /// <summary>
+        /// メインウィンドウが閉じようとしている時に呼び出される。
+        /// </summary>
+        private void OnMainWindowClosing(object sender, CancelEventArgs e)
+        {
+            var window = sender as Window;
+            if (window != null)
+            {
+                // ウィンドウ状態を設定値に反映してセーブ
+                this.windowConfig.Value.CopyFrom(window);
+                this.windowConfig.Save();
             }
         }
     }

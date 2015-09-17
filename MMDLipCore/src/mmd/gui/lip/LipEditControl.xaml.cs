@@ -103,19 +103,19 @@ namespace ruche.mmd.gui.lip
             DependencyPropertyChangedEventArgs e)
         {
             var vm = e.NewValue as LipEditControlViewModel;
-            if (vm != null && vm.MorphPresetDialogShower == null)
+            if (vm != null && vm.PresetDialogShower == null)
             {
                 // 口パクモーフプリセット編集ダイアログ表示デリゲートを設定
-                vm.MorphPresetDialogShower =
+                vm.PresetDialogShower =
                     presets =>
                     {
                         var dialog = new MorphPresetDialog();
                         dialog.Owner = Window.GetWindow(this);
-                        dialog.MorphPresets = presets;
+                        dialog.Presets = presets;
 
                         var result = dialog.ShowDialog();
 
-                        return (result == true) ? dialog.MorphPresets : null;
+                        return (result == true) ? dialog.Presets : null;
                     };
             }
         }

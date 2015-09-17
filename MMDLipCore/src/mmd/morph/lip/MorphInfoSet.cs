@@ -9,7 +9,7 @@ namespace ruche.mmd.morph.lip
     /// <summary>
     /// 口形状種別ごとのモーフ情報を保持するクラス。
     /// </summary>
-    [DataContract(Name = "LipMorphSet", Namespace = "")]
+    [DataContract(Namespace = "")]
     [KnownType(typeof(MorphInfoTable))]
     [KnownType(typeof(MorphInfo))]
     public sealed class MorphInfoSet : IEquatable<MorphInfoSet>, ICloneable

@@ -27,7 +27,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// コンストラクタ。
         /// </summary>
-        public MorphPresetDialogViewModel() : base()
+        public MorphPresetDialogViewModel()
         {
             // モーフ情報セット ViewModel 初期化
             this.EditingMorphInfoSet = new MorphInfoSetViewModel();
@@ -36,22 +36,22 @@ namespace ruche.mmd.gui.lip
             this.PresetUpCommand =
                 new DelegateCommand(
                     this.ExecutePresetUpCommand,
-                    _ => this.SelectedMorphPresetIndex >= 1);
+                    _ => this.SelectedPresetIndex >= 1);
             this.PresetDownCommand =
                 new DelegateCommand(
                     this.ExecutePresetDownCommand,
                     _ =>
-                        this.SelectedMorphPresetIndex >= 0 &&
-                        this.SelectedMorphPresetIndex + 1 < this.MorphPresets.Count);
+                        this.SelectedPresetIndex >= 0 &&
+                        this.SelectedPresetIndex + 1 < this.Presets.Count);
             this.EditCommand =
                 new DelegateCommand(
                     this.ExecuteEditCommand,
-                    _ => this.SelectedMorphPresetIndex >= 0);
+                    _ => this.SelectedPresetIndex >= 0);
             this.ApplyCommand = new DelegateCommand(this.ExecuteApplyCommand);
             this.DeleteCommand =
                 new DelegateCommand(
                     this.ExecuteDeleteCommand,
-                    _ => this.SelectedMorphPresetIndex >= 0);
+                    _ => this.SelectedPresetIndex >= 0);
         }
 
         /// <summary>
@@ -74,45 +74,45 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクモーフプリセットリストを取得または設定する。
         /// </summary>
-        public MorphPresetList MorphPresets
+        public MorphPresetList Presets
         {
-            get { return _morphPresets; }
+            get { return _presets; }
             set
             {
                 var v = value ?? (new MorphPresetList());
-                if (v != _morphPresets)
+                if (v != _presets)
                 {
-                    _morphPresets = v;
-                    this.NotifyPropertyChanged("MorphPresets");
+                    _presets = v;
+                    this.NotifyPropertyChanged("Presets");
 
                     // 選択中インデックスも必要に応じて更新
-                    if (this.SelectedMorphPresetIndex >= v.Count)
+                    if (this.SelectedPresetIndex >= v.Count)
                     {
-                        this.SelectedMorphPresetIndex = v.Count - 1;
+                        this.SelectedPresetIndex = v.Count - 1;
                     }
                 }
             }
         }
-        private MorphPresetList _morphPresets =
+        private MorphPresetList _presets =
             new MorphPresetList(new[] { new MorphPreset() });
 
         /// <summary>
         /// 現在選択中の口パクモーフプリセットのインデックスを取得または設定する。
         /// </summary>
-        public int SelectedMorphPresetIndex
+        public int SelectedPresetIndex
         {
-            get { return _selectedMorphPresetIndex; }
+            get { return _selectedPresetIndex; }
             set
             {
-                var v = Math.Min(Math.Max(-1, value), this.MorphPresets.Count - 1);
-                if (v != _selectedMorphPresetIndex)
+                var v = Math.Min(Math.Max(-1, value), this.Presets.Count - 1);
+                if (v != _selectedPresetIndex)
                 {
-                    _selectedMorphPresetIndex = v;
-                    this.NotifyPropertyChanged("SelectedMorphPresetIndex");
+                    _selectedPresetIndex = v;
+                    this.NotifyPropertyChanged("SelectedPresetIndex");
                 }
             }
         }
-        private int _selectedMorphPresetIndex = -1;
+        private int _selectedPresetIndex = -1;
 
         /// <summary>
         /// 編集中のプリセット名を取得または設定する。
@@ -181,13 +181,13 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         private void ExecutePresetUpCommand(object param)
         {
-            var index = this.SelectedMorphPresetIndex;
-            if (index <= 0 || index >= this.MorphPresets.Count)
+            var index = this.SelectedPresetIndex;
+            if (index <= 0 || index >= this.Presets.Count)
             {
                 return;
             }
 
-            this.MorphPresets.Move(index, index - 1);
+            this.Presets.Move(index, index - 1);
         }
 
         /// <summary>
@@ -195,13 +195,13 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         private void ExecutePresetDownCommand(object param)
         {
-            var index = this.SelectedMorphPresetIndex;
-            if (index < 0 || index + 1 >= this.MorphPresets.Count)
+            var index = this.SelectedPresetIndex;
+            if (index < 0 || index + 1 >= this.Presets.Count)
             {
                 return;
             }
 
-            this.MorphPresets.Move(index, index + 1);
+            this.Presets.Move(index, index + 1);
         }
 
         /// <summary>
@@ -209,13 +209,13 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         private void ExecuteEditCommand(object param)
         {
-            var index = this.SelectedMorphPresetIndex;
-            if (index < 0 || index >= this.MorphPresets.Count)
+            var index = this.SelectedPresetIndex;
+            if (index < 0 || index >= this.Presets.Count)
             {
                 return;
             }
 
-            var preset = this.MorphPresets[index];
+            var preset = this.Presets[index];
 
             // 編集用プロパティへコピー
             this.EditingPresetName = preset.Name;
@@ -243,14 +243,14 @@ namespace ruche.mmd.gui.lip
                     this.EditingMorphInfoSet.Source.Clone());
 
             // 同名のプリセットを検索
-            int sameNameIndex = this.MorphPresets.FindIndex(preset.Name);
+            int sameNameIndex = this.Presets.FindIndex(preset.Name);
             if (sameNameIndex < 0)
             {
                 // 新規追加
-                this.MorphPresets.Add(preset);
+                this.Presets.Add(preset);
 
                 // 追加先を選択
-                this.SelectedMorphPresetIndex = this.MorphPresets.Count - 1;
+                this.SelectedPresetIndex = this.Presets.Count - 1;
             }
             else
             {
@@ -261,10 +261,10 @@ namespace ruche.mmd.gui.lip
                 if (yes)
                 {
                     // 置換
-                    this.MorphPresets[sameNameIndex] = preset;
+                    this.Presets[sameNameIndex] = preset;
 
                     // 置換先を選択
-                    this.SelectedMorphPresetIndex = sameNameIndex;
+                    this.SelectedPresetIndex = sameNameIndex;
                 }
             }
         }
@@ -274,23 +274,23 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         private void ExecuteDeleteCommand(object param)
         {
-            var index = this.SelectedMorphPresetIndex;
-            if (index < 0 || index >= this.MorphPresets.Count)
+            var index = this.SelectedPresetIndex;
+            if (index < 0 || index >= this.Presets.Count)
             {
                 return;
             }
 
             bool yes =
                 ShowOkCancelDialog(
-                    @"プリセット " + this.MorphPresets[index].Name +
+                    @"プリセット " + this.Presets[index].Name +
                     @" を削除します。" + Environment.NewLine + @"よろしいですか？");
             if (yes)
             {
                 // 削除
-                this.MorphPresets.RemoveAt(index);
+                this.Presets.RemoveAt(index);
 
                 // 選択インデックスを保持
-                this.SelectedMorphPresetIndex = index;
+                this.SelectedPresetIndex = index;
             }
         }
 

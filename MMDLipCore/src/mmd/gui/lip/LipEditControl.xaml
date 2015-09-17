@@ -141,16 +141,16 @@
                 Grid.Column="0" />
             <ComboBox
                 x:Name="comboPresets"
-                ItemsSource="{Binding MorphPresets}"
-                SelectedIndex="{Binding SelectedMorphPresetIndex}"
+                ItemsSource="{Binding Presets}"
+                SelectedIndex="{Binding SelectedPresetIndex}"
                 DisplayMemberPath="Name"
                 Margin="4,0,0,0"
                 MinWidth="100"
                 Grid.Column="1" />
             <Button
                 Content="プリセット編集(_E)"
-                Command="{Binding MorphPresetsEditCommand}"
-                Visibility="{Binding IsMorphPresetsEditable, Converter={StaticResource boolVisibiliyConv}}"
+                Command="{Binding PresetsEditCommand}"
+                Visibility="{Binding IsPresetsEditable, Converter={StaticResource boolVisibiliyConv}}"
                 Margin="4,0,0,0"
                 Grid.Column="2" />
         </Grid>

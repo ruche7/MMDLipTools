@@ -128,7 +128,7 @@ namespace ruche.mmd.morph.converters
             if (fixedSize >= 0 && dest.Length != fixedSize)
             {
                 var temp = new byte[fixedSize];
-                Buffer.BlockCopy(dest, 0, temp, 0, fixedSize);
+                Buffer.BlockCopy(dest, 0, temp, 0, Math.Min(fixedSize, dest.Length));
                 dest = temp;
             }
 

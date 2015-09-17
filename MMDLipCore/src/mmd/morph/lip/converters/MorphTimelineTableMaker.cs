@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ruche.mmd.morph.lip.converters
 {
@@ -62,7 +63,7 @@ namespace ruche.mmd.morph.lip.converters
 
             // キー領域作成
             var area = lipKeyArea.Clone();
-            foreach (var p in area.Points.Keys)
+            foreach (var p in area.Points.Keys.ToList())
             {
                 area.Points[p] *= morphWeight.Weight * (e2ai ? 0.5f : 1.0f);
             }

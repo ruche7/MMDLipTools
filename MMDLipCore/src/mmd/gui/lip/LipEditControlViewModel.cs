@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using ruche.mmd.morph;
 using ruche.mmd.morph.converters;
 using ruche.mmd.morph.lip;
 using ruche.mmd.morph.lip.converters;
-using ruche.util;
 using ruche.wpf.viewModel;
 
 namespace ruche.mmd.gui.lip
@@ -23,7 +21,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクモーフプリセット編集ダイアログの表示処理を提供するデリゲート。
         /// </summary>
-        /// <param name="morphPresets">
+        /// <param name="presets">
         /// 編集対象の口パクモーフプリセットリスト。
         /// </param>
         /// <returns>
@@ -31,13 +29,7 @@ namespace ruche.mmd.gui.lip
         /// 編集がキャンセルされた場合は null 。
         /// </returns>
         public delegate MorphPresetList MorphPresetDialogDelegate(
-            MorphPresetList morphPresets);
-
-        /// <summary>
-        /// 既定の口パクモーフプリセットリスト。
-        /// </summary>
-        private static readonly MorphPresetList DefaultMorphPresets =
-            new MorphPresetList(new[] { new MorphPreset() });
+            MorphPresetList presets);
 
         /// <summary>
         /// 口パク時間指定単位種別変更による時間指定値の計算を行う。
@@ -101,9 +93,7 @@ namespace ruche.mmd.gui.lip
             MorphInfoSet morphSet,
             bool morphEtoAI,
             LipSpanRange spanRange,
-            decimal spanValue,
-            LipSpanUnit spanUnit,
-            decimal fps,
+            decimal spanFrame,
             long beginFrame)
         {
             // 口形状別タイムラインセット作成
@@ -123,14 +113,12 @@ namespace ruche.mmd.gui.lip
             }
 
             // 基準フレーム長算出
-            var frames =
-                CalcSpanValueByUnit(spanValue, spanUnit, LipSpanUnit.Frames, fps);
             if (spanRange == LipSpanRange.All)
             {
                 var end = tlTable.GetEndPlace();
                 if (end > 0)
                 {
-                    frames /= end;
+                    spanFrame /= end;
                 }
             }
 
@@ -138,7 +126,7 @@ namespace ruche.mmd.gui.lip
             List<KeyFrame> dest = null;
             {
                 var maker = new KeyFrameListMaker();
-                maker.UnitFrameLength = frames;
+                maker.UnitFrameLength = spanFrame;
                 dest = maker.Make(tlTable, beginFrame);
             }
 
@@ -148,16 +136,55 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// コンストラクタ。
         /// </summary>
-        public LipEditControlViewModel() : base()
+        public LipEditControlViewModel() : this(null, null)
         {
+        }
+
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="editConfig">
+        /// 口パク編集設定。既定値を用いるならば null 。
+        /// </param>
+        /// <param name="presetConfig">
+        /// 口パクモーフプリセット編集設定。既定値を用いるならば null 。
+        /// </param>
+        public LipEditControlViewModel(
+            LipEditConfig editConfig,
+            MorphPresetConfig presetConfig)
+        {
+            // 設定初期化
+            this.EditConfig = editConfig ?? (new LipEditConfig());
+            this.PresetConfig = presetConfig ?? (new MorphPresetConfig());
+
+            // 口パクモーフプリセットインデックス初期化
+            var index = this.Presets.FindIndex(this.PresetConfig.ActivePresetName);
+            this.SelectedPresetIndex = Math.Max(0, index);
+
             // コマンド作成
             this.TextToLipKanaCommand =
                 new DelegateCommand(_ => this.StartLipKanaTask());
-            this.MorphPresetsEditCommand =
+            this.PresetsEditCommand =
                 new DelegateCommand(
-                    this.ExecuteMorphPresetsEditCommand,
-                    _ => this.IsMorphPresetsEditable);
+                    this.ExecutePresetsEditCommand,
+                    _ => this.IsPresetsEditable);
         }
+
+        /// <summary>
+        /// 口パク編集設定を取得する。
+        /// </summary>
+        /// <remarks>
+        /// バインディング用のプロパティではない。
+        /// </remarks>
+        public LipEditConfig EditConfig { get; private set; }
+
+        /// <summary>
+        /// 口パクモーフプリセット編集設定を取得する。
+        /// </summary>
+        /// <remarks>
+        /// バインディング用のプロパティではない。
+        /// </remarks>
+        public MorphPresetConfig PresetConfig { get; private set; }
 
         /// <summary>
         /// 読み仮名変換元の文字列を取得または設定する。
@@ -188,23 +215,23 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public bool IsAutoLipKana
         {
-            get { return _autoLipKana; }
+            get { return this.EditConfig.IsAutoLipKana; }
             set
             {
-                if (value != _autoLipKana)
+                var old = this.IsAutoLipKana;
+                this.EditConfig.IsAutoLipKana = value;
+                if (this.IsAutoLipKana != old)
                 {
-                    _autoLipKana = value;
                     this.NotifyPropertyChanged("IsAutoLipKana");
 
                     // true に変更されたら自動変換開始
-                    if (value)
+                    if (this.IsAutoLipKana)
                     {
                         this.StartLipKanaTask();
                     }
                 }
             }
         }
-        private bool _autoLipKana = false;
 
         /// <summary>
         /// カタカナの読み仮名文字列を取得または設定する。
@@ -271,185 +298,163 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクモーフプリセットリストを取得または設定する。
         /// </summary>
-        public MorphPresetList MorphPresets
+        public MorphPresetList Presets
         {
-            get { return _morphPresets; }
+            get { return this.PresetConfig.Presets; }
             set
             {
-                var v = value ?? DefaultMorphPresets.Clone();
-                if (v != _morphPresets)
+                var old = this.Presets;
+                this.PresetConfig.Presets = value;
+                if (this.Presets != old)
                 {
-                    // 空っぽならデフォルト値追加
-                    if (v.Count == 0)
-                    {
-                        v.Add(new MorphPreset());
-                    }
+                    // プリセットインデックスの更新値を決定
+                    var index =
+                        this.Presets.FindIndex(this.PresetConfig.ActivePresetName);
 
-                    // 現在選択中のプリセット名を取得
-                    var currentPreset = this.SelectedMorphPreset;
-                    string currentName =
-                        (currentPreset == null) ? null : currentPreset.Name;
-
-                    // プリセットリスト置換
-                    _morphPresets = v;
-                    this.NotifyPropertyChanged("MorphPresets");
+                    this.NotifyPropertyChanged("Presets");
 
                     // プリセットインデックスを更新
                     // 選択中のプリセットが削除された場合は 0 にする
-                    var index = v.FindIndex(currentName);
-                    this.SelectedMorphPresetIndex = Math.Max(0, index);
+                    this.SelectedPresetIndex = Math.Max(0, index);
+
+                    // アクティブなプリセット名を更新
+                    var activePreset = this.SelectedPreset;
+                    this.PresetConfig.ActivePresetName =
+                        (activePreset == null) ? null : activePreset.Name;
                 }
             }
         }
-        private MorphPresetList _morphPresets = DefaultMorphPresets.Clone();
 
         /// <summary>
         /// 現在選択中の口パクモーフプリセットのインデックスを取得または設定する。
         /// </summary>
-        public int SelectedMorphPresetIndex
+        public int SelectedPresetIndex
         {
-            get { return _selectedMorphPresetIndex; }
+            get { return _selectedPresetIndex; }
             set
             {
-                var v = Math.Min(Math.Max(-1, value), this.MorphPresets.Count - 1);
-                if (v != _selectedMorphPresetIndex)
+                var v = Math.Min(Math.Max(-1, value), this.Presets.Count - 1);
+                if (v != _selectedPresetIndex)
                 {
-                    _selectedMorphPresetIndex = v;
-                    this.NotifyPropertyChanged("SelectedMorphPresetIndex");
+                    _selectedPresetIndex = v;
+                    this.NotifyPropertyChanged("SelectedPresetIndex");
+
+                    // アクティブなプリセット名を更新
+                    var activePreset = this.SelectedPreset;
+                    this.PresetConfig.ActivePresetName =
+                        (activePreset == null) ? null : activePreset.Name;
                 }
             }
         }
-        private int _selectedMorphPresetIndex = 0;
+        private int _selectedPresetIndex = 0;
 
         /// <summary>
         /// 口パクモーフプリセット編集ダイアログの表示処理を行うデリゲートを
         /// 取得または設定する。
         /// </summary>
-        public MorphPresetDialogDelegate MorphPresetDialogShower
+        public MorphPresetDialogDelegate PresetDialogShower
         {
-            get { return _morphPresetDialogShower; }
+            get { return _presetDialogShower; }
             set
             {
-                if (value != _morphPresetDialogShower)
+                if (value != _presetDialogShower)
                 {
-                    bool oldEditable = this.IsMorphPresetsEditable;
+                    bool oldEditable = this.IsPresetsEditable;
 
-                    _morphPresetDialogShower = value;
-                    this.NotifyPropertyChanged("MorphPresetDialogShower");
+                    _presetDialogShower = value;
+                    this.NotifyPropertyChanged("PresetDialogShower");
 
-                    if (this.IsMorphPresetsEditable != oldEditable)
+                    if (this.IsPresetsEditable != oldEditable)
                     {
-                        this.NotifyPropertyChanged("IsMorphPresetsEditable");
+                        this.NotifyPropertyChanged("IsPresetsEditable");
                     }
                 }
             }
         }
-        private MorphPresetDialogDelegate _morphPresetDialogShower;
+        private MorphPresetDialogDelegate _presetDialogShower;
 
         /// <summary>
         /// 口パクモーフプリセットリストの編集が可能であるか否かを取得する。
         /// </summary>
         /// <remarks>
-        /// MorphPresetDialogShower プロパティに有効なデリゲートを設定することで
+        /// PresetDialogShower プロパティに有効なデリゲートを設定することで
         /// true を返すようになる。
         /// </remarks>
-        public bool IsMorphPresetsEditable
+        public bool IsPresetsEditable
         {
-            get { return (this.MorphPresetDialogShower != null); }
+            get { return (this.PresetDialogShower != null); }
         }
 
         /// <summary>
         /// 口パクの時間指定範囲種別を取得または設定する。
         /// </summary>
-        [ConfigValue]
         public LipSpanRange SpanRange
         {
-            get { return _spanRange; }
+            get { return this.EditConfig.SpanRange; }
             set
             {
-                if (!Enum.IsDefined(value.GetType(), value))
+                var old = this.SpanRange;
+                this.EditConfig.SpanRange = value;
+                if (this.SpanRange != old)
                 {
-                    throw new InvalidEnumArgumentException(
-                        "value",
-                        (int)value,
-                        value.GetType());
-                }
-
-                if (value != _spanRange)
-                {
-                    _spanRange = value;
                     this.NotifyPropertyChanged("SpanRange");
                 }
             }
         }
-        private LipSpanRange _spanRange = LipSpanRange.Letter;
 
         /// <summary>
         /// 口パクの時間指定値を取得または設定する。
         /// </summary>
-        [ConfigValue]
         public decimal SpanValue
         {
-            get { return _spanValue; }
+            get
+            {
+                return
+                    CalcSpanValueByUnit(
+                        this.EditConfig.SpanFrame,
+                        LipSpanUnit.Frames,
+                        this.SpanUnit,
+                        this.Fps);
+            }
             set
             {
-                var v =
-                    Math.Min(Math.Max(this.MinSpanValue, value), this.MaxSpanValue);
-                if (v != _spanValue)
+                var old = this.SpanValue;
+                this.EditConfig.SpanFrame =
+                    CalcSpanValueByUnit(
+                        value,
+                        this.SpanUnit,
+                        LipSpanUnit.Frames,
+                        this.Fps);
+                if (this.SpanValue != old)
                 {
-                    _spanValue = v;
                     this.NotifyPropertyChanged("SpanValue");
                 }
             }
         }
-        private decimal _spanValue = 10;
 
         /// <summary>
         /// 口パクの時間指定単位種別を取得または設定する。
         /// </summary>
-        [ConfigValue]
         public LipSpanUnit SpanUnit
         {
-            get { return _spanUnit; }
+            get { return this.EditConfig.SpanUnit; }
             set
             {
-                if (!Enum.IsDefined(value.GetType(), value))
+                var old = this.SpanUnit;
+                this.EditConfig.SpanUnit = value;
+                if (this.SpanUnit != old)
                 {
-                    throw new InvalidEnumArgumentException(
-                        "value",
-                        (int)value,
-                        value.GetType());
-                }
-
-                if (value != _spanUnit)
-                {
-                    var oldValue = this.SpanValue;
-                    var oldUnit = _spanUnit;
-
-                    _spanUnit = value;
                     this.NotifyPropertyChanged("SpanUnit");
 
                     // 関連プロパティの更新通知
                     this.NotifyPropertyChanged("MinSpanValue");
                     this.NotifyPropertyChanged("MaxSpanValue");
+                    this.NotifyPropertyChanged("SpanValue");
                     this.NotifyPropertyChanged("SpanValueIncrement");
                     this.NotifyPropertyChanged("SpanValueFormat");
-
-                    // 時間指定値を更新
-                    this.SpanValue =
-                        Math.Min(
-                            Math.Max(
-                                this.MinSpanValue,
-                                CalcSpanValueByUnit(
-                                    oldValue,
-                                    oldUnit,
-                                    value,
-                                    this.Fps)),
-                            this.MaxSpanValue);
                 }
             }
         }
-        private LipSpanUnit _spanUnit = LipSpanUnit.Frames;
 
         /// <summary>
         /// 口パクの時間指定値の最小許容値を取得する。
@@ -458,12 +463,12 @@ namespace ruche.mmd.gui.lip
         {
             get
             {
-                switch (this.SpanUnit)
-                {
-                case LipSpanUnit.MilliSeconds: return 1;
-                case LipSpanUnit.Seconds: return 0.001m;
-                }
-                return 1;
+                return
+                    CalcSpanValueByUnit(
+                        LipEditConfig.MinSpanFrame,
+                        LipSpanUnit.Frames,
+                        this.SpanUnit,
+                        this.Fps);
             }
         }
 
@@ -474,12 +479,12 @@ namespace ruche.mmd.gui.lip
         {
             get
             {
-                switch (this.SpanUnit)
-                {
-                case LipSpanUnit.MilliSeconds: return 999999;
-                case LipSpanUnit.Seconds: return 999.999m;
-                }
-                return 99999;
+                return
+                    CalcSpanValueByUnit(
+                        LipEditConfig.MaxSpanFrame,
+                        LipSpanUnit.Frames,
+                        this.SpanUnit,
+                        this.Fps);
             }
         }
 
@@ -518,28 +523,31 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 実フレーム値への変換に用いるFPS値を取得または設定する。
         /// </summary>
-        [ConfigValue]
         public decimal Fps
         {
-            get { return _fps; }
+            get { return this.EditConfig.Fps; }
             set
             {
-                var v = Math.Min(Math.Max(this.MinFps, value), this.MaxFps);
-                if (v != _fps)
+                var old = this.Fps;
+                this.EditConfig.Fps = value;
+                if (this.Fps != old)
                 {
-                    _fps = v;
                     this.NotifyPropertyChanged("Fps");
+
+                    // 関連プロパティの更新通知
+                    this.NotifyPropertyChanged("MinSpanValue");
+                    this.NotifyPropertyChanged("MaxSpanValue");
+                    this.NotifyPropertyChanged("SpanValue");
                 }
             }
         }
-        private decimal _fps = 30;
 
         /// <summary>
         /// 実フレーム値への変換に用いるFPS値の最小許容値を取得する。
         /// </summary>
         public decimal MinFps
         {
-            get { return 0.01m; }
+            get { return LipEditConfig.MinFps; }
         }
 
         /// <summary>
@@ -547,30 +555,25 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public decimal MaxFps
         {
-            get { return 9999.99m; }
+            get { return LipEditConfig.MaxFps; }
         }
 
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合のパーセント値を取得または設定する。
         /// </summary>
-        [ConfigValue]
         public decimal LinkLengthPercent
         {
-            get { return _linkLengthPercent; }
+            get { return this.EditConfig.LinkLengthPercent; }
             set
             {
-                var v =
-                    Math.Min(
-                        Math.Max(this.MinLinkLengthPercent, value),
-                        this.MaxLinkLengthPercent);
-                if (v != _linkLengthPercent)
+                var old = this.LinkLengthPercent;
+                this.EditConfig.LinkLengthPercent = value;
+                if (this.LinkLengthPercent != old)
                 {
-                    _linkLengthPercent = v;
                     this.NotifyPropertyChanged("LinkLengthPercent");
                 }
             }
         }
-        private decimal _linkLengthPercent = TimelineSetMaker.DefaultLinkLengthPercent;
 
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合の最小許容パーセント値を取得する。
@@ -592,25 +595,19 @@ namespace ruche.mmd.gui.lip
         /// 長音の最大開口終端位置におけるウェイト値割合のパーセント値を
         /// 取得または設定する。
         /// </summary>
-        [ConfigValue]
         public float LongSoundLastWeightPercent
         {
-            get { return _longSoundLastWeightPercent; }
+            get { return this.EditConfig.LongSoundLastWeightPercent; }
             set
             {
-                var v =
-                    Math.Min(
-                        Math.Max(this.MinLongSoundLastWeightPercent, value),
-                        this.MaxLongSoundLastWeightPercent);
-                if (v != _longSoundLastWeightPercent)
+                var old = this.LongSoundLastWeightPercent;
+                this.EditConfig.LongSoundLastWeightPercent = value;
+                if (this.LongSoundLastWeightPercent != old)
                 {
-                    _longSoundLastWeightPercent = v;
                     this.NotifyPropertyChanged("LongSoundLastWeightPercent");
                 }
             }
         }
-        private float _longSoundLastWeightPercent =
-            TimelineSetMaker.DefaultLongSoundLastWeight * 100;
 
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値割合の最小許容パーセント値を
@@ -633,20 +630,19 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
-        [ConfigValue]
         public bool IsMorphEtoAI
         {
-            get { return _morphEtoAI; }
+            get { return this.EditConfig.IsMorphEtoAI; }
             set
             {
-                if (value != _morphEtoAI)
+                var old = this.IsMorphEtoAI;
+                this.EditConfig.IsMorphEtoAI = value;
+                if (this.IsMorphEtoAI != old)
                 {
-                    _morphEtoAI = value;
                     this.NotifyPropertyChanged("IsMorphEtoAI");
                 }
             }
         }
-        private bool _morphEtoAI = false;
 
         /// <summary>
         /// 現在の設定値からキーフレームリストを作成する。
@@ -672,14 +668,12 @@ namespace ruche.mmd.gui.lip
         {
             var linkLengthPercent = this.LinkLengthPercent;
             var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
-            var preset = this.SelectedMorphPreset;
+            var preset = this.SelectedPreset;
             var morphSet =
                 (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
             var morphEtoAI = this.IsMorphEtoAI;
             var spanRange = this.SpanRange;
-            var spanValue = this.SpanValue;
-            var spanUnit = this.SpanUnit;
-            var fps = this.Fps;
+            var spanFrame = this.EditConfig.SpanFrame;
 
             return
                 Task.Factory
@@ -711,9 +705,7 @@ namespace ruche.mmd.gui.lip
                                     morphSet,
                                     morphEtoAI,
                                     spanRange,
-                                    spanValue,
-                                    spanUnit,
-                                    fps,
+                                    spanFrame,
                                     beginFrame);
                         });
         }
@@ -726,19 +718,19 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクモーフプリセットリストの編集を開始するコマンドを取得する。
         /// </summary>
-        public ICommand MorphPresetsEditCommand { get; private set; }
+        public ICommand PresetsEditCommand { get; private set; }
 
         /// <summary>
         /// 現在選択中の口パクモーフプリセットを取得する。
         /// </summary>
-        private MorphPreset SelectedMorphPreset
+        private MorphPreset SelectedPreset
         {
             get
             {
-                var index = this.SelectedMorphPresetIndex;
+                var index = this.SelectedPresetIndex;
                 return
-                    (index >= 0 && index < this.MorphPresets.Count) ?
-                        this.MorphPresets[index] : null;
+                    (index >= 0 && index < this.Presets.Count) ?
+                        this.Presets[index] : null;
             }
         }
 
@@ -820,22 +812,22 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
-        /// MorphPresetsEditCommand を実行する。
+        /// PresetsEditCommand を実行する。
         /// </summary>
-        private void ExecuteMorphPresetsEditCommand(object param)
+        private void ExecutePresetsEditCommand(object param)
         {
-            var shower = this.MorphPresetDialogShower;
+            var shower = this.PresetDialogShower;
             if (shower == null)
             {
                 return;
             }
 
             // 編集ダイアログ処理
-            var presets = shower(this.MorphPresets.Clone());
+            var presets = shower(this.Presets.Clone());
             if (presets != null)
             {
                 // プリセットリスト更新
-                this.MorphPresets = presets;
+                this.Presets = presets;
             }
         }
     }

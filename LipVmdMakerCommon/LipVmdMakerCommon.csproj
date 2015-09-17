@@ -35,6 +35,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,10 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\ConfigKeeper.cs" />
+    <Compile Include="src\LipVmdConfig.cs" />
     <Compile Include="src\LipVmdControl.xaml.cs">
       <DependentUpon>LipVmdControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\LipVmdControlViewModel.cs" />
+    <Compile Include="src\WindowConfigBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

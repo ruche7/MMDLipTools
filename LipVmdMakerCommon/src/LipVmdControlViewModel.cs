@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using ruche.mmd.gui.lip;
 using ruche.mmd.morph;
 using ruche.mmd.morph.converters;
-using ruche.util;
 using ruche.wpf.viewModel;
 
 namespace ruche.mmd.tools
@@ -40,14 +40,39 @@ namespace ruche.mmd.tools
         public delegate bool? CommonDialogDelegate(CommonDialog dialog);
 
         /// <summary>
+        /// ファイルパスリストの最大要素数。
+        /// </summary>
+        public static readonly int MaxFilePathCount = 10;
+
+        /// <summary>
         /// コンストラクタ。
         /// </summary>
-        public LipVmdControlViewModel()
+        public LipVmdControlViewModel() : this(null)
         {
-            // コマンド作成
-            this.VmdFileSaveCommand =
-                new DelegateCommand(this.ExecuteVmdFileSaveCommand);
         }
+
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="config">
+        /// 口パクモーフVMDファイル保存設定。既定値を用いるならば null 。
+        /// </param>
+        public LipVmdControlViewModel(LipVmdConfig config)
+        {
+            // 設定初期化
+            this.Config = config ?? (new LipVmdConfig());
+
+            // コマンド作成
+            this.FileSaveCommand = new DelegateCommand(this.ExecuteFileSaveCommand);
+        }
+
+        /// <summary>
+        /// 口パクモーフVMDファイル保存設定を取得する。
+        /// </summary>
+        /// <remarks>
+        /// バインディング用のプロパティではない。
+        /// </remarks>
+        public LipVmdConfig Config { get; private set; }
 
         /// <summary>
         /// メッセージボックスの表示処理を行うデリゲートを取得または設定する。
@@ -86,7 +111,6 @@ namespace ruche.mmd.tools
         /// <summary>
         /// LipEditControl の ViewModel を取得または設定する。
         /// </summary>
-        [ConfigValueContainer]
         public LipEditControlViewModel EditViewModel
         {
             get { return _editViewModel; }
@@ -105,103 +129,90 @@ namespace ruche.mmd.tools
         /// <summary>
         /// VMDファイルの保存先ファイルパスリストを取得または設定する。
         /// </summary>
-        [ConfigValue]
-        public ObservableStringCollection VmdFilePathes
+        public ObservableCollection<string> FilePathes
         {
-            get { return _vmdFilePathes; }
+            get { return this.Config.FilePathes; }
             set
             {
-                var v = value ?? (new ObservableStringCollection());
-                if (v != _vmdFilePathes)
+                var old = this.FilePathes;
+                this.Config.FilePathes = value;
+                if (this.FilePathes != old)
                 {
-                    // 空文字列アイテムが存在しなければ先頭に追加
-                    if (!v.Contains(""))
-                    {
-                        v.Insert(0, "");
-                    }
-
-                    _vmdFilePathes = v;
-                    this.NotifyPropertyChanged("VmdFilePathes");
+                    this.NotifyPropertyChanged("FilePathes");
                 }
             }
         }
-        private ObservableStringCollection _vmdFilePathes =
-            new ObservableStringCollection(new[] { "" });
 
         /// <summary>
-        /// VMDファイルの保存先ファイルパスを取得または設定する。
+        /// アクティブなVMDファイルの保存先ファイルパスを取得または設定する。
         /// </summary>
-        public string VmdFilePath
+        public string ActiveFilePath
         {
-            get { return _vmdFilePath; }
+            get { return this.Config.ActiveFilePath; }
             set
             {
-                var v = value ?? "";
-                if (v != _vmdFilePath)
+                var old = this.ActiveFilePath;
+                this.Config.ActiveFilePath = value;
+                if (this.ActiveFilePath != old)
                 {
-                    _vmdFilePath = v;
-                    this.NotifyPropertyChanged("VmdFilePath");
+                    this.NotifyPropertyChanged("ActiveFilePath");
                 }
             }
         }
-        private string _vmdFilePath = "";
 
         /// <summary>
         /// VMDファイルの保存先選択時の既定のディレクトリパスを取得または設定する。
         /// </summary>
-        [ConfigValue]
-        public string VmdBaseDirectoryPath
+        public string BaseDirectoryPath
         {
-            get { return _vmdBaseDirectoryPath; }
+            get { return this.Config.BaseDirectoryPath; }
             set
             {
-                var v = value ?? "";
-                if (v != _vmdBaseDirectoryPath)
+                var old = this.BaseDirectoryPath;
+                this.Config.BaseDirectoryPath = value;
+                if (this.BaseDirectoryPath != old)
                 {
-                    _vmdBaseDirectoryPath = v;
-                    this.NotifyPropertyChanged("VmdBaseDirectoryPath");
+                    this.NotifyPropertyChanged("BaseDirectoryPath");
                 }
             }
         }
-        private string _vmdBaseDirectoryPath = "";
 
         /// <summary>
         /// VMDファイルの上書き確認表示を行うか否かを取得または設定する。
         /// </summary>
-        [ConfigValue]
-        public bool IsVmdFileOverwriteConfirmed
+        public bool IsOverwriteConfirmed
         {
-            get { return _vmdFileOverwriteConfirmed; }
+            get { return this.Config.IsOverwriteConfirmed; }
             set
             {
-                if (value != _vmdFileOverwriteConfirmed)
+                var old = this.IsOverwriteConfirmed;
+                this.Config.IsOverwriteConfirmed = value;
+                if (this.IsOverwriteConfirmed != old)
                 {
-                    _vmdFileOverwriteConfirmed = value;
-                    this.NotifyPropertyChanged("IsVmdFileOverwriteConfirmed");
+                    this.NotifyPropertyChanged("IsOverwriteConfirmed");
                 }
             }
         }
-        private bool _vmdFileOverwriteConfirmed = true;
 
         /// <summary>
         /// VMDファイル保存コマンドを取得する。
         /// </summary>
-        public ICommand VmdFileSaveCommand { get; private set; }
+        public ICommand FileSaveCommand { get; private set; }
 
         /// <summary>
         /// VmdFileSaveCommand を実行する。
         /// </summary>
-        private void ExecuteVmdFileSaveCommand(object param)
+        private void ExecuteFileSaveCommand(object param)
         {
             // キーフレームリストを作成開始
             var task = this.EditViewModel.MakeKeyFrameListAsync(0);
 
             // 保存先ファイルパスを決定する
-            var path = this.DecideVmdFilePath();
+            var path = this.DecideFilePath();
             if (path != null)
             {
                 // ファイル書き出し
-                this.SaveVmdFile(path, task.Result);
+                this.SaveFile(path, task.Result);
             }
         }
 
@@ -209,11 +220,11 @@ namespace ruche.mmd.tools
         /// VMDファイルの保存先ファイルパスを決定する。
         /// </summary>
         /// <returns>保存先ファイルパス。保存しないならば null 。</returns>
-        private string DecideVmdFilePath()
+        private string DecideFilePath()
         {
-            string path = this.VmdFilePath.Trim();
+            string path = this.ActiveFilePath;
 
-            if (path == "")
+            if (string.IsNullOrWhiteSpace(path))
             {
                 if (this.CommonDialogShower == null)
                 {
@@ -228,9 +239,9 @@ namespace ruche.mmd.tools
                 dialog.Filter = @"VMDファイル (*.vmd)|*.vmd";
                 dialog.DefaultExt = "vmd";
                 dialog.AddExtension = true;
-                dialog.InitialDirectory = this.VmdBaseDirectoryPath;
+                dialog.InitialDirectory = this.BaseDirectoryPath;
                 dialog.DereferenceLinks = true;
-                dialog.OverwritePrompt = this.IsVmdFileOverwriteConfirmed;
+                dialog.OverwritePrompt = this.IsOverwriteConfirmed;
                 dialog.ValidateNames = true;
 
                 // 表示
@@ -241,11 +252,8 @@ namespace ruche.mmd.tools
 
                 // ファイルパスを取得
                 path = Path.GetFullPath(dialog.FileName);
-
-                // ベースディレクトリパス更新
-                this.VmdBaseDirectoryPath = Path.GetDirectoryName(path);
             }
-            else if (this.IsVmdFileOverwriteConfirmed && File.Exists(path))
+            else if (this.IsOverwriteConfirmed && File.Exists(path))
             {
                 // 上書き確認
                 var message =
@@ -265,7 +273,7 @@ namespace ruche.mmd.tools
         /// </summary>
         /// <param name="filePath">VMDファイルパス。</param>
         /// <param name="keyFrames">キーフレーム列挙。</param>
-        private void SaveVmdFile(string filePath, IEnumerable<KeyFrame> keyFrames)
+        private void SaveFile(string filePath, IEnumerable<KeyFrame> keyFrames)
         {
             string errorMessage = null;
             try
@@ -287,8 +295,21 @@ namespace ruche.mmd.tools
                     VmdWriter.Write(fs, keyFrames, @"");
                 }
 
-                // 保存成功したらベースディレクトリパス更新
-                this.VmdBaseDirectoryPath = dirPath;
+                // 新しいファイルパスリストを作成
+                var pathes =
+                    new[] { path }
+                        .Concat(
+                            from p in this.FilePathes
+                            where
+                                !string.IsNullOrWhiteSpace(p) &&
+                                string.Compare(Path.GetFullPath(p), path, true) != 0
+                            select p)
+                        .Take(MaxFilePathCount);
+                this.FilePathes = new ObservableCollection<string>(pathes);
+
+                // パス関連更新
+                this.ActiveFilePath = path;
+                this.BaseDirectoryPath = dirPath;
             }
             catch (UnauthorizedAccessException)
             {
@@ -318,7 +339,7 @@ namespace ruche.mmd.tools
             {
                 errorMessage = ex.Message;
 #if DEBUG
-                errorMessage += Environment.NewLine + ex.GetType().Name;
+                throw;
 #endif // DEBUG
             }
 

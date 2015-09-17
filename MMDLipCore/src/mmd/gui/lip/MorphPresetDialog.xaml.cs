@@ -20,10 +20,10 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクモーフプリセットリストを取得または設定する。
         /// </summary>
-        public MorphPresetList MorphPresets
+        public MorphPresetList Presets
         {
-            get { return ((dynamic)this.DataContext).MorphPresets; }
-            set { ((dynamic)this.DataContext).MorphPresets = value; }
+            get { return ((dynamic)this.DataContext).Presets; }
+            set { ((dynamic)this.DataContext).Presets = value; }
         }
 
         /// <summary>

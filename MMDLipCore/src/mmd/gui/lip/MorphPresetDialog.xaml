@@ -86,9 +86,9 @@
                     Grid.Row="0" />
                 <ListBox
                     x:Name="listPresets"
-                    ItemsSource="{Binding MorphPresets}"
+                    ItemsSource="{Binding Presets}"
                     DisplayMemberPath="Name"
-                    SelectedIndex="{Binding SelectedMorphPresetIndex}"
+                    SelectedIndex="{Binding SelectedPresetIndex}"
                     Grid.Row="2" />
                 <Grid Grid.Row="4">
                     <Grid.ColumnDefinitions>
