@@ -27,7 +27,6 @@
         <!-- row 0 -->
         <lip:LipEditControl
             DataContext="{Binding EditViewModel}"
-            IsFpsVisible="False"
             Grid.Row="0" />
 
         <!-- row 1 -->

@@ -32,14 +32,14 @@ namespace ruche.mmd.gui.lip
             MorphPresetList presets);
 
         /// <summary>
-        /// 口パク時間指定単位種別変更による時間指定値の計算を行う。
+        /// 口パク時間指定単位種別変更による時間指定値の変換を行う。
         /// </summary>
         /// <param name="value">変更前の時間指定値。</param>
         /// <param name="oldUnit">変更前の時間指定単位種別。</param>
         /// <param name="newUnit">変更後の時間指定単位種別。</param>
         /// <param name="fps">FPS値。</param>
         /// <returns>変更後の時間指定値。</returns>
-        private static decimal CalcSpanValueByUnit(
+        private static decimal ConvertSpanValueUnit(
             decimal value,
             LipSpanUnit oldUnit,
             LipSpanUnit newUnit,
@@ -80,6 +80,30 @@ namespace ruche.mmd.gui.lip
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// FPS値変更によるフレーム数の変換を行う。
+        /// </summary>
+        /// <param name="frame">変更前のフレーム数。</param>
+        /// <param name="oldFps">変更前のFPS値。</param>
+        /// <param name="newFps">変更後のFPS値。</param>
+        /// <returns>変更後のフレーム数。</returns>
+        private static decimal ConvertSpanFrameFps(
+            decimal frame,
+            decimal oldFps,
+            decimal newFps)
+        {
+            if (oldFps <= 0)
+            {
+                throw new ArgumentOutOfRangeException("oldFps");
+            }
+            if (newFps <= 0)
+            {
+                throw new ArgumentOutOfRangeException("newFps");
+            }
+
+            return (oldFps == newFps) ? frame : (frame * newFps / oldFps);
         }
 
         /// <summary>
@@ -433,7 +457,7 @@ namespace ruche.mmd.gui.lip
             get
             {
                 return
-                    CalcSpanValueByUnit(
+                    ConvertSpanValueUnit(
                         this.EditConfig.SpanFrame,
                         LipSpanUnit.Frames,
                         this.SpanUnit,
@@ -443,7 +467,7 @@ namespace ruche.mmd.gui.lip
             {
                 var old = this.SpanValue;
                 this.EditConfig.SpanFrame =
-                    CalcSpanValueByUnit(
+                    ConvertSpanValueUnit(
                         value,
                         this.SpanUnit,
                         LipSpanUnit.Frames,
@@ -487,7 +511,7 @@ namespace ruche.mmd.gui.lip
             get
             {
                 return
-                    CalcSpanValueByUnit(
+                    ConvertSpanValueUnit(
                         LipEditConfig.MinSpanFrame,
                         LipSpanUnit.Frames,
                         this.SpanUnit,
@@ -503,7 +527,7 @@ namespace ruche.mmd.gui.lip
             get
             {
                 return
-                    CalcSpanValueByUnit(
+                    ConvertSpanValueUnit(
                         LipEditConfig.MaxSpanFrame,
                         LipSpanUnit.Frames,
                         this.SpanUnit,
@@ -670,23 +694,26 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 現在の設定値からキーフレームリストを作成する。
         /// </summary>
-        /// <param name="beginFrame">開始フレーム位置。</param>
+        /// <param name="fps">出力FPS値。</param>
+        /// <param name="beginFrame">出力開始フレーム位置。出力FPS値基準。</param>
         /// <returns>キーフレームリスト。</returns>
-        public List<KeyFrame> MakeKeyFrameList(long beginFrame)
+        public List<KeyFrame> MakeKeyFrameList(decimal fps, long beginFrame)
         {
-            return this.MakeKeyFrameListAsync(beginFrame).Result;
+            return this.MakeKeyFrameListAsync(fps, beginFrame).Result;
         }
 
         /// <summary>
         /// 現在の設定値からキーフレームリストを非同期で作成する。
         /// </summary>
-        /// <param name="beginFrame">開始フレーム位置。</param>
+        /// <param name="fps">出力FPS値。</param>
+        /// <param name="beginFrame">出力開始フレーム位置。出力FPS値基準。</param>
         /// <returns>キーフレームリスト作成タスク。</returns>
         /// <remarks>
         /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
         /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
         /// </remarks>
         public Task<List<KeyFrame>> MakeKeyFrameListAsync(
+            decimal fps,
             long beginFrame)
         {
             var linkLengthPercent = this.LinkLengthPercent;
@@ -696,7 +723,8 @@ namespace ruche.mmd.gui.lip
                 (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
             var morphEtoAI = this.IsMorphEtoAI;
             var spanRange = this.SpanRange;
-            var spanFrame = this.EditConfig.SpanFrame;
+            var spanFrame =
+                ConvertSpanFrameFps(this.EditConfig.SpanFrame, this.Fps, fps);
 
             return
                 Task.Factory

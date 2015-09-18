@@ -55,6 +55,7 @@
       <DependentUpon>LipVmdControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\LipVmdControlViewModel.cs" />
+    <Compile Include="src\MotionFileFormat.cs" />
     <Compile Include="src\WindowConfigBase.cs" />
   </ItemGroup>
   <ItemGroup>

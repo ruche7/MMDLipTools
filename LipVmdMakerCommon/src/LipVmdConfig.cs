@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ruche.mmd.tools
 {
     /// <summary>
-    /// 口パクモーフVMDファイル保存設定クラス。
+    /// 口パクモーフモーションデータファイル保存設定クラス。
     /// </summary>
     [DataContract(Namespace = "")]
     public class LipVmdConfig : IExtensibleDataObject
@@ -15,13 +15,12 @@ namespace ruche.mmd.tools
         /// </summary>
         public LipVmdConfig()
         {
-            this.ActiveFilePath = "";
             this.BaseDirectoryPath = "";
             this.IsOverwriteConfirmed = true;
         }
 
         /// <summary>
-        /// VMDファイルの保存先ファイルパスリストを取得または設定する。
+        /// ファイルの保存先ファイルパスリストを取得または設定する。
         /// </summary>
         [DataMember]
         public ObservableCollection<string> FilePathes
@@ -47,19 +46,19 @@ namespace ruche.mmd.tools
             new ObservableCollection<string>(new[] { "" });
 
         /// <summary>
-        /// アクティブなVMDファイルの保存先ファイルパスを取得または設定する。
-        /// </summary>
-        [DataMember]
-        public string ActiveFilePath { get; set; }
-
-        /// <summary>
-        /// VMDファイルの保存先選択時の既定のディレクトリパスを取得または設定する。
+        /// ファイルの保存先選択時の既定のディレクトリパスを取得または設定する。
         /// </summary>
         [DataMember]
         public string BaseDirectoryPath { get; set; }
 
         /// <summary>
-        /// VMDファイルの上書き確認表示を行うか否かを取得または設定する。
+        /// ファイルの保存先選択時の既定のファイルフォーマットを取得または設定する。
+        /// </summary>
+        [DataMember]
+        public MotionFileFormat BaseFileFormat { get; set; }
+
+        /// <summary>
+        /// ファイルの上書き確認表示を行うか否かを取得または設定する。
         /// </summary>
         [DataMember]
         public bool IsOverwriteConfirmed { get; set; }

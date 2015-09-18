@@ -36,7 +36,7 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public LipEditConfig()
         {
-            this.IsAutoLipKana = false;
+            this.IsAutoLipKana = true;
             this.IsMorphEtoAI = false;
         }
 

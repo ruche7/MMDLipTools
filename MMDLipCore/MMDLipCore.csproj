@@ -72,6 +72,8 @@
     </Compile>
     <Compile Include="src\mmd\gui\lip\LipEditControlViewModel.cs" />
     <Compile Include="src\mmd\morph\converters\KeyFrameListMaker.cs" />
+    <Compile Include="src\mmd\morph\converters\MotionDataWriterBase.cs" />
+    <Compile Include="src\mmd\morph\converters\MvdWriter.cs" />
     <Compile Include="src\mmd\morph\converters\VmdWriter.cs" />
     <Compile Include="src\mmd\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
     <Compile Include="src\mmd\morph\lip\converters\DigitKanaConverter.cs" />

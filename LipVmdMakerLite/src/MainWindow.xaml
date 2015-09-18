@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.ruche-home.net/xaml/mmd/tools"
     xmlns:local="clr-namespace:LipVmdMakerLite"
     x:Class="LipVmdMakerLite.MainWindow"
-    Title="口パクVMDメーカー Lite"
+    Title="LipVmdMaker Lite"
     ResizeMode="CanResizeWithGrip"
     Width="440"
     Height="480"
     MinWidth="360"
-    MinHeight="428">
+    MinHeight="428"
+    Icon="/LipVmdMakerLite;component/resources/main.ico">
     <Window.DataContext>
         <tools:LipVmdControlViewModel />
     </Window.DataContext>
