@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using ruche.mmd.tools;
 using ruche.mmd.gui.lip;
+using ruche.util;
 using System.ComponentModel;
 
 namespace LipVmdMakerLite
@@ -24,16 +25,16 @@ namespace LipVmdMakerLite
             new Mutex(false, "{0975DE42-5DA7-460E-BEAC-D91909EDD7BC}");
 
         private ConfigKeeper<MainWindowConfig> windowConfig =
-            new ConfigKeeper<MainWindowConfig>();
+            new ConfigKeeper<MainWindowConfig>(@"MMDLipTools\LipVmdMaker");
 
         private ConfigKeeper<LipVmdConfig> vmdConfig =
-            new ConfigKeeper<LipVmdConfig>();
+            new ConfigKeeper<LipVmdConfig>(@"MMDLipTools\LipVmdMaker");
 
         private ConfigKeeper<LipEditConfig> editConfig =
-            new ConfigKeeper<LipEditConfig>();
+            new ConfigKeeper<LipEditConfig>(@"MMDLipTools\LipVmdMaker");
 
         private ConfigKeeper<MorphPresetConfig> presetConfig =
-            new ConfigKeeper<MorphPresetConfig>();
+            new ConfigKeeper<MorphPresetConfig>(@"MMDLipTools");
 
         /// <summary>
         /// メインウィンドウの ViewModel を取得または設定する。

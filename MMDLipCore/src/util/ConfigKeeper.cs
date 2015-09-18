@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
-namespace ruche.mmd.tools
+namespace ruche.util
 {
     /// <summary>
     /// 設定の読み書きを行うクラス。
@@ -11,16 +11,6 @@ namespace ruche.mmd.tools
     /// <typeparam name="T">設定値の型。</typeparam>
     public class ConfigKeeper<T>
     {
-        /// <summary>
-        /// 設定ファイルパスの既定値。
-        /// </summary>
-        private static readonly string DefaultFilePath =
-            Path.Combine(
-                Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData),
-                @"ruche-home\MMDLipTools",
-                typeof(T).FullName + ".config");
-
         /// <summary>
         /// シリアライザを生成する。
         /// </summary>
@@ -33,9 +23,23 @@ namespace ruche.mmd.tools
         /// <summary>
         /// コンストラクタ。
         /// </summary>
-        public ConfigKeeper()
+        /// <param name="directoryName">
+        /// 設定保存先ディレクトリ名。基準位置からの相対パス。
+        /// 全体で設定を共有するならば空文字列または null 。
+        /// </param>
+        public ConfigKeeper(string directoryName)
         {
+            // 初期値設定
             this.Value = default(T);
+            this.DefaultFilePath =
+                Path.Combine(
+                    Environment.GetFolderPath(
+                        Environment.SpecialFolder.LocalApplicationData),
+                    string.IsNullOrEmpty(directoryName) ?
+                        @"ruche-home" :
+                        @"ruche-home\" + directoryName,
+                    typeof(T).FullName + ".config");
+            this.FilePath = this.DefaultFilePath;
         }
 
         /// <summary>
@@ -49,9 +53,14 @@ namespace ruche.mmd.tools
         public string FilePath
         {
             get { return _filePath; }
-            set { _filePath = value ?? DefaultFilePath; }
+            set { _filePath = value ?? this.DefaultFilePath; }
         }
-        private string _filePath = DefaultFilePath;
+        private string _filePath = null;
+
+        /// <summary>
+        /// 設定ファイルパスの既定値を取得する。
+        /// </summary>
+        public string DefaultFilePath { get; private set; }
 
         /// <summary>
         /// 設定を読み取る。

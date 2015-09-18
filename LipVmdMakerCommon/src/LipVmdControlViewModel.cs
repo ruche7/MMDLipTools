@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Win32;
 using ruche.mmd.gui.lip;
 using ruche.mmd.morph;
@@ -119,6 +120,9 @@ namespace ruche.mmd.tools
                 var v = value ?? (new LipEditControlViewModel());
                 if (v != _editViewModel)
                 {
+                    // FPS値は 30 固定
+                    v.Fps = 30;
+
                     _editViewModel = v;
                     this.NotifyPropertyChanged("EditViewModel");
                 }
@@ -195,6 +199,42 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// 直近のVMDファイル保存ステータス文字列を取得または設定する。
+        /// </summary>
+        public string LastStatusText
+        {
+            get { return _lastStatusText; }
+            set
+            {
+                var v = value ?? "";
+                if (v != _lastStatusText)
+                {
+                    _lastStatusText = v;
+                    this.NotifyPropertyChanged("LastStatusText");
+                }
+            }
+        }
+        private string _lastStatusText = "";
+
+        /// <summary>
+        /// 直近のVMDファイル保存ステータス背景色を取得または設定する。
+        /// </summary>
+        public Brush LastStatusBackground
+        {
+            get { return _lastStatusBackground; }
+            set
+            {
+                var v = value ?? Brushes.Transparent;
+                if (v != _lastStatusBackground)
+                {
+                    _lastStatusBackground = v;
+                    this.NotifyPropertyChanged("LastStatusBackground");
+                }
+            }
+        }
+        private Brush _lastStatusBackground = Brushes.Transparent;
+
+        /// <summary>
         /// VMDファイル保存コマンドを取得する。
         /// </summary>
         public ICommand FileSaveCommand { get; private set; }
@@ -205,6 +245,7 @@ namespace ruche.mmd.tools
         private void ExecuteFileSaveCommand(object param)
         {
             // キーフレームリストを作成開始
+            this.EditViewModel.Fps = 30;
             var task = this.EditViewModel.MakeKeyFrameListAsync(0);
 
             // 保存先ファイルパスを決定する
@@ -313,43 +354,47 @@ namespace ruche.mmd.tools
             }
             catch (UnauthorizedAccessException)
             {
-                errorMessage = @"指定した保存先に書き出す権限がありません。";
+                errorMessage = @"書き込み権限がありません。";
             }
             catch (ArgumentException)
             {
-                errorMessage = @"指定した保存先に無効な文字が含まれています。";
+                errorMessage = @"パスに無効な文字が含まれています。";
             }
             catch (PathTooLongException)
             {
-                errorMessage = @"指定した保存先の文字数が多すぎます。";
+                errorMessage = @"パス文字数が多すぎます。";
             }
             catch (DirectoryNotFoundException)
             {
-                errorMessage = @"指定した保存先フォルダを作成できません。";
+                errorMessage = @"保存先フォルダを作成できません。";
             }
             catch (NotSupportedException)
             {
-                errorMessage = @"指定した保存先が不正です。";
+                errorMessage = @"パスが不正です。";
             }
             catch (IOException)
             {
-                errorMessage = @"指定した保存先に書き出すことができませんでした。";
+                errorMessage = @"書き込みエラーが発生しました。";
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
-#if DEBUG
-                throw;
-#endif // DEBUG
+                errorMessage = ex.GetType().Name;
             }
 
-            if (errorMessage != null)
+            var timeText = "[" + DateTime.Now.ToString("HH:mm:ss") + "] ";
+
+            // エラー有無で切り分け
+            if (errorMessage == null)
             {
-                var message =
-                    @"VMDファイルの保存に失敗しました。" + Environment.NewLine +
-                    errorMessage;
-                this.ShowErrorDialog(message, MessageBoxImage.Error);
-                return;
+                var frame = keyFrames.Any() ? keyFrames.Max(f => f.Frame) : 0;
+                this.LastStatusText = timeText + @"成功: 長さ " + frame + @" フレーム";
+                this.LastStatusBackground =
+                    (frame > 0) ? Brushes.PaleGreen : Brushes.LightYellow;
+            }
+            else
+            {
+                this.LastStatusText = timeText + @"失敗: " + errorMessage;
+                this.LastStatusBackground = Brushes.LightPink;
             }
         }
 

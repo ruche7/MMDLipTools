@@ -259,7 +259,13 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public ReadOnlyCollection<LipSyncUnit> LipSyncUnits
         {
-            get { return _lipSyncUnits; }
+            get
+            {
+                lock (this.lipSyncUnitsLockObject)
+                {
+                    return _lipSyncUnits;
+                }
+            }
             private set
             {
                 if (value == null)
@@ -267,15 +273,32 @@ namespace ruche.mmd.gui.lip
                     throw new ArgumentNullException("value");
                 }
 
-                _lipSyncUnits = value;
-                this.NotifyPropertyChanged("LipSyncUnits");
+                bool changed = false;
+                lock (this.lipSyncUnitsLockObject)
+                {
+                    if (value != _lipSyncUnits)
+                    {
+                        _lipSyncUnits = value;
+                        changed = true;
+                    }
+                }
 
-                // 文字列表現値を作成
-                this.LipSyncText = string.Join("", value);
+                if (changed)
+                {
+                    this.NotifyPropertyChanged("LipSyncUnits");
+
+                    // 文字列表現値を作成
+                    this.LipSyncText = string.Join("", value);
+                }
             }
         }
         private ReadOnlyCollection<LipSyncUnit> _lipSyncUnits =
             (new List<LipSyncUnit>()).AsReadOnly();
+
+        /// <summary>
+        /// LipSyncUnits のロックオブジェクト。
+        /// </summary>
+        private object lipSyncUnitsLockObject = new object();
 
         /// <summary>
         /// リップシンクユニットリストの文字列表現値を取得する。
@@ -685,21 +708,11 @@ namespace ruche.mmd.gui.lip
                             {
                                 Thread.Yield();
                             }
-                        })
-                    .ContinueWith(
-                        _ =>
-                        {
-                            // メインスレッドでリップシンクユニットリストを取得
-                            return this.LipSyncUnits.Select(u => u.Clone());
-                        },
-                        TaskScheduler.FromCurrentSynchronizationContext())
-                    .ContinueWith(
-                        t =>
-                        {
+
                             // 実処理
                             return
                                 MakeKeyFrameListCore(
-                                    t.Result,
+                                    this.LipSyncUnits,
                                     linkLengthPercent,
                                     longSoundLastWeight,
                                     morphSet,

@@ -25,7 +25,10 @@
         </Grid.RowDefinitions>
 
         <!-- row 0 -->
-        <lip:LipEditControl DataContext="{Binding EditViewModel}"  Grid.Row="0" />
+        <lip:LipEditControl
+            DataContext="{Binding EditViewModel}"
+            IsFpsVisible="False"
+            Grid.Row="0" />
 
         <!-- row 1 -->
         <Grid Margin="0,16,0,0" Grid.Row="1">
@@ -48,11 +51,18 @@
         </Grid>
 
         <!-- row 2 -->
-        <CheckBox
-            Content="上書き確認(_W)"
-            IsChecked="{Binding IsOverwriteConfirmed}"
-            HorizontalAlignment="Left"
-            Margin="0,4,0,0"
-            Grid.Row="2" />
+        <DockPanel Margin="0,4,0,0" Grid.Row="2">
+            <CheckBox
+                Content="上書き確認(_W)"
+                IsChecked="{Binding IsOverwriteConfirmed}"
+                HorizontalAlignment="Left"
+                DockPanel.Dock="Left" />
+            <TextBox
+                Text="{Binding LastStatusText}"
+                Background="{Binding LastStatusBackground}"
+                Foreground="Black"
+                BorderThickness="0"
+                Margin="8,0,0,0" />
+        </DockPanel>
     </Grid>
 </UserControl>
