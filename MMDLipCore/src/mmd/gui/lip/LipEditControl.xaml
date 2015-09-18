@@ -131,7 +131,7 @@
         <Grid Margin="0,8,0,0" Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -145,7 +145,6 @@
                 SelectedIndex="{Binding SelectedPresetIndex}"
                 DisplayMemberPath="Name"
                 Margin="4,0,0,0"
-                MinWidth="100"
                 Grid.Column="1" />
             <Button
                 Content="プリセット編集(_E)"
@@ -156,58 +155,66 @@
         </Grid>
 
         <!-- row 9 -->
-        <Grid Margin="0,8,0,0" Grid.Row="9">
-            <Grid.Resources>
-                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                    <Setter Property="ItemTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <ContentPresenter
-                                    Content="{Binding Converter={StaticResource enumDisplayConv}}" />
-                            </DataTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Grid.Resources>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <WrapPanel Margin="0,4,0,0" Grid.Row="9">
+            <Grid Margin="0,4,12,0">
+                <Grid.Resources>
+                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                        <Setter Property="ItemTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ContentPresenter
+                                        Content="{Binding Converter={StaticResource enumDisplayConv}}" />
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <Label Content="長さ:" Grid.Column="0" Margin="0,3" />
-            <ComboBox
-                ItemsSource="{Binding Source={StaticResource lipSpanRange}}"
-                SelectedValue="{Binding SpanRange}"
-                Margin="4,0,0,0"
-                Grid.Column="1" />
-            <xctk:DecimalUpDown
-                Value="{Binding SpanValue}"
-                Minimum="{Binding MinSpanValue}"
-                Maximum="{Binding MaxSpanValue}"
-                Increment="{Binding SpanValueIncrement}"
-                FormatString="{Binding SpanValueFormat}"
-                Grid.Column="2" />
-            <ComboBox
-                ItemsSource="{Binding Source={StaticResource lipSpanUnit}}"
-                SelectedValue="{Binding SpanUnit}"
-                Grid.Column="3" />
-        </Grid>
+                <Label Content="長さ:" Grid.Column="0" Margin="0,3" />
+                <ComboBox
+                    ItemsSource="{Binding Source={StaticResource lipSpanRange}}"
+                    SelectedValue="{Binding SpanRange}"
+                    Margin="4,0,0,0"
+                    Grid.Column="1" />
+                <xctk:DecimalUpDown
+                    Value="{Binding SpanValue}"
+                    Minimum="{Binding MinSpanValue}"
+                    Maximum="{Binding MaxSpanValue}"
+                    Increment="{Binding SpanValueIncrement}"
+                    FormatString="{Binding SpanValueFormat}"
+                    Grid.Column="2" />
+                <ComboBox
+                    ItemsSource="{Binding Source={StaticResource lipSpanUnit}}"
+                    SelectedValue="{Binding SpanUnit}"
+                    Grid.Column="3" />
+            </Grid>
+            <Grid
+                Visibility="{Binding
+                    ElementName=root,
+                    Path=IsFpsVisible,
+                    Converter={StaticResource boolVisibiliyConv}}"
+                Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <!-- row 10 -->
-        <WrapPanel
-            Visibility="{Binding IsFpsVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
-            Margin="0,4,0,0"
-            Grid.Row="10">
-            <Label Content="FPS(_F):" />
-            <xctk:DecimalUpDown
-                Value="{Binding Fps}"
-                Minimum="{Binding MinFps}"
-                Maximum="{Binding MaxFps}"
-                Increment="1"
-                FormatString="0.###"
-                Margin="4,0,0,0" />
+                <Label Content="FPS(_F):" Grid.Column="0" />
+                <xctk:DecimalUpDown
+                    Value="{Binding Fps}"
+                    Minimum="{Binding MinFps}"
+                    Maximum="{Binding MaxFps}"
+                    Increment="1"
+                    FormatString="0.###"
+                    Margin="4,0,0,0"
+                    Grid.Column="1" />
+            </Grid>
         </WrapPanel>
 
         <xctk:DropDownButton

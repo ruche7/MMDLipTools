@@ -6,10 +6,10 @@
     x:Class="LipVmdMakerLite.MainWindow"
     Title="LipVmdMaker Lite"
     ResizeMode="CanResizeWithGrip"
-    Width="440"
-    Height="480"
-    MinWidth="360"
-    MinHeight="428"
+    Width="480"
+    Height="520"
+    MinWidth="400"
+    MinHeight="480"
     Icon="/LipVmdMakerLite;component/resources/main.ico">
     <Window.DataContext>
         <tools:LipVmdControlViewModel />
@@ -29,12 +29,21 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- row 0 -->
-        <tools:LipVmdControl DataContext="{Binding}" />
+        <tools:LipVmdControl
+            DataContext="{Binding}"
+            Margin="0,0,0,12" />
 
         <!-- row 1 -->
+        <Border
+                Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                Height="1"
+                Grid.Row="1" />
+
+        <!-- row 2 -->
         <Button
             Content="閉じる(Esc)"
             Command="Close"
@@ -42,6 +51,6 @@
             Padding="16,2"
             Margin="0,12,0,0"
             HorizontalAlignment="Right"
-            Grid.Row="1" />
+            Grid.Row="2" />
     </Grid>
 </Window>

@@ -17,51 +17,69 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <UserControl.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <!-- row 0 -->
-        <lip:LipEditControl
-            DataContext="{Binding EditViewModel}"
-            Grid.Row="0" />
+            <!-- row 0 -->
+            <lip:LipEditControl
+                DataContext="{Binding EditViewModel}"
+                Margin="0,0,0,12"
+                Grid.Row="0" />
 
-        <!-- row 1 -->
-        <Grid Margin="0,16,0,0" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <!-- row 1 -->
+            <Border
+                Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                Height="1"
+                Grid.Row="1" />
 
-            <xctk:WatermarkComboBox
-                ItemsSource="{Binding FilePathes}"
-                Text="{Binding ActiveFilePath, UpdateSourceTrigger=PropertyChanged}"
-                Watermark="&lt;新しい保存先...&gt;"
-                IsEditable="True"
-                Grid.Column="0" />
-            <Button
-                Content="←に保存(_S)"
-                Command="{Binding FileSaveCommand}"
-                Margin="2,0,0,0"
-                Grid.Column="1" />
+            <!-- row 2 -->
+            <Grid Margin="0,12,0,0" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <xctk:WatermarkComboBox
+                    ItemsSource="{Binding FilePathes}"
+                    Text="{Binding ActiveFilePath, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="&lt;新しい保存先...&gt;"
+                    IsEditable="True"
+                    Grid.Column="0" />
+                <Button
+                    Content="←に保存(_S)"
+                    Command="{Binding FileSaveCommand}"
+                    Margin="2,0,0,0"
+                    Grid.Column="1" />
+            </Grid>
+
+            <!-- row 3 -->
+            <DockPanel Margin="0,4,0,0" Grid.Row="3">
+                <CheckBox
+                    Content="上書き確認(_W)"
+                    IsChecked="{Binding IsOverwriteConfirmed}"
+                    HorizontalAlignment="Left"
+                    DockPanel.Dock="Left" />
+                <TextBox
+                    Text="{Binding LastStatusText}"
+                    Background="{Binding LastStatusBackground}"
+                    Foreground="Black"
+                    BorderThickness="0"
+                    IsTabStop="False"
+                    Margin="8,0,0,0" />
+            </DockPanel>
+
+            <!-- row 4 -->
+            <Label
+                Content="※VMD形式での保存時は 30 fps. 換算となります。"
+                Margin="0,4,0,0"
+                Grid.Row="4" />
         </Grid>
-
-        <!-- row 2 -->
-        <DockPanel Margin="0,4,0,0" Grid.Row="2">
-            <CheckBox
-                Content="上書き確認(_W)"
-                IsChecked="{Binding IsOverwriteConfirmed}"
-                HorizontalAlignment="Left"
-                DockPanel.Dock="Left" />
-            <TextBox
-                Text="{Binding LastStatusText}"
-                Background="{Binding LastStatusBackground}"
-                Foreground="Black"
-                BorderThickness="0"
-                Margin="8,0,0,0" />
-        </DockPanel>
-    </Grid>
+    </UserControl.Content>
 </UserControl>
