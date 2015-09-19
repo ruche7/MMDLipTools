@@ -126,16 +126,16 @@ namespace ruche.mmd.morph.converters
                 }
 
                 // モーフデータ
-                writer.Write((byte)32); // morph-data tag
-                writer.Write((byte)1);  // morph-data minor type
                 for (int i = 0; i < frameTable.Length; ++i)
                 {
                     var frames = frameTable[i].ToArray();
 
-                    writer.Write(i);    // id
-                    writer.Write(16);   // item size
+                    writer.Write((byte)32); // morph-data tag
+                    writer.Write((byte)1);  // morph-data minor type
+                    writer.Write(i);        // id
+                    writer.Write(16);       // item size
                     writer.Write(frames.Length);
-                    writer.Write(0);    // reserved
+                    writer.Write(0);        // reserved
                     foreach (var f in frames)
                     {
                         writer.Write(f.Frame);

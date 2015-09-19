@@ -8,7 +8,7 @@
     ResizeMode="CanResizeWithGrip"
     Width="480"
     Height="480"
-    MinWidth="400"
+    MinWidth="440"
     MinHeight="440"
     Icon="/LipVmdMakerLite;component/resources/main.ico">
     <Window.DataContext>
