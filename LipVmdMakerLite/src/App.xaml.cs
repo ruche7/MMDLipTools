@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.IO;
+using System.ComponentModel;
 using System.Threading;
 using System.Windows;
-using ruche.mmd.tools;
 using ruche.mmd.gui.lip;
+using ruche.mmd.tools;
 using ruche.util;
-using System.ComponentModel;
 
-namespace LipVmdMakerLite
+namespace MikuMikuLipMakerLite
 {
     /// <summary>
     /// アプリケーションクラス。
@@ -25,13 +20,13 @@ namespace LipVmdMakerLite
             new Mutex(false, "{0975DE42-5DA7-460E-BEAC-D91909EDD7BC}");
 
         private ConfigKeeper<MainWindowConfig> windowConfig =
-            new ConfigKeeper<MainWindowConfig>(@"MMDLipTools\LipVmdMaker");
+            new ConfigKeeper<MainWindowConfig>(@"MMDLipTools\MikuMikuLipMaker");
 
-        private ConfigKeeper<LipVmdConfig> vmdConfig =
-            new ConfigKeeper<LipVmdConfig>(@"MMDLipTools\LipVmdMaker");
+        private ConfigKeeper<MikuMikuLipConfig> mmlConfig =
+            new ConfigKeeper<MikuMikuLipConfig>(@"MMDLipTools\MikuMikuLipMaker");
 
         private ConfigKeeper<LipEditConfig> editConfig =
-            new ConfigKeeper<LipEditConfig>(@"MMDLipTools\LipVmdMaker");
+            new ConfigKeeper<LipEditConfig>(@"MMDLipTools\MikuMikuLipMaker");
 
         private ConfigKeeper<MorphPresetConfig> presetConfig =
             new ConfigKeeper<MorphPresetConfig>(@"MMDLipTools");
@@ -39,7 +34,7 @@ namespace LipVmdMakerLite
         /// <summary>
         /// メインウィンドウの ViewModel を取得または設定する。
         /// </summary>
-        private LipVmdControlViewModel WindowViewModel { get; set; }
+        private MikuMikuLipConfigViewModel WindowViewModel { get; set; }
 
         /// <summary>
         /// アプリケーションの開始時に呼び出される。
@@ -60,9 +55,9 @@ namespace LipVmdMakerLite
             {
                 this.windowConfig.Value = new MainWindowConfig();
             }
-            if (!this.vmdConfig.Load())
+            if (!this.mmlConfig.Load())
             {
-                this.vmdConfig.Value = new LipVmdConfig();
+                this.mmlConfig.Value = new MikuMikuLipConfig();
             }
             if (!this.editConfig.Load())
             {
@@ -74,7 +69,7 @@ namespace LipVmdMakerLite
             }
 
             // ViewModel 作成
-            var vm = new LipVmdControlViewModel(this.vmdConfig.Value);
+            var vm = new MikuMikuLipConfigViewModel(this.mmlConfig.Value);
             vm.EditViewModel =
                 new LipEditControlViewModel(
                     this.editConfig.Value,
@@ -100,7 +95,7 @@ namespace LipVmdMakerLite
             base.OnExit(e);
 
             // 設定をセーブ
-            this.vmdConfig.Save();
+            this.mmlConfig.Save();
             this.editConfig.Save();
             this.presetConfig.Save();
 

@@ -5,11 +5,11 @@ using System.Windows.Markup;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("LipVmdMakerCommon")]
-[assembly: AssemblyDescription("Common library for LipVmdMaker.")]
+[assembly: AssemblyTitle("MikuMikuLipMakerCommon")]
+[assembly: AssemblyDescription("Common library for MikuMikuLipMaker.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ruche-home")]
-[assembly: AssemblyProduct("LipVmdMakerCommon")]
+[assembly: AssemblyProduct("MikuMikuLipMakerCommon")]
 [assembly: AssemblyCopyright("Copyright (C) ruche.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

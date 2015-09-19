@@ -5,11 +5,11 @@ using System.Windows;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("LipVmdMaker")]
-[assembly: AssemblyDescription("VMD file maker for the lip-morph of MMD models.")]
+[assembly: AssemblyTitle("MikuMikuLipMaker")]
+[assembly: AssemblyDescription("Lip-morph motion file maker")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ruche-home")]
-[assembly: AssemblyProduct("LipVmdMaker")]
+[assembly: AssemblyProduct("MikuMikuLipMaker")]
 [assembly: AssemblyCopyright("Copyright (C) ruche.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

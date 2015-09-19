@@ -100,9 +100,12 @@
     <Compile Include="src\mmd\morph\Timeline.cs" />
     <Compile Include="src\mmd\morph\TimelineTableBase.cs" />
     <Compile Include="src\util\ConfigKeeper.cs" />
+    <Compile Include="src\util\SelectableValue.cs" />
+    <Compile Include="src\util\SelectableValueCollection.cs" />
     <Compile Include="src\util\TextElementEnumerable.cs" />
     <Compile Include="src\wpf\converters\BooleanVisibilityConverter.cs" />
     <Compile Include="src\wpf\converters\EnumValueDisplayConverter.cs" />
+    <Compile Include="src\wpf\converters\EnumValueEquationConverter.cs" />
     <Compile Include="src\wpf\DependencyPropertyFactory.cs" />
     <Compile Include="src\wpf\viewModel\DelegateCommand.cs" />
     <Compile Include="src\wpf\viewModel\ViewModelBase.cs" />

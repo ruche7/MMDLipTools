@@ -5,11 +5,11 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMDLipCore", "MMDLipCore\MMDLipCore.csproj", "{1E9AFFFD-E67A-4E18-B1BB-7C661C1B7632}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMaker", "LipVmdMaker\LipVmdMaker.csproj", "{3059B2D6-AB54-4B22-85BE-046753C27987}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuLipMaker", "LipVmdMaker\MikuMikuLipMaker.csproj", "{3059B2D6-AB54-4B22-85BE-046753C27987}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMakerCommon", "LipVmdMakerCommon\LipVmdMakerCommon.csproj", "{604C331C-F714-4199-8C85-DDB86637C0B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuLipMakerCommon", "LipVmdMakerCommon\MikuMikuLipMakerCommon.csproj", "{604C331C-F714-4199-8C85-DDB86637C0B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipVmdMakerLite", "LipVmdMakerLite\LipVmdMakerLite.csproj", "{E3206463-00F1-4D9B-8514-A20EFEC37AAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuLipMakerLite", "LipVmdMakerLite\MikuMikuLipMakerLite.csproj", "{E3206463-00F1-4D9B-8514-A20EFEC37AAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

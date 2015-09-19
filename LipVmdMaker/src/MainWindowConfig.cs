@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using ruche.mmd.tools;
 
-namespace MikuMikuLipMakerLite
+namespace MikuMikuLipMaker
 {
     /// <summary>
     /// メインウィンドウ設定クラス。

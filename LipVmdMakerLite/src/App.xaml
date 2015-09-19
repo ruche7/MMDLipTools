@@ -1,5 +1,5 @@
 ﻿<Application
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:LipVmdMakerLite"
-    x:Class="LipVmdMakerLite.App" />
+    xmlns:local="clr-namespace:MikuMikuLipMakerLite"
+    x:Class="MikuMikuLipMakerLite.App" />

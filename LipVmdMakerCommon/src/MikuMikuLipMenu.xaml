@@ -1,0 +1,79 @@
+﻿<Menu
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:cvt="http://schemas.ruche-home.net/xaml/wpf/converters"
+    xmlns:local="clr-namespace:ruche.mmd.tools"
+    x:Class="ruche.mmd.tools.MikuMikuLipMenu">
+    <Menu.DataContext>
+        <local:MikuMikuLipConfigViewModel />
+    </Menu.DataContext>
+    <Menu.Resources>
+        <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
+
+        <ObjectDataProvider
+            x:Key="motionFileFormat"
+            MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:MotionFileFormat" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider
+            x:Key="autoNamingFormat"
+            MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:AutoNamingFormat" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Menu.Resources>
+
+    <MenuItem Header="ファイル(_F)">
+        <MenuItem
+            Header="自動命名保存(_S)"
+            Command="{Binding AutoNamingSaveCommand}"
+            InputGestureText="{Binding AutoNamingSaveGestureText}" />
+        <MenuItem
+            Header="名前を付けて保存(_A)..."
+            Command="{Binding SaveAsCommand}"
+            InputGestureText="{Binding SaveAsGestureText}" />
+        <Separator />
+        <MenuItem
+            Header="終了(_X)"
+            Command="Close"
+            InputGestureText="Alt+F4" />
+    </MenuItem>
+    <MenuItem Header="設定(_C)">
+        <MenuItem
+            Header="ファイル形式(_F)"
+            ItemsSource="{Binding FileFormats}">
+            <MenuItem.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter
+                        Property="Header"
+                        Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
+                    <Setter Property="IsCheckable" Value="True" />
+                    <Setter Property="IsChecked" Value="{Binding IsSelected}" />
+                </Style>
+            </MenuItem.ItemContainerStyle>
+        </MenuItem>
+        <MenuItem
+            Header="自動命名形式(_N)"
+            ItemsSource="{Binding AutoNamingFormats}">
+            <MenuItem.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter
+                        Property="Header"
+                        Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
+                    <Setter Property="IsCheckable" Value="True" />
+                    <Setter Property="IsChecked" Value="{Binding IsSelected}" />
+                </Style>
+            </MenuItem.ItemContainerStyle>
+        </MenuItem>
+        <MenuItem
+            Header="自動命名保存先(_D)..."
+            Command="{Binding AutoNamingDirectoryCommand}"
+            InputGestureText="{Binding AutoNamingDirectoryGestureText}" />
+    </MenuItem>
+</Menu>
