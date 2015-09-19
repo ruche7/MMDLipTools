@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
 using ruche.mmd.tools;
 
 namespace LipVmdMakerLite
@@ -25,14 +24,6 @@ namespace LipVmdMakerLite
         {
             get { return this.DataContext as LipVmdControlViewModel; }
             set { this.DataContext = value ?? (new LipVmdControlViewModel()); }
-        }
-
-        /// <summary>
-        /// 閉じるボタンの押下時に呼び出される。
-        /// </summary>
-        private void OnCloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

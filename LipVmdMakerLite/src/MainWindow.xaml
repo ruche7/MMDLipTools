@@ -7,50 +7,12 @@
     Title="LipVmdMaker Lite"
     ResizeMode="CanResizeWithGrip"
     Width="480"
-    Height="520"
+    Height="480"
     MinWidth="400"
-    MinHeight="480"
+    MinHeight="440"
     Icon="/LipVmdMakerLite;component/resources/main.ico">
     <Window.DataContext>
         <tools:LipVmdControlViewModel />
     </Window.DataContext>
-    <Window.CommandBindings>
-        <CommandBinding Command="Close" Executed="OnCloseCommandExecuted" />
-    </Window.CommandBindings>
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/MMDLipCore;component/src/mmd/gui/resources/common.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
-    <Grid Margin="12">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <!-- row 0 -->
-        <tools:LipVmdControl
-            DataContext="{Binding}"
-            Margin="0,0,0,12" />
-
-        <!-- row 1 -->
-        <Border
-                Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                Height="1"
-                Grid.Row="1" />
-
-        <!-- row 2 -->
-        <Button
-            Content="閉じる(Esc)"
-            Command="Close"
-            IsCancel="True"
-            Padding="16,2"
-            Margin="0,12,0,0"
-            HorizontalAlignment="Right"
-            Grid.Row="2" />
-    </Grid>
+    <tools:LipVmdControl DataContext="{Binding}" Margin="12" />
 </Window>

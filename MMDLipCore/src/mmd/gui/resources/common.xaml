@@ -26,14 +26,21 @@
         <Setter Property="Padding" Value="4,1,2,1" />
         <Setter Property="MinWidth" Value="64" />
         <Setter Property="MaxWidth" Value="160" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="{x:Type xctk:SingleUpDown}">
         <Setter Property="Padding" Value="4,1,2,1" />
         <Setter Property="MinWidth" Value="64" />
         <Setter Property="MaxWidth" Value="160" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="{x:Type xctk:WatermarkTextBox}">
         <Setter Property="Padding" Value="2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="{x:Type ListBoxItem}">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
