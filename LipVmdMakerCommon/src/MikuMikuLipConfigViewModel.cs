@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -128,6 +129,11 @@ namespace ruche.mmd.tools
                 });
 
         /// <summary>
+        /// 1文字以上の空白文字にマッチする正規表現。
+        /// </summary>
+        private static readonly Regex RegexBlank = new Regex(@"\s+");
+
+        /// <summary>
         /// 選択可能な列挙値コレクションを作成する。
         /// </summary>
         /// <typeparam name="T">列挙型。</typeparam>
@@ -183,19 +189,20 @@ namespace ruche.mmd.tools
                 return "(blank)";
             }
 
+            // 空白文字を半角スペース1文字に短縮
             // ファイル名に使えない文字を置換
             var invalidChars = Path.GetInvalidFileNameChars();
             var dest =
                 string.Join(
                     "",
-                    from c in src
-                    select (Array.IndexOf(invalidChars, c) < 0) ? c : '…');
+                    from c in RegexBlank.Replace(src, " ")
+                    select (Array.IndexOf(invalidChars, c) < 0) ? c : '_');
 
             // 文字数制限
             int maxLength = 12;
             if (dest.Length > maxLength)
             {
-                dest = dest.Substring(0, maxLength - 1) + "～";
+                dest = dest.Substring(0, maxLength - 1) + "-";
             }
 
             return dest;
