@@ -46,7 +46,7 @@
     </MenuItem>
     <MenuItem Header="設定(_C)">
         <MenuItem
-            Header="ファイル形式(_F)"
+            Header="ファイル形式(_T)"
             ItemsSource="{Binding FileFormats}">
             <MenuItem.ItemContainerStyle>
                 <Style TargetType="MenuItem">
@@ -59,7 +59,7 @@
             </MenuItem.ItemContainerStyle>
         </MenuItem>
         <MenuItem
-            Header="自動命名形式(_N)"
+            Header="自動命名形式(_A)"
             ItemsSource="{Binding AutoNamingFormats}">
             <MenuItem.ItemContainerStyle>
                 <Style TargetType="MenuItem">

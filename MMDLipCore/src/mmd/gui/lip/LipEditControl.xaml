@@ -64,7 +64,7 @@
 
         <!-- row 0 -->
         <Label
-            Content="入力文(_T):"
+            Content="入力文(_I):"
             Target="{Binding ElementName=textInput}"
             Visibility="{Binding IsTextVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
             Grid.Row="0" />
@@ -89,7 +89,7 @@
             Margin="0,0,0,8"
             Grid.Row="3">
             <Button
-                Content="↓入力文を読み仮名に変換(_C)"
+                Content="↓入力文を読み仮名に変換(_T)"
                 Command="{Binding TextToLipKanaCommand}" />
             <CheckBox
                 Content="自動変換(_A)"
@@ -205,7 +205,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Label Content="FPS(_F):" Grid.Column="0" />
+                <Label Content="FPS(_S):" Grid.Column="0" />
                 <xctk:DecimalUpDown
                     Value="{Binding Fps}"
                     Minimum="{Binding MinFps}"
