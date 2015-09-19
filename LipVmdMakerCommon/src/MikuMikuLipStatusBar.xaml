@@ -17,26 +17,11 @@
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 
-        <WrapPanel x:Key="panelStatusNull">
-            <TextBox Text="&#x0A;" />
-        </WrapPanel>
-        <Grid x:Key="panelStatus">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Text="[" Foreground="Black" Grid.Column="0" />
-            <TextBox
-                Text="{Binding LastSaveResult.Time, Mode=OneWay, StringFormat=hh:mm:ss}"
-                Grid.Column="1" />
-            <TextBlock Text="] " Foreground="Black" Grid.Column="2" />
-            <TextBox
-                Text="{Binding LastSaveResult.Text, Mode=OneWay}"
-                Grid.Column="3" />
-        </Grid>
+        <TextBox x:Key="contentNull" Text="&#x0A;" />
+        <TextBox
+            x:Key="content"
+            Text="{Binding LastSaveResult.Text, Mode=OneWay}"
+            Grid.Column="3" />
     </StatusBar.Resources>
 
     <StatusBarItem x:Name="status" Padding="8,3">
@@ -48,18 +33,18 @@
                         Value="{x:Null}">
                         <Setter
                             Property="Content"
-                            Value="{StaticResource panelStatusNull}" />
+                            Value="{StaticResource contentNull}" />
                     </DataTrigger>
                     <DataTrigger
                         Binding="{Binding LastSaveResult.IsSucceeded}"
                         Value="True">
-                        <Setter Property="Content" Value="{StaticResource panelStatus}" />
+                        <Setter Property="Content" Value="{StaticResource content}" />
                         <Setter Property="Background" Value="PaleGreen" />
                     </DataTrigger>
                     <DataTrigger
                         Binding="{Binding LastSaveResult.IsSucceeded}"
                         Value="False">
-                        <Setter Property="Content" Value="{StaticResource panelStatus}" />
+                        <Setter Property="Content" Value="{StaticResource content}" />
                         <Setter Property="Background" Value="Pink" />
                     </DataTrigger>
                 </Style.Triggers>

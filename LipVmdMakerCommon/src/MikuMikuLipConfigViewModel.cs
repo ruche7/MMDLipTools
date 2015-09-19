@@ -811,8 +811,8 @@ namespace ruche.mmd.tools
             {
                 var lastFrame = keyFrames.Any() ? keyFrames.Max(f => f.Frame) : 0;
                 var text =
-                    @"保存成功 : " + filePath + Environment.NewLine +
-                    @"長さ " + lastFrame + @" フレーム (" + fps + @" fps.";
+                    filePath + Environment.NewLine + @"保存成功 : 長さ " +
+                    lastFrame + @" フレーム (" + fps + @" fps.";
                 if (fps != this.EditViewModel.Fps)
                 {
                     text += @" 換算で作成";
@@ -823,8 +823,7 @@ namespace ruche.mmd.tools
             else
             {
                 var text =
-                    @"保存失敗 : " + filePath + Environment.NewLine +
-                    errorMessage;
+                    filePath + Environment.NewLine + @"保存失敗 : " + errorMessage;
                 this.LastSaveResult = new FileSaveResult(false, text);
             }
 
