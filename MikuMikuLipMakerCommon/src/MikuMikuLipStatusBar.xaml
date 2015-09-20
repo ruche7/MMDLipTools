@@ -25,60 +25,62 @@
             Grid.Column="3" />
     </StatusBar.Resources>
 
-    <StatusBarItem x:Name="status" Padding="8,3">
-        <StatusBarItem.Style>
-            <Style TargetType="StatusBarItem">
-                <Style.Triggers>
-                    <DataTrigger
-                        Binding="{Binding LastSaveResult.IsSucceeded}"
-                        Value="{x:Null}">
-                        <Setter
-                            Property="Content"
-                            Value="{StaticResource contentNull}" />
-                    </DataTrigger>
-                    <DataTrigger
-                        Binding="{Binding LastSaveResult.IsSucceeded}"
-                        Value="True">
-                        <Setter Property="Content" Value="{StaticResource content}" />
-                        <Setter Property="Background" Value="PaleGreen" />
-                    </DataTrigger>
-                    <DataTrigger
-                        Binding="{Binding LastSaveResult.IsSucceeded}"
-                        Value="False">
-                        <Setter Property="Content" Value="{StaticResource content}" />
-                        <Setter Property="Background" Value="Pink" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </StatusBarItem.Style>
-        <i:Interaction.Triggers>
-            <ei:PropertyChangedTrigger Binding="{Binding LastSaveResult}">
-                <i:Interaction.Behaviors>
-                    <ei:ConditionBehavior>
-                        <ei:ConditionalExpression>
-                            <ei:ComparisonCondition
-                                LeftOperand="{Binding Path=LastSaveResult.IsSucceeded}"
-                                Operator="NotEqual"
-                                RightOperand="{x:Null}" />
-                        </ei:ConditionalExpression>
-                    </ei:ConditionBehavior>
-                </i:Interaction.Behaviors>
-                <ei:ControlStoryboardAction>
-                    <ei:ControlStoryboardAction.Storyboard>
-                        <Storyboard>
-                            <ColorAnimation
-                                Storyboard.Target="{Binding ElementName=status}"
-                                Storyboard.TargetProperty="Background.Color"
-                                From="Yellow"
-                                Duration="0:0:1">
-                                <ColorAnimation.EasingFunction>
-                                    <SineEase />
-                                </ColorAnimation.EasingFunction>
-                            </ColorAnimation>
-                        </Storyboard>
-                    </ei:ControlStoryboardAction.Storyboard>
-                </ei:ControlStoryboardAction>
-            </ei:PropertyChangedTrigger>
-        </i:Interaction.Triggers>
-    </StatusBarItem>
+    <StatusBar.Items>
+        <StatusBarItem x:Name="status" Padding="8,3">
+            <StatusBarItem.Style>
+                <Style TargetType="StatusBarItem">
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding LastSaveResult.IsSucceeded}"
+                            Value="{x:Null}">
+                            <Setter
+                                Property="Content"
+                                Value="{StaticResource contentNull}" />
+                        </DataTrigger>
+                        <DataTrigger
+                            Binding="{Binding LastSaveResult.IsSucceeded}"
+                            Value="True">
+                            <Setter Property="Content" Value="{StaticResource content}" />
+                            <Setter Property="Background" Value="PaleGreen" />
+                        </DataTrigger>
+                        <DataTrigger
+                            Binding="{Binding LastSaveResult.IsSucceeded}"
+                            Value="False">
+                            <Setter Property="Content" Value="{StaticResource content}" />
+                            <Setter Property="Background" Value="Pink" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StatusBarItem.Style>
+            <i:Interaction.Triggers>
+                <ei:PropertyChangedTrigger Binding="{Binding LastSaveResult}">
+                    <i:Interaction.Behaviors>
+                        <ei:ConditionBehavior>
+                            <ei:ConditionalExpression>
+                                <ei:ComparisonCondition
+                                    LeftOperand="{Binding Path=LastSaveResult.IsSucceeded}"
+                                    Operator="NotEqual"
+                                    RightOperand="{x:Null}" />
+                            </ei:ConditionalExpression>
+                        </ei:ConditionBehavior>
+                    </i:Interaction.Behaviors>
+                    <ei:ControlStoryboardAction>
+                        <ei:ControlStoryboardAction.Storyboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.Target="{Binding ElementName=status}"
+                                    Storyboard.TargetProperty="Background.Color"
+                                    From="Yellow"
+                                    Duration="0:0:1">
+                                    <ColorAnimation.EasingFunction>
+                                        <SineEase />
+                                    </ColorAnimation.EasingFunction>
+                                </ColorAnimation>
+                            </Storyboard>
+                        </ei:ControlStoryboardAction.Storyboard>
+                    </ei:ControlStoryboardAction>
+                </ei:PropertyChangedTrigger>
+            </i:Interaction.Triggers>
+        </StatusBarItem>
+    </StatusBar.Items>
 </StatusBar>

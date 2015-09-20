@@ -87,6 +87,12 @@ namespace ruche.mmd.tools
         [DataMember]
         public string DefaultDirectoryPath { get; set; }
 
+        /// <summary>
+        /// 入力文テキストファイルを同時に保存するか否かを取得または設定する。
+        /// </summary>
+        [DataMember]
+        public bool IsSavingWithText { get; set; }
+
         #region IExtensibleDataObject の明示的実装
 
         ExtensionDataObject IExtensibleDataObject.ExtensionData { get; set; }

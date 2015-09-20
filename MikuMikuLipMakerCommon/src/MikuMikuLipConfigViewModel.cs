@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -429,6 +430,23 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// 入力文テキストファイルを同時に保存するか否かを取得または設定する。
+        /// </summary>
+        public bool IsSavingWithText
+        {
+            get { return this.Config.IsSavingWithText; }
+            set
+            {
+                var old = this.IsSavingWithText;
+                this.Config.IsSavingWithText = value;
+                if (this.IsSavingWithText != old)
+                {
+                    this.NotifyPropertyChanged("IsSavingWithText");
+                }
+            }
+        }
+
+        /// <summary>
         /// 直近のファイル保存処理結果を取得する。
         /// </summary>
         public FileSaveResult LastSaveResult
@@ -568,71 +586,20 @@ namespace ruche.mmd.tools
         /// </summary>
         private void ExecuteAutoNamingSaveCommand(object param)
         {
-            var text = MakeAutoNamingString(this.EditViewModel.Text);
-            var kana = MakeAutoNamingString(this.EditViewModel.LipKana);
-            var now = DateTime.Now;
-            var date = now.ToString("yyMMdd");
-            var time = now.ToString("hhmmss");
-
-            // ファイル名決定
-            string fileName = kana;
-            switch (this.AutoNamingFormat)
+            // 保存先ディレクトリ用意
+            if (!this.PrepareAutoNamingDirectory())
             {
-            case AutoNamingFormat.Text:
-                fileName = text;
-                break;
-            case AutoNamingFormat.TimeText:
-                fileName = string.Join("_", time, text);
-                break;
-            case AutoNamingFormat.DateTimeText:
-                fileName = string.Join("_", date, time, text);
-                break;
-            case AutoNamingFormat.Kana:
-                fileName = kana;
-                break;
-            case AutoNamingFormat.TimeKana:
-                fileName = string.Join("_", time, kana);
-                break;
-            case AutoNamingFormat.DateTimeKana:
-                fileName = string.Join("_", date, time, kana);
-                break;
-            case AutoNamingFormat.DateTime:
-                fileName = string.Join("_", date, time);
-                break;
+                return;
             }
 
-            // 保存先ディレクトリ用意
-            string dirPath = "";
-            while (true)
+            // ファイルパス決定
+            var path = this.DecideAutoNamingFilePath();
+            if (string.IsNullOrEmpty(path))
             {
-                dirPath = this.AutoNamingDirectoryPath;
-                if (Directory.Exists(dirPath))
-                {
-                    break;
-                }
-
-                try
-                {
-                    Directory.CreateDirectory(dirPath);
-                    break;
-                }
-                catch
-                {
-                    var ok =
-                        this.ShowOkCancelDialog(
-                            dirPath + Environment.NewLine + Environment.NewLine +
-                            @"保存先フォルダーを作成できません。" +
-                            Environment.NewLine +
-                            @"保存先フォルダーを変更しますか？");
-                    if (!ok || !this.SelectAutoNamingDirectory())
-                    {
-                        return;
-                    }
-                }
+                return;
             }
 
             // 保存
-            var path = Path.Combine(dirPath, fileName);
             this.SaveFile(ref path, this.ActiveFileFormat, true);
         }
 
@@ -725,6 +692,99 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// 自動命名保存先ディレクトリを用意する。
+        /// </summary>
+        /// <returns>用意に成功したならば true 。そうでなければ false 。</returns>
+        private bool PrepareAutoNamingDirectory()
+        {
+            while (true)
+            {
+                var dirPath = this.AutoNamingDirectoryPath;
+
+                if (Directory.Exists(dirPath))
+                {
+                    break;
+                }
+
+                try
+                {
+                    Directory.CreateDirectory(dirPath);
+                    break;
+                }
+                catch
+                {
+                    var ok =
+                        this.ShowOkCancelDialog(
+                            dirPath + Environment.NewLine + Environment.NewLine +
+                            @"保存先フォルダーを作成できません。" +
+                            Environment.NewLine +
+                            @"保存先フォルダーを変更しますか？");
+                    if (!ok || !this.SelectAutoNamingDirectory())
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 自動命名保存ファイルパスを決定する。
+        /// </summary>
+        /// <returns>自動命名保存ファイルパス。</returns>
+        private string DecideAutoNamingFilePath()
+        {
+            // ファイル名構成要素を用意
+            var text = MakeAutoNamingString(this.EditViewModel.Text);
+            var kana = MakeAutoNamingString(this.EditViewModel.LipKana);
+            var now = DateTime.Now;
+            var date = now.ToString("yyMMdd");
+            var time = now.ToString("hhmmss");
+
+            // ベースファイルパス決定
+            string basePath = kana;
+            switch (this.AutoNamingFormat)
+            {
+            case AutoNamingFormat.Text:
+                basePath = text;
+                break;
+            case AutoNamingFormat.TimeText:
+                basePath = string.Join("_", time, text);
+                break;
+            case AutoNamingFormat.DateTimeText:
+                basePath = string.Join("_", date, time, text);
+                break;
+            case AutoNamingFormat.Kana:
+                basePath = kana;
+                break;
+            case AutoNamingFormat.TimeKana:
+                basePath = string.Join("_", time, kana);
+                break;
+            case AutoNamingFormat.DateTimeKana:
+                basePath = string.Join("_", date, time, kana);
+                break;
+            case AutoNamingFormat.DateTime:
+                basePath = string.Join("_", date, time);
+                break;
+            }
+            basePath = Path.Combine(this.AutoNamingDirectoryPath, basePath);
+
+            // 拡張子決定
+            var info = GetFileFormatInfo(this.ActiveFileFormat);
+            var ext = "." + info.Extension;
+
+            // 既存のファイルを避けてファイルパス決定
+            string path = basePath + ext;
+            for (int i = 1; File.Exists(path); ++i)
+            {
+                path = basePath + "[" + i + "]" + ext;
+            }
+
+            return path;
+        }
+
+        /// <summary>
         /// ファイルを新規保存する。
         /// </summary>
         /// <param name="filePath">
@@ -768,6 +828,7 @@ namespace ruche.mmd.tools
             }
 
             string errorMessage = null;
+            bool withText = false;
             try
             {
                 // 親ディレクトリ作成
@@ -782,6 +843,12 @@ namespace ruche.mmd.tools
                 {
                     // 書き出し
                     writer.Write(fs, keyFrames);
+                }
+
+                // 入力文を保存
+                if (this.IsSavingWithText)
+                {
+                    withText = this.SaveTextFile(filePath, this.EditViewModel.Text);
                 }
             }
             catch (UnauthorizedAccessException)
@@ -825,16 +892,50 @@ namespace ruche.mmd.tools
                     text += @" 換算で作成";
                 }
                 text += @")";
+                if (withText)
+                {
+                    text += " with 入力文";
+                }
+
                 this.LastSaveResult = new FileSaveResult(true, text);
             }
             else
             {
                 var text =
                     filePath + Environment.NewLine + @"保存失敗 : " + errorMessage;
+
                 this.LastSaveResult = new FileSaveResult(false, text);
             }
 
             return (this.LastSaveResult.IsSucceeded == true);
+        }
+
+        /// <summary>
+        /// 入力文テキストファイルを新規保存する。
+        /// </summary>
+        /// <param name="motionFilePath">モーションファイルパス。</param>
+        /// <param name="text">入力文。</param>
+        /// <returns>保存できたならば true 。そうでなければ false 。</returns>
+        private bool SaveTextFile(string motionFilePath, string text)
+        {
+            // テキストファイルパス決定
+            var path = motionFilePath + ".txt";
+            for (int i = 0; File.Exists(path); ++i)
+            {
+                path = motionFilePath + "(" + i + ").txt";
+            }
+
+            // Unicode(UTF-16LE)で保存
+            try
+            {
+                File.WriteAllText(path, text, Encoding.Unicode);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -853,17 +954,6 @@ namespace ruche.mmd.tools
                     MessageBoxImage.Question);
 
             return (result == MessageBoxResult.OK);
-        }
-
-        /// <summary>
-        /// エラーダイアログを表示する。
-        /// </summary>
-        /// <param name="message">エラーメッセージ。</param>
-        /// <param name="image">アイコン種別。</param>
-        private void ShowErrorDialog(string message, MessageBoxImage image)
-        {
-            var shower = this.MessageBoxShower ?? MessageBox.Show;
-            shower(message, @"エラー", MessageBoxButton.OK, image);
         }
     }
 }

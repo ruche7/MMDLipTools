@@ -29,51 +29,57 @@
         </ObjectDataProvider>
     </Menu.Resources>
 
-    <MenuItem Header="ファイル(_F)">
-        <MenuItem
-            Header="自動命名保存(_S)"
-            Command="{Binding AutoNamingSaveCommand}"
-            InputGestureText="{Binding AutoNamingSaveGestureText}" />
-        <MenuItem
-            Header="名前を付けて保存(_A)..."
-            Command="{Binding SaveAsCommand}"
-            InputGestureText="{Binding SaveAsGestureText}" />
-        <Separator />
-        <MenuItem
-            Header="終了(_X)"
-            Command="Close"
-            InputGestureText="Alt+F4" />
-    </MenuItem>
-    <MenuItem Header="設定(_C)">
-        <MenuItem
-            Header="ファイル形式(_T)"
-            ItemsSource="{Binding FileFormats}">
-            <MenuItem.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter
-                        Property="Header"
-                        Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
-                    <Setter Property="IsCheckable" Value="True" />
-                    <Setter Property="IsChecked" Value="{Binding IsSelected}" />
-                </Style>
-            </MenuItem.ItemContainerStyle>
+    <Menu.Items>
+        <MenuItem Header="ファイル(_F)">
+            <MenuItem
+                Header="自動命名保存(_S)"
+                Command="{Binding AutoNamingSaveCommand}"
+                InputGestureText="{Binding AutoNamingSaveGestureText}" />
+            <MenuItem
+                Header="名前を付けて保存(_A)..."
+                Command="{Binding SaveAsCommand}"
+                InputGestureText="{Binding SaveAsGestureText}" />
+            <Separator />
+            <MenuItem
+                Header="終了(_X)"
+                Command="Close"
+                InputGestureText="Alt+F4" />
         </MenuItem>
-        <MenuItem
-            Header="自動命名形式(_A)"
-            ItemsSource="{Binding AutoNamingFormats}">
-            <MenuItem.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter
-                        Property="Header"
-                        Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
-                    <Setter Property="IsCheckable" Value="True" />
-                    <Setter Property="IsChecked" Value="{Binding IsSelected}" />
-                </Style>
-            </MenuItem.ItemContainerStyle>
+        <MenuItem Header="設定(_C)">
+            <MenuItem
+                Header="ファイル形式(_T)"
+                ItemsSource="{Binding FileFormats}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter
+                            Property="Header"
+                            Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
+                        <Setter Property="IsCheckable" Value="True" />
+                        <Setter Property="IsChecked" Value="{Binding IsSelected}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+            <MenuItem
+                Header="自動命名形式(_A)"
+                ItemsSource="{Binding AutoNamingFormats}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter
+                            Property="Header"
+                            Value="{Binding Value, Converter={StaticResource enumDisplayConv}}" />
+                        <Setter Property="IsCheckable" Value="True" />
+                        <Setter Property="IsChecked" Value="{Binding IsSelected}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+            <MenuItem
+                Header="自動命名保存先(_D)..."
+                Command="{Binding AutoNamingDirectoryCommand}"
+                InputGestureText="{Binding AutoNamingDirectoryGestureText}" />
+            <MenuItem
+                Header="入力文を同時保存(_I)"
+                IsCheckable="True"
+                IsChecked="{Binding IsSavingWithText}" />
         </MenuItem>
-        <MenuItem
-            Header="自動命名保存先(_D)..."
-            Command="{Binding AutoNamingDirectoryCommand}"
-            InputGestureText="{Binding AutoNamingDirectoryGestureText}" />
-    </MenuItem>
+    </Menu.Items>
 </Menu>
