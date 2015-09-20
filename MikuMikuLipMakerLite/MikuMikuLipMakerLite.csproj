@@ -96,7 +96,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LipVmdMakerCommon\MikuMikuLipMakerCommon.csproj">
+    <ProjectReference Include="..\MikuMikuLipMakerCommon\MikuMikuLipMakerCommon.csproj">
       <Project>{604c331c-f714-4199-8c85-ddb86637c0b1}</Project>
       <Name>MikuMikuLipMakerCommon</Name>
     </ProjectReference>
