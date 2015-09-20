@@ -122,10 +122,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Resource Include="src\mmd\gui\resources\common.xaml">
+    <Resource Include="resources\common.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\arrow_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\arrow_forward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\arrow_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

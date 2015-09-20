@@ -19,14 +19,26 @@
         </Style>
 
         <TextBox x:Key="contentNull" Text="&#x0A;" />
-        <TextBox
-            x:Key="content"
-            Text="{Binding LastSaveResult.Text, Mode=OneWay}"
-            Grid.Column="3" />
+        <StackPanel x:Key="contentTrue" Orientation="Horizontal">
+            <Image
+                Source="/MikuMikuLipMakerCommon;component/resources/status_ok.png"
+                Stretch="None" />
+            <TextBox
+                Text="{Binding LastSaveResult.Text, Mode=OneWay}"
+                Margin="2,0,0,0" />
+        </StackPanel>
+        <StackPanel x:Key="contentFalse" Orientation="Horizontal">
+            <Image
+                Source="/MikuMikuLipMakerCommon;component/resources/status_ng.png"
+                Stretch="None" />
+            <TextBox
+                Text="{Binding LastSaveResult.Text, Mode=OneWay}"
+                Margin="2,0,0,0" />
+        </StackPanel>
     </StatusBar.Resources>
 
     <StatusBar.Items>
-        <StatusBarItem x:Name="status" Padding="8,3">
+        <StatusBarItem x:Name="status" Padding="5,3">
             <StatusBarItem.Style>
                 <Style TargetType="StatusBarItem">
                     <Style.Triggers>
@@ -40,14 +52,20 @@
                         <DataTrigger
                             Binding="{Binding LastSaveResult.IsSucceeded}"
                             Value="True">
-                            <Setter Property="Content" Value="{StaticResource content}" />
+                            <Setter
+                                Property="Content"
+                                Value="{StaticResource contentTrue}" />
                             <Setter Property="Background" Value="PaleGreen" />
+                            <Setter Property="Tag" Value="Yellow" />
                         </DataTrigger>
                         <DataTrigger
                             Binding="{Binding LastSaveResult.IsSucceeded}"
                             Value="False">
-                            <Setter Property="Content" Value="{StaticResource content}" />
+                            <Setter
+                                Property="Content"
+                                Value="{StaticResource contentFalse}" />
                             <Setter Property="Background" Value="Pink" />
+                            <Setter Property="Tag" Value="Violet" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -70,7 +88,7 @@
                                 <ColorAnimation
                                     Storyboard.Target="{Binding ElementName=status}"
                                     Storyboard.TargetProperty="Background.Color"
-                                    From="Yellow"
+                                    From="{Binding Tag, ElementName=status}"
                                     Duration="0:0:1">
                                     <ColorAnimation.EasingFunction>
                                         <SineEase />

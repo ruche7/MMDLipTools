@@ -880,6 +880,11 @@ namespace ruche.mmd.tools
                 errorMessage = ex.GetType().Name;
             }
 
+#if DEBUG
+            // エラー表示テスト用
+            //errorMessage = @"エラーテストです。";
+#endif // DEBUG
+
             // エラー有無で切り分けて結果作成
             if (errorMessage == null)
             {

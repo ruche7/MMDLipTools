@@ -95,6 +95,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\save_as.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\status_ok.png" />
+    <Resource Include="resources\status_ng.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

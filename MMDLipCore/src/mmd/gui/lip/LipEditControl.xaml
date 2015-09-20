@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../resources/common.xaml" />
+                <ResourceDictionary Source="/MMDLipCore;component/resources/common.xaml" />
                 <ResourceDictionary>
                     <Style x:Key="textAreaStyle" TargetType="{x:Type TextBox}">
                         <Setter Property="AcceptsReturn" Value="True" />
@@ -88,9 +88,18 @@
             Visibility="{Binding IsTextToLipKanaVisible, Converter={StaticResource boolVisibiliyConv}, ElementName=root}"
             Margin="0,0,0,8"
             Grid.Row="3">
-            <Button
-                Content="↓入力文を読み仮名に変換(_T)"
-                Command="{Binding TextToLipKanaCommand}" />
+            <Button Command="{Binding TextToLipKanaCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        Source="/MMDLipCore;component/resources/arrow_up.png"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <ScaleTransform ScaleY="-1" />
+                        </Image.RenderTransform>
+                    </Image>
+                    <AccessText Text="入力文を読み仮名に変換(_T)" Margin="2,0,0,0" />
+                </StackPanel>
+            </Button>
             <CheckBox
                 Content="自動変換(_A)"
                 IsChecked="{Binding IsAutoLipKana}"
@@ -147,11 +156,15 @@
                 Margin="4,0,0,0"
                 Grid.Column="1" />
             <Button
-                Content="プリセット編集(_E)"
                 Command="{Binding PresetsEditCommand}"
                 Visibility="{Binding IsPresetsEditable, Converter={StaticResource boolVisibiliyConv}}"
                 Margin="4,0,0,0"
-                Grid.Column="2" />
+                Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/MMDLipCore;component/resources/edit.png" />
+                    <AccessText Text="編集(_E)..." Margin="2,0,0,0" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <!-- row 9 -->

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace ruche.mmd.tools
@@ -16,7 +17,9 @@ namespace ruche.mmd.tools
         public MikuMikuLipConfig()
         {
             this.AutoNamingDirectoryPath =
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    @"MMD_Lip");
             this.IsAutoNamingOverwriteConfirmed = true;
             this.DefaultDirectoryPath = "";
         }
