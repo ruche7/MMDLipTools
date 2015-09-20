@@ -31,46 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Activities" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Xceed.Wpf.Toolkit, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\mmd\gui\lip\LipEditConfig.cs" />
-    <Compile Include="src\mmd\gui\lip\LipSpanRange.cs" />
-    <Compile Include="src\mmd\gui\lip\LipSpanUnit.cs" />
-    <Compile Include="src\mmd\gui\lip\MorphInfoSetViewModel.cs" />
-    <Compile Include="src\mmd\gui\lip\MorphPreset.cs" />
-    <Compile Include="src\mmd\gui\lip\MorphPresetConfig.cs" />
-    <Compile Include="src\mmd\gui\lip\MorphPresetDialog.xaml.cs">
-      <DependentUpon>MorphPresetDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="src\mmd\gui\lip\MorphPresetDialogViewModel.cs" />
-    <Compile Include="src\mmd\gui\lip\MorphPresetList.cs" />
-    <Compile Include="src\mmd\gui\lip\LipEditControl.xaml.cs">
-      <DependentUpon>LipEditControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="src\mmd\gui\lip\LipEditControlViewModel.cs" />
     <Compile Include="src\mmd\morph\converters\KeyFrameListMaker.cs" />
     <Compile Include="src\mmd\morph\converters\MotionDataWriterBase.cs" />
     <Compile Include="src\mmd\morph\converters\MvdWriter.cs" />
@@ -103,47 +73,9 @@
     <Compile Include="src\util\SelectableValue.cs" />
     <Compile Include="src\util\SelectableValueCollection.cs" />
     <Compile Include="src\util\TextElementEnumerable.cs" />
-    <Compile Include="src\wpf\converters\BooleanVisibilityConverter.cs" />
-    <Compile Include="src\wpf\converters\EnumValueDisplayConverter.cs" />
-    <Compile Include="src\wpf\converters\EnumValueEquationConverter.cs" />
-    <Compile Include="src\wpf\DependencyPropertyFactory.cs" />
-    <Compile Include="src\wpf\viewModel\DelegateCommand.cs" />
-    <Compile Include="src\wpf\viewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="src\mmd\gui\lip\MorphPresetDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="src\mmd\gui\lip\LipEditControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Resource Include="resources\common.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\arrow_back.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\arrow_forward.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\arrow_up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

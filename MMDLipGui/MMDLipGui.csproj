@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{604C331C-F714-4199-8C85-DDB86637C0B1}</ProjectGuid>
+    <ProjectGuid>{5246B42B-96F2-485B-8281-B062E9615D93}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ruche.mmd.tools</RootNamespace>
-    <AssemblyName>MikuMikuLipMakerCommon</AssemblyName>
+    <RootNamespace>ruche</RootNamespace>
+    <AssemblyName>MMDLipGui</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,17 +29,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Core.1.1.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -61,59 +54,68 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\AutoNamingFormat.cs" />
-    <Compile Include="src\FileSaveResult.cs" />
-    <Compile Include="src\MikuMikuLipConfig.cs" />
-    <Compile Include="src\MikuMikuLipConfigViewModel.cs" />
-    <Compile Include="src\MikuMikuLipConfigViewUtil.cs" />
-    <Compile Include="src\MikuMikuLipMakerAppBase.cs" />
-    <Compile Include="src\MikuMikuLipMenu.xaml.cs">
-      <DependentUpon>MikuMikuLipMenu.xaml</DependentUpon>
+    <Compile Include="src\mmd\gui\lip\LipEditConfig.cs" />
+    <Compile Include="src\mmd\gui\lip\LipEditControl.xaml.cs">
+      <DependentUpon>LipEditControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\MikuMikuLipStatusBar.xaml.cs">
-      <DependentUpon>MikuMikuLipStatusBar.xaml</DependentUpon>
+    <Compile Include="src\mmd\gui\lip\LipEditControlViewModel.cs" />
+    <Compile Include="src\mmd\gui\lip\LipSpanRange.cs" />
+    <Compile Include="src\mmd\gui\lip\LipSpanUnit.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphInfoSetViewModel.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPreset.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetConfig.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetDialog.xaml.cs">
+      <DependentUpon>MorphPresetDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\MotionFileFormat.cs" />
-    <Compile Include="src\WindowConfigBase.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetDialogViewModel.cs" />
+    <Compile Include="src\mmd\gui\lip\MorphPresetList.cs" />
+    <Compile Include="src\wpf\converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="src\wpf\converters\EnumValueDisplayConverter.cs" />
+    <Compile Include="src\wpf\converters\EnumValueEquationConverter.cs" />
+    <Compile Include="src\wpf\DependencyPropertyFactory.cs" />
+    <Compile Include="src\wpf\viewModel\DelegateCommand.cs" />
+    <Compile Include="src\wpf\viewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\common.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="src\mmd\gui\lip\LipEditControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="src\mmd\gui\lip\MorphPresetDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MMDLipCore\MMDLipCore.csproj">
       <Project>{1e9afffd-e67a-4e18-b1bb-7c661c1b7632}</Project>
       <Name>MMDLipCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MMDLipGui\MMDLipGui.csproj">
-      <Project>{5246b42b-96f2-485b-8281-b062e9615d93}</Project>
-      <Name>MMDLipGui</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="src\MikuMikuLipMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="src\MikuMikuLipStatusBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Resource Include="resources\add.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\save.png" />
+    <Resource Include="resources\arrow_back.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\folder.png" />
+    <Resource Include="resources\arrow_forward.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\save_as.png" />
+    <Resource Include="resources\arrow_up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\close.png" />
+    <Resource Include="resources\delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\status_ok.png" />
-    <Resource Include="resources\status_ng.png" />
+    <Resource Include="resources\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

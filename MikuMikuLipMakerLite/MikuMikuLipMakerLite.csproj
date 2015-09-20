@@ -104,6 +104,10 @@
       <Project>{1e9afffd-e67a-4e18-b1bb-7c661c1b7632}</Project>
       <Name>MMDLipCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MMDLipGui\MMDLipGui.csproj">
+      <Project>{5246b42b-96f2-485b-8281-b062e9615d93}</Project>
+      <Name>MMDLipGui</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\main.ico" />

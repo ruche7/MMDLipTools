@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/MMDLipCore;component/resources/common.xaml" />
+                <ResourceDictionary Source="/MMDLipGui;component/resources/common.xaml" />
                 <ResourceDictionary>
                     <Style x:Key="textAreaStyle" TargetType="{x:Type TextBox}">
                         <Setter Property="AcceptsReturn" Value="True" />
@@ -91,7 +91,7 @@
             <Button Command="{Binding TextToLipKanaCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image
-                        Source="/MMDLipCore;component/resources/arrow_up.png"
+                        Source="/MMDLipGui;component/resources/arrow_up.png"
                         RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <ScaleTransform ScaleY="-1" />
@@ -161,7 +161,7 @@
                 Margin="4,0,0,0"
                 Grid.Column="2">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/MMDLipCore;component/resources/edit.png" />
+                    <Image Source="/MMDLipGui;component/resources/edit.png" />
                     <AccessText Text="編集(_E)..." Margin="2,0,0,0" />
                 </StackPanel>
             </Button>
