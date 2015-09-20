@@ -11,9 +11,9 @@
     ShowInTaskbar="False"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterOwner"
-    Width="640"
-    Height="400"
-    MinWidth="560"
+    Width="560"
+    Height="380"
+    MinWidth="540"
     MinHeight="280"
     DataContextChanged="OnDataContextChanged">
     <Window.DataContext>
@@ -35,18 +35,15 @@
     </Window.Resources>
 
     <DockPanel Margin="8,4">
-        <!-- OK, Cancel -->
-        <Grid Margin="8" DockPanel.Dock="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
-
-            <Button Content="OK(_O)" Command="Close" Grid.Column="1" />
-            <Button Content="キャンセル" IsCancel="True" ToolTip="Esc" Grid.Column="3" />
-        </Grid>
+        <!-- OK -->
+        <StackPanel Margin="8" DockPanel.Dock="Bottom">
+            <Button
+                Content="OK(_O)"
+                Command="Close"
+                HorizontalAlignment="Right"
+                MinWidth="80"
+                Grid.Column="1" />
+        </StackPanel>
 
         <!-- Contents -->
         <Grid Margin="8">

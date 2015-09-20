@@ -66,6 +66,7 @@
     <Compile Include="src\MikuMikuLipConfig.cs" />
     <Compile Include="src\MikuMikuLipConfigViewModel.cs" />
     <Compile Include="src\MikuMikuLipConfigViewUtil.cs" />
+    <Compile Include="src\MikuMikuLipMakerAppBase.cs" />
     <Compile Include="src\MikuMikuLipMenu.xaml.cs">
       <DependentUpon>MikuMikuLipMenu.xaml</DependentUpon>
     </Compile>
