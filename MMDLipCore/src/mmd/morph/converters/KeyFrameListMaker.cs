@@ -48,11 +48,11 @@ namespace ruche.mmd.morph.converters
         /// モーフ別タイムラインテーブルは、ユニット基準長(「ア」の長さ)を
         /// 1.0 とする時間単位であるものとして処理する。
         /// </remarks>
-        public List<KeyFrame> Make(
+        public KeyFrameList Make(
             MorphTimelineTable tlTable,
             long beginFrame)
         {
-            var dest = new List<KeyFrame>();
+            var dest = new KeyFrameList();
 
             decimal? srcPos = decimal.MinValue;
             long destPos = long.MinValue;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -110,7 +109,7 @@ namespace ruche.mmd.gui.lip
         /// キーフレームリストを作成する。
         /// </summary>
         /// <returns>キーフレームリスト。</returns>
-        private static List<KeyFrame> MakeKeyFrameListCore(
+        private static KeyFrameList MakeKeyFrameListCore(
             IEnumerable<LipSyncUnit> units,
             decimal linkLengthPercent,
             float longSoundLastWeight,
@@ -147,7 +146,7 @@ namespace ruche.mmd.gui.lip
             }
 
             // キーフレームリスト作成
-            List<KeyFrame> dest = null;
+            KeyFrameList dest = null;
             {
                 var maker = new KeyFrameListMaker();
                 maker.UnitFrameLength = spanFrame;
@@ -697,7 +696,7 @@ namespace ruche.mmd.gui.lip
         /// <param name="fps">出力FPS値。</param>
         /// <param name="beginFrame">出力開始フレーム位置。出力FPS値基準。</param>
         /// <returns>キーフレームリスト。</returns>
-        public List<KeyFrame> MakeKeyFrameList(decimal fps, long beginFrame)
+        public KeyFrameList MakeKeyFrameList(decimal fps, long beginFrame)
         {
             return this.MakeKeyFrameListAsync(fps, beginFrame).Result;
         }
@@ -712,7 +711,7 @@ namespace ruche.mmd.gui.lip
         /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
         /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
         /// </remarks>
-        public Task<List<KeyFrame>> MakeKeyFrameListAsync(
+        public Task<KeyFrameList> MakeKeyFrameListAsync(
             decimal fps,
             long beginFrame)
         {

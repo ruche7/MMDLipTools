@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
 {
     /// <summary>
     /// モーフのキーフレームを保持する構造体。
     /// </summary>
+    [DataContract(Namespace = "")]
     public struct KeyFrame
     {
         /// <summary>
@@ -23,16 +25,28 @@ namespace ruche.mmd.morph
         /// <summary>
         /// モーフ名を取得または設定する。
         /// </summary>
+        [DataMember]
         public string MorphName { get; set; }
 
         /// <summary>
         /// フレーム位置を取得または設定する。
         /// </summary>
+        [DataMember]
         public long Frame { get; set; }
 
         /// <summary>
         /// ウェイト値を取得または設定する。
         /// </summary>
+        [DataMember]
         public float Weight { get; set; }
+
+        /// <summary>
+        /// このオブジェクトの文字列表現を作成する。
+        /// </summary>
+        /// <returns>文字列表現。</returns>
+        public override string ToString()
+        {
+            return (this.Frame + " : \"" + this.MorphName + "\" = " + this.Weight);
+        }
     }
 }

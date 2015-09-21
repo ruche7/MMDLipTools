@@ -70,7 +70,7 @@ namespace ruche.util
         public event EventHandler IsSelectedChanged;
 
         /// <summary>
-        /// 値の文字列表現を取得する。
+        /// 値の文字列表現を作成する。
         /// </summary>
         /// <returns>値の文字列表現。</returns>
         public override string ToString()

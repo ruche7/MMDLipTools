@@ -45,6 +45,7 @@
     <Compile Include="src\mmd\morph\converters\MotionDataWriterBase.cs" />
     <Compile Include="src\mmd\morph\converters\MvdWriter.cs" />
     <Compile Include="src\mmd\morph\converters\VmdWriter.cs" />
+    <Compile Include="src\mmd\morph\KeyFrameList.cs" />
     <Compile Include="src\mmd\morph\lip\converters\AlphaGlyphKanaConverter.cs" />
     <Compile Include="src\mmd\morph\lip\converters\DigitKanaConverter.cs" />
     <Compile Include="src\mmd\morph\lip\converters\KatakanaConverter.cs" />
@@ -74,9 +75,7 @@
     <Compile Include="src\util\SelectableValueCollection.cs" />
     <Compile Include="src\util\TextElementEnumerable.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

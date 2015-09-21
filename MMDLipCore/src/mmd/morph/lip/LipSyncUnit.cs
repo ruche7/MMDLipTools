@@ -74,11 +74,9 @@ namespace ruche.mmd.morph.lip
         public int LengthPercent { get; set; }
 
         /// <summary>
-        /// このオブジェクトの文字列表現を取得する。
+        /// このオブジェクトの文字列表現を作成する。
         /// </summary>
-        /// <returns>
-        /// 口形状と各種フラグにより定まる文字列。
-        /// </returns>
+        /// <returns>文字列表現。</returns>
         public override string ToString()
         {
             // 口を閉じている場合は長さに応じた '＿', '_', '.' の列挙を返す

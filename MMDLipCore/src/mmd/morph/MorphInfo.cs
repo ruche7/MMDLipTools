@@ -75,6 +75,15 @@ namespace ruche.mmd.morph
         }
 
         /// <summary>
+        /// このオブジェクトの文字列表現を作成する。
+        /// </summary>
+        /// <returns>文字列表現。</returns>
+        public override string ToString()
+        {
+            return string.Join(", ", this.MorphWeights);
+        }
+
+        /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
