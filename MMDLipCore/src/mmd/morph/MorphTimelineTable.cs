@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
 {
     /// <summary>
     /// モーフ別のタイムラインを保持するクラス。
     /// </summary>
+    [DataContract(Namespace = "")]
+    [KnownType(typeof(InnerTable))]
     public class MorphTimelineTable : TimelineTableBase<string>
     {
         /// <summary>

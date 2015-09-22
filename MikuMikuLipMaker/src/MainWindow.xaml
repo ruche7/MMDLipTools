@@ -31,6 +31,40 @@
             Key="{Binding AutoNamingDirectoryGesture.Key}"
             Modifiers="{Binding AutoNamingDirectoryGesture.Modifiers}"
             Command="{Binding AutoNamingDirectoryCommand}" />
+        <KeyBinding
+            Key="{Binding TimelineSendGesture.Key}"
+            Modifiers="{Binding TimelineSendGesture.Modifiers}"
+            Command="{Binding TimelineSendCommand}" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[0].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[0].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="A" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[1].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[1].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="I" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[2].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[2].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="U" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[3].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[3].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="E" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[4].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[4].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="O" />
+        <KeyBinding
+            Key="{Binding MorphWeightsSendGestures[5].Key}"
+            Modifiers="{Binding MorphWeightsSendGestures[5].Modifiers}"
+            Command="{Binding MorphWeightsSendCommand}"
+            CommandParameter="Closed" />
     </Window.InputBindings>
 
     <DockPanel>

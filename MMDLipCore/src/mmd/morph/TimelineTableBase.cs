@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
 {
@@ -9,9 +10,37 @@ namespace ruche.mmd.morph
     /// ID別のモーフタイムラインを保持する抽象クラス。
     /// </summary>
     /// <typeparam name="TId">ID型。</typeparam>
+    [DataContract(Namespace = "")]
+    [KnownType(typeof(Timeline))]
     public abstract class TimelineTableBase<TId>
         : IEnumerable<KeyValuePair<TId, Timeline>>
     {
+        /// <summary>
+        /// タイムラインテーブルクラス。
+        /// </summary>
+        [CollectionDataContract(
+            KeyName = "Id",
+            ValueName = "Timeline",
+            Namespace = "")]
+        [KnownType(typeof(Timeline))]
+        protected class InnerTable : Dictionary<TId, Timeline>
+        {
+            /// <summary>
+            /// コンストラクタ。
+            /// </summary>
+            public InnerTable() : base()
+            {
+            }
+
+            /// <summary>
+            /// コンストラクタ。
+            /// </summary>
+            /// <param name="capacity">初期キャパシティ。</param>
+            public InnerTable(int capacity) : base(capacity)
+            {
+            }
+        }
+
         /// <summary>
         /// タイムラインを取得または設定するインデクサ。
         /// </summary>
@@ -22,12 +51,13 @@ namespace ruche.mmd.morph
         /// <summary>
         /// タイムラインテーブルを取得または設定する。
         /// </summary>
-        protected Dictionary<TId, Timeline> Table
+        [DataMember]
+        protected InnerTable Table
         {
             get { return _table; }
-            set { _table = value ?? new Dictionary<TId, Timeline>(); }
+            set { _table = value ?? new InnerTable(); }
         }
-        private Dictionary<TId, Timeline> _table = new Dictionary<TId, Timeline>();
+        private InnerTable _table = new InnerTable();
 
         /// <summary>
         /// タイムラインテーブルの列挙子を取得する。

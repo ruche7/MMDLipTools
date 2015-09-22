@@ -4,6 +4,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:cvt="clr-namespace:ruche.wpf.converters"
     xmlns:local="clr-namespace:ruche.mmd.gui.lip"
     x:Class="ruche.mmd.gui.lip.MorphPresetDialog"
     Title="口パクプリセット編集"
@@ -14,7 +15,7 @@
     Width="560"
     Height="380"
     MinWidth="540"
-    MinHeight="280"
+    MinHeight="320"
     DataContextChanged="OnDataContextChanged">
     <Window.DataContext>
         <local:MorphPresetDialogViewModel />
@@ -25,11 +26,15 @@
     <Window.InputBindings>
         <KeyBinding Gesture="Alt+Right" Command="{Binding EditCommand}" />
         <KeyBinding Gesture="Alt+Left" Command="{Binding ApplyCommand}" />
+        <KeyBinding Gesture="F8" Command="{Binding MorphWeightsSendCommand}" />
     </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/MMDLipGui;component/resources/common.xaml" />
+                <ResourceDictionary>
+                    <cvt:BooleanVisibilityConverter x:Key="boolVisibilityConv" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -169,8 +174,14 @@
             </Grid>
 
             <!-- right -->
-            <DockPanel Grid.Column="4">
-                <DockPanel DockPanel.Dock="Top">
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
                     <Label
                         Content="プリセット名(_N):"
                         Target="{Binding ElementName=textPresetName}"
@@ -187,7 +198,8 @@
                     DataContext="{Binding EditingMorphInfoSet}"
                     ItemsSource="{Binding Items}"
                     SelectedIndex="{Binding SelectedItemIndex}"
-                    Margin="0,4,0,0">
+                    Margin="0,4,0,0"
+                    Grid.Row="1">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <AccessText Text="{Binding AccessName}" />
@@ -345,7 +357,25 @@
                         </DataTemplate>
                     </TabControl.ContentTemplate>
                 </TabControl>
-            </DockPanel>
+                <StackPanel
+                    Visibility="{Binding
+                        Path=IsMorphWeightsSenderEnabled,
+                        Converter={StaticResource boolVisibilityConv}}"
+                    Margin="0,4,0,0"
+                    Grid.Row="2">
+                    <Button
+                        Command="{Binding MorphWeightsSendCommand}"
+                        ToolTip="F8"
+                        HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Source="/MMDLipGui;component/resources/remote.png"
+                                Stretch="None" />
+                            <TextBlock Text="送信して表示確認" Margin="2,0,0,0" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

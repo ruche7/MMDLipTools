@@ -15,7 +15,7 @@ namespace ruche.mmd.morph.lip
         public TimelineSet()
         {
             var ids = (LipId[])Enum.GetValues(typeof(LipId));
-            this.Table = new Dictionary<LipId, Timeline>(ids.Length);
+            this.Table = new InnerTable(ids.Length);
             Array.ForEach(ids, id => this.Table.Add(id, new Timeline()));
         }
 

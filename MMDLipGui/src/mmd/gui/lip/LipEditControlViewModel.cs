@@ -23,12 +23,17 @@ namespace ruche.mmd.gui.lip
         /// <param name="presets">
         /// 編集対象の口パクモーフプリセットリスト。
         /// </param>
+        /// <param name="morphWeightsSender">
+        /// モーフウェイトリストの送信を行うデリゲート。
+        /// サポートしない場合は null 。
+        /// </param>
         /// <returns>
         /// 編集結果の口パクモーフプリセットリスト。
         /// 編集がキャンセルされた場合は null 。
         /// </returns>
         public delegate MorphPresetList MorphPresetDialogDelegate(
-            MorphPresetList presets);
+            MorphPresetList presets,
+            Action<MorphWeightDataList> morphWeightsSender);
 
         /// <summary>
         /// 口パク時間指定単位種別変更による時間指定値の変換を行う。
@@ -106,18 +111,15 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
-        /// キーフレームリストを作成する。
+        /// モーフ別タイムラインテーブルを作成する。
         /// </summary>
-        /// <returns>キーフレームリスト。</returns>
-        private static KeyFrameList MakeKeyFrameListCore(
+        /// <returns>モーフ別タイムラインテーブル。</returns>
+        private static MorphTimelineTable MakeMorphTimelineTableCore(
             IEnumerable<LipSyncUnit> units,
             decimal linkLengthPercent,
             float longSoundLastWeight,
             MorphInfoSet morphSet,
-            bool morphEtoAI,
-            LipSpanRange spanRange,
-            decimal spanFrame,
-            long beginFrame)
+            bool morphEtoAI)
         {
             // 口形状別タイムラインセット作成
             TimelineSet tlSet = null;
@@ -129,12 +131,25 @@ namespace ruche.mmd.gui.lip
             }
 
             // モーフ別タイムラインテーブル作成
-            MorphTimelineTable tlTable = null;
+            MorphTimelineTable dest = null;
             {
                 var maker = new MorphTimelineTableMaker();
-                tlTable = maker.Make(tlSet, morphSet, morphEtoAI);
+                dest = maker.Make(tlSet, morphSet, morphEtoAI);
             }
 
+            return dest;
+        }
+
+        /// <summary>
+        /// キーフレームリストを作成する。
+        /// </summary>
+        /// <returns>キーフレームリスト。</returns>
+        private static KeyFrameList MakeKeyFrameListCore(
+            MorphTimelineTable tlTable,
+            LipSpanRange spanRange,
+            decimal spanFrame,
+            long beginFrame)
+        {
             // 基準フレーム長算出
             if (spanRange == LipSpanRange.All)
             {
@@ -432,6 +447,24 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
+        /// 口パクモーフプリセット編集ダイアログで用いる
+        /// モーフウェイトリストの送信インタフェースを取得または設定する。
+        /// </summary>
+        public Action<MorphWeightDataList> MorphWeightsSender
+        {
+            get { return _morphWeightsSender; }
+            set
+            {
+                if (value != _morphWeightsSender)
+                {
+                    _morphWeightsSender = value;
+                    this.NotifyPropertyChanged("MorphWeightsSender");
+                }
+            }
+        }
+        private Action<MorphWeightDataList> _morphWeightsSender = null;
+
+        /// <summary>
         /// 口パクの時間指定範囲種別を取得または設定する。
         /// </summary>
         public LipSpanRange SpanRange
@@ -691,6 +724,77 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
+        /// 読み仮名文字列への変換を開始するコマンドを取得する。
+        /// </summary>
+        public ICommand TextToLipKanaCommand { get; private set; }
+
+        /// <summary>
+        /// 口パクモーフプリセットリストの編集を開始するコマンドを取得する。
+        /// </summary>
+        public ICommand PresetsEditCommand { get; private set; }
+
+        /// <summary>
+        /// 秒単位での口パク時間指定値を算出する。
+        /// </summary>
+        /// <returns>秒単位での口パク時間指定値。</returns>
+        public decimal CalcSpanSeconds()
+        {
+            return
+                ConvertSpanValueUnit(
+                    this.EditConfig.SpanFrame,
+                    LipSpanUnit.Frames,
+                    LipSpanUnit.Seconds,
+                    this.Fps);
+        }
+
+        /// <summary>
+        /// 現在の設定値からモーフ別タイムラインテーブルを作成する。
+        /// </summary>
+        /// <returns>モーフ別タイムラインテーブル。</returns>
+        public MorphTimelineTable MakeMorphTimelineTable()
+        {
+            return this.MakeMorphTimelineTableAsync().Result;
+        }
+
+        /// <summary>
+        /// 現在の設定値からモーフ別タイムラインテーブルを非同期で作成する。
+        /// </summary>
+        /// <returns>モーフ別タイムラインテーブル。</returns>
+        /// <remarks>
+        /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
+        /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
+        /// </remarks>
+        public Task<MorphTimelineTable> MakeMorphTimelineTableAsync()
+        {
+            var linkLengthPercent = this.LinkLengthPercent;
+            var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
+            var preset = this.SelectedPreset;
+            var morphSet =
+                (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
+            var morphEtoAI = this.IsMorphEtoAI;
+
+            return
+                Task.Factory.StartNew(
+                    () =>
+                    {
+                        // リップシンクユニットリスト作成途中なら待機
+                        while (this.IsLipSyncUnitsTaskRunning)
+                        {
+                            Thread.Yield();
+                        }
+
+                        // 実処理
+                        return
+                            MakeMorphTimelineTableCore(
+                                this.LipSyncUnits,
+                                linkLengthPercent,
+                                longSoundLastWeight,
+                                morphSet,
+                                morphEtoAI);
+                    });
+        }
+
+        /// <summary>
         /// 現在の設定値からキーフレームリストを作成する。
         /// </summary>
         /// <param name="fps">出力FPS値。</param>
@@ -715,50 +819,20 @@ namespace ruche.mmd.gui.lip
             decimal fps,
             long beginFrame)
         {
-            var linkLengthPercent = this.LinkLengthPercent;
-            var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
-            var preset = this.SelectedPreset;
-            var morphSet =
-                (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
-            var morphEtoAI = this.IsMorphEtoAI;
             var spanRange = this.SpanRange;
             var spanFrame =
                 ConvertSpanFrameFps(this.EditConfig.SpanFrame, this.Fps, fps);
 
             return
-                Task.Factory
-                    .StartNew(
-                        () =>
-                        {
-                            // リップシンクユニットリスト作成途中なら待機
-                            while (this.IsLipSyncUnitsTaskRunning)
-                            {
-                                Thread.Yield();
-                            }
-
-                            // 実処理
-                            return
-                                MakeKeyFrameListCore(
-                                    this.LipSyncUnits,
-                                    linkLengthPercent,
-                                    longSoundLastWeight,
-                                    morphSet,
-                                    morphEtoAI,
-                                    spanRange,
-                                    spanFrame,
-                                    beginFrame);
-                        });
+                MakeMorphTimelineTableAsync()
+                    .ContinueWith(
+                        t =>
+                            MakeKeyFrameListCore(
+                                t.Result,
+                                spanRange,
+                                spanFrame,
+                                beginFrame));
         }
-
-        /// <summary>
-        /// 読み仮名文字列への変換を開始するコマンドを取得する。
-        /// </summary>
-        public ICommand TextToLipKanaCommand { get; private set; }
-
-        /// <summary>
-        /// 口パクモーフプリセットリストの編集を開始するコマンドを取得する。
-        /// </summary>
-        public ICommand PresetsEditCommand { get; private set; }
 
         /// <summary>
         /// 現在選択中の口パクモーフプリセットを取得する。
@@ -863,7 +937,7 @@ namespace ruche.mmd.gui.lip
             }
 
             // 編集ダイアログ処理
-            var presets = shower(this.Presets.Clone());
+            var presets = shower(this.Presets.Clone(), this.MorphWeightsSender);
             if (presets != null)
             {
                 // プリセットリスト更新

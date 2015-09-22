@@ -1,26 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
 {
     /// <summary>
     /// キー位置とそのウェイト値のリストで構成されるモーフキー領域を保持するクラス。
     /// </summary>
+    [DataContract(Namespace = "")]
+    [KnownType(typeof(PointList))]
     public class TimelineKeyArea : ICloneable
     {
+        /// <summary>
+        /// キー位置とそのウェイト値のリストを保持するクラス。
+        /// </summary>
+        [CollectionDataContract(
+            KeyName = "Position",
+            ValueName = "Weight",
+            Namespace = "")]
+        public class PointList : SortedList<decimal, float>
+        {
+            /// <summary>
+            /// コンストラクタ。
+            /// </summary>
+            public PointList() : base()
+            {
+            }
+
+            /// <summary>
+            /// コンストラクタ。
+            /// </summary>
+            /// <param name="src">初期値ディクショナリ。</param>
+            public PointList(IDictionary<decimal, float> src) : base(src)
+            {
+            }
+        }
+
         /// <summary>
         /// コンストラクタ。
         /// </summary>
         public TimelineKeyArea()
         {
-            this.Points = new SortedList<decimal, float>();
+            this.Points = new PointList();
         }
 
         /// <summary>
         /// キー位置とそのウェイト値のリストを取得する。
         /// </summary>
-        public SortedList<decimal, float> Points { get; private set; }
+        [DataMember]
+        public PointList Points { get; private set; }
 
         /// <summary>
         /// Points が空であるか否かを取得する。
@@ -155,7 +184,7 @@ namespace ruche.mmd.morph
         public TimelineKeyArea Clone()
         {
             var dest = new TimelineKeyArea();
-            dest.Points = new SortedList<decimal, float>(this.Points);
+            dest.Points = new PointList(this.Points);
             return dest;
         }
 

@@ -6,7 +6,7 @@ using System.Windows.Markup;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("MMDLipGui")]
-[assembly: AssemblyDescription("GUI library for the lip-morph of MMD models.")]
+[assembly: AssemblyDescription("GUI API for the lip-morph of MMD models.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ruche-home")]
 [assembly: AssemblyProduct("MMDLipGui")]

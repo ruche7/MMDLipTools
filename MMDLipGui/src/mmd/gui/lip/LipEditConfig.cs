@@ -77,7 +77,7 @@ namespace ruche.mmd.gui.lip
             get { return _spanFrame; }
             set { _spanFrame = Math.Min(Math.Max(MinSpanFrame, value), MaxSpanFrame); }
         }
-        private decimal _spanFrame = 10;
+        private decimal _spanFrame = 4.5m;
 
         /// <summary>
         /// 口パクの時間指定単位種別を取得または設定する。
@@ -99,7 +99,7 @@ namespace ruche.mmd.gui.lip
                 _spanUnit = value;
             }
         }
-        private LipSpanUnit _spanUnit = LipSpanUnit.Frames;
+        private LipSpanUnit _spanUnit = LipSpanUnit.MilliSeconds;
 
         /// <summary>
         /// FPS値を取得または設定する。

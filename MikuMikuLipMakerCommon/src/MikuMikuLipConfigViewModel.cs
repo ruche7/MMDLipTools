@@ -11,7 +11,9 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using ruche.mmd.gui.lip;
+using ruche.mmd.morph;
 using ruche.mmd.morph.converters;
+using ruche.mmd.morph.lip;
 using ruche.util;
 using ruche.wpf.viewModel;
 
@@ -42,6 +44,17 @@ namespace ruche.mmd.tools
         /// <param name="dialog">コモンファイルダイアログ。</param>
         /// <returns>操作結果。</returns>
         public delegate bool CommonFileDialogDelegate(CommonFileDialog dialog);
+
+        /// <summary>
+        /// タイムラインテーブル情報の送信処理を提供するデリゲート。
+        /// </summary>
+        /// <param name="tlTable">モーフ別タイムラインテーブル。</param>
+        /// <param name="unitSeconds">
+        /// ユニット基準長(「ア」の長さ)に相当する秒数値。
+        /// </param>
+        public delegate void TimelineTableSendDelegate(
+            MorphTimelineTable tlTable,
+            decimal unitSeconds);
 
         /// <summary>
         /// ファイルフォーマット情報構造体。
@@ -143,7 +156,8 @@ namespace ruche.mmd.tools
         /// 選択状態変更時に呼び出されるイベントデリゲート。
         /// </param>
         /// <returns>作成されたコレクション。</returns>
-        private static SelectableValueCollection<T> MakeSelectableEnumValueCollection<T>(
+        private static
+        SelectableValueCollection<T> MakeSelectableEnumValueCollection<T>(
             T first,
             EventHandler selectedChanged)
         {
@@ -237,6 +251,19 @@ namespace ruche.mmd.tools
                     this.Config.AutoNamingFormat,
                     this.OnAutoNamingFormatsItemIsSelectedChanged);
 
+            // モーフウェイトリスト送信コマンドジェスチャ作成
+            this.MorphWeightsSendGestures =
+                new ReadOnlyObservableCollection<KeyGesture>(
+                    new ObservableCollection<KeyGesture>
+                    {
+                        new KeyGesture(Key.F1),
+                        new KeyGesture(Key.F2),
+                        new KeyGesture(Key.F3),
+                        new KeyGesture(Key.F4),
+                        new KeyGesture(Key.F5),
+                        new KeyGesture(Key.F6),
+                    });
+
             // コマンド作成
             this.AutoNamingSaveCommand =
                 new DelegateCommand(this.ExecuteAutoNamingSaveCommand);
@@ -248,6 +275,16 @@ namespace ruche.mmd.tools
                 new DelegateCommand(
                     this.ExecuteAutoNamingDirectoryCommand,
                     _ => this.CommonFileDialogShower != null);
+            this.TimelineSendCommand =
+                new DelegateCommand(
+                    this.ExecuteTimelineSendCommand,
+                    _ => this.TimelineTableSender != null);
+            this.MorphWeightsSendCommand =
+                new DelegateCommand(
+                    this.ExecuteMorphWeightsSendCommand,
+                    _ =>
+                        this.MorphWeightsSender != null &&
+                        this.EditViewModel.SelectedPresetIndex >= 0);
         }
 
         /// <summary>
@@ -303,12 +340,25 @@ namespace ruche.mmd.tools
                 var v = value ?? (new LipEditControlViewModel());
                 if (v != _editViewModel)
                 {
+                    var oldSender = this.MorphWeightsSender;
+                    var oldEnabled = this.IsSomeSenderEnabled;
+
                     _editViewModel = v;
                     this.NotifyPropertyChanged("EditViewModel");
+
+                    if (this.MorphWeightsSender != oldSender)
+                    {
+                        this.NotifyPropertyChanged("MorphWeightsSender");
+                    }
+                    if (this.IsSomeSenderEnabled != oldEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                    }
                 }
             }
         }
-        private LipEditControlViewModel _editViewModel = new LipEditControlViewModel();
+        private LipEditControlViewModel _editViewModel =
+            new LipEditControlViewModel();
 
         /// <summary>
         /// 選択可能なファイルフォーマットのコレクションを取得する。
@@ -364,7 +414,9 @@ namespace ruche.mmd.tools
         /// <summary>
         /// AutoNamingFormats アイテムの選択状態が変更された時に呼び出される。
         /// </summary>
-        private void OnAutoNamingFormatsItemIsSelectedChanged(object sender, EventArgs e)
+        private void OnAutoNamingFormatsItemIsSelectedChanged(
+            object sender,
+            EventArgs e)
         {
             var item = sender as SelectableValue<AutoNamingFormat>;
             if (item != null && item.IsSelected)
@@ -463,6 +515,67 @@ namespace ruche.mmd.tools
             }
         }
         public FileSaveResult _lastSaveResult = new FileSaveResult();
+
+        /// <summary>
+        /// タイムラインテーブル情報の送信処理を行うデリゲートを取得または設定する。
+        /// </summary>
+        public TimelineTableSendDelegate TimelineTableSender
+        {
+            get { return _timelineTableSender; }
+            set
+            {
+                if (value != _timelineTableSender)
+                {
+                    bool oldEnabled = this.IsSomeSenderEnabled;
+
+                    _timelineTableSender = value;
+                    this.NotifyPropertyChanged("TimelineTableSender");
+
+                    if (this.IsSomeSenderEnabled != oldEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                    }
+                }
+            }
+        }
+        private TimelineTableSendDelegate _timelineTableSender = null;
+
+        /// <summary>
+        /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
+        /// </summary>
+        public Action<MorphWeightDataList> MorphWeightsSender
+        {
+            get { return this.EditViewModel.MorphWeightsSender; }
+            set
+            {
+                var oldEnabled = this.IsSomeSenderEnabled;
+
+                var old = this.MorphWeightsSender;
+                this.EditViewModel.MorphWeightsSender = value;
+                if (this.MorphWeightsSender != old)
+                {
+                    this.NotifyPropertyChanged("MorphWeightsSender");
+                }
+
+                if (this.IsSomeSenderEnabled != oldEnabled)
+                {
+                    this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                }
+            }
+        }
+
+        /// <summary>
+        /// いずれかの送信デリゲートに有効な値が設定されているか否かを取得する。
+        /// </summary>
+        public bool IsSomeSenderEnabled
+        {
+            get
+            {
+                return (
+                    this.TimelineTableSender != null ||
+                    this.MorphWeightsSender != null);
+            }
+        }
 
         /// <summary>
         /// 自動命名保存コマンドを取得する。
@@ -582,6 +695,95 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// タイムライン送信コマンドを取得する。
+        /// </summary>
+        public ICommand TimelineSendCommand { get; private set; }
+
+        /// <summary>
+        /// タイムライン送信コマンドのキージェスチャを取得または設定する。
+        /// </summary>
+        public KeyGesture TimelineSendGesture
+        {
+            get { return _timelineSendGesture; }
+            set
+            {
+                if (value != _timelineSendGesture)
+                {
+                    _timelineSendGesture = value;
+                    this.NotifyPropertyChanged("TimelineSendGesture");
+                    this.NotifyPropertyChanged("TimelineSendGestureText");
+                }
+            }
+        }
+        private KeyGesture _timelineSendGesture = new KeyGesture(Key.F8);
+
+        /// <summary>
+        /// タイムライン送信コマンドのキージェスチャ文字列を取得する。
+        /// </summary>
+        public string TimelineSendGestureText
+        {
+            get
+            {
+                return
+                    (this.TimelineSendGesture == null) ?
+                        "" :
+                        this.TimelineSendGesture.GetDisplayStringForCulture(
+                            CultureInfo.CurrentUICulture);
+            }
+        }
+
+        /// <summary>
+        /// モーフウェイトリスト送信コマンドを取得する。
+        /// </summary>
+        /// <remarks>
+        /// コマンドパラメータで LipId 文字列を指定する。
+        /// </remarks>
+        public ICommand MorphWeightsSendCommand { get; private set; }
+
+        /// <summary>
+        /// モーフウェイトリスト送信コマンドのキージェスチャコレクションを
+        /// 取得または設定する。
+        /// </summary>
+        /// <remarks>
+        /// インデックス 0 ～ 4 が "あ" ～ "お" 、インデックス 5 が閉口時に対応する。
+        /// </remarks>
+        public ReadOnlyObservableCollection<KeyGesture> MorphWeightsSendGestures
+        {
+            get { return _morphWeightsSendGestures; }
+            set
+            {
+                if (value != _morphWeightsSendGestures)
+                {
+                    _morphWeightsSendGestures = value;
+                    this.NotifyPropertyChanged("MorphWeightsSendGestures");
+
+                    this.MorphWeightsSendGestureTexts =
+                        (value == null) ?
+                            null :
+                            value.Select(
+                                g =>
+                                    (g == null) ?
+                                        "" :
+                                        g.GetDisplayStringForCulture(
+                                            CultureInfo.CurrentUICulture))
+                                .ToList()
+                                .AsReadOnly();
+                    this.NotifyPropertyChanged("MorphWeightsSendGestureTexts");
+                }
+            }
+        }
+        private ReadOnlyObservableCollection<KeyGesture> _morphWeightsSendGestures;
+
+        /// <summary>
+        /// モーフウェイトリスト送信コマンドのキージェスチャ文字列コレクションを
+        /// 取得する。
+        /// </summary>
+        public ReadOnlyCollection<string> MorphWeightsSendGestureTexts
+        {
+            get; private set;
+        }
+
+        /// <summary>
         /// AutoNamingSaveCommand を実行する。
         /// </summary>
         private void ExecuteAutoNamingSaveCommand(object param)
@@ -657,6 +859,72 @@ namespace ruche.mmd.tools
         private void ExecuteAutoNamingDirectoryCommand(object param)
         {
             this.SelectAutoNamingDirectory();
+        }
+
+        /// <summary>
+        /// TimelineSendCommand を実行する。
+        /// </summary>
+        private void ExecuteTimelineSendCommand(object param)
+        {
+            var sender = this.TimelineTableSender;
+            if (sender == null)
+            {
+                return;
+            }
+
+            var spanRange = this.EditViewModel.SpanRange;
+            var spanSeconds = this.EditViewModel.CalcSpanSeconds();
+
+            this.EditViewModel
+                .MakeMorphTimelineTableAsync()
+                .ContinueWith(
+                    t =>
+                    {
+                        var tlTable = t.Result;
+
+                        // 基準秒数算出
+                        var unitSeconds = spanSeconds;
+                        if (spanRange == LipSpanRange.All)
+                        {
+                            var end = tlTable.GetEndPlace();
+                            if (end > 0)
+                            {
+                                unitSeconds /= end;
+                            }
+                        }
+
+                        // 送信
+                        sender(tlTable, unitSeconds);
+                    });
+        }
+
+        /// <summary>
+        /// MorphWeightsSendCommand を実行する。
+        /// </summary>
+        /// <param name="param">LipId 文字列。</param>
+        private void ExecuteMorphWeightsSendCommand(object param)
+        {
+            var sender = this.MorphWeightsSender;
+            if (sender == null || param == null)
+            {
+                return;
+            }
+
+            var presets = this.EditViewModel.Presets;
+            var index = this.EditViewModel.SelectedPresetIndex;
+            if (index < 0 || index >= presets.Count)
+            {
+                return;
+            }
+            var infoSet = presets[index].Value;
+
+            LipId lipId;
+            if (!Enum.TryParse(param.ToString(), true, out lipId))
+            {
+                return;
+            }
+
+            sender(infoSet[lipId].MorphWeights);
         }
 
         /// <summary>

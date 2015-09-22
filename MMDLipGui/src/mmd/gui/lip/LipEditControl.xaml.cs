@@ -107,11 +107,12 @@ namespace ruche.mmd.gui.lip
             {
                 // 口パクモーフプリセット編集ダイアログ表示デリゲートを設定
                 vm.PresetDialogShower =
-                    presets =>
+                    (presets, morphWeightsSender) =>
                     {
                         var dialog = new MorphPresetDialog();
                         dialog.Owner = Window.GetWindow(this);
                         dialog.Presets = presets;
+                        dialog.MorphWeightsSender = morphWeightsSender;
 
                         var result = dialog.ShowDialog();
 

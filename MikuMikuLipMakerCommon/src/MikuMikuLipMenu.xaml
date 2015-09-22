@@ -9,6 +9,7 @@
         <local:MikuMikuLipConfigViewModel />
     </Menu.DataContext>
     <Menu.Resources>
+        <cvt:BooleanVisibilityConverter x:Key="boolVisibilityConv" />
         <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
 
         <ObjectDataProvider
@@ -96,6 +97,59 @@
                 Header="入力文を同時保存(_I)"
                 IsCheckable="True"
                 IsChecked="{Binding IsSavingWithText}" />
+        </MenuItem>
+        <MenuItem
+            Header="送信(_S)"
+            Visibility="{Binding IsSomeSenderEnabled, Converter={StaticResource boolVisibilityConv}}">
+            <MenuItem.Resources>
+                <Image
+                    x:Key="icon"
+                    x:Shared="False"
+                    Source="/MMDLipGui;component/resources/remote.png" />
+            </MenuItem.Resources>
+
+            <MenuItem
+                Header="口パクデータをキーフレーム登録(_K)"
+                Command="{Binding TimelineSendCommand}"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding TimelineSendGestureText}" />
+            <Separator />
+            <MenuItem
+                Header="選択プリセットの「あ」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="A"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[0]}" />
+            <MenuItem
+                Header="選択プリセットの「い」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="I"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[1]}" />
+            <MenuItem
+                Header="選択プリセットの「う」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="U"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[2]}" />
+            <MenuItem
+                Header="選択プリセットの「え」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="E"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[3]}" />
+            <MenuItem
+                Header="選択プリセットの「お」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="O"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[4]}" />
+            <MenuItem
+                Header="選択プリセットの「閉」を表示確認"
+                Command="{Binding MorphWeightsSendCommand}"
+                CommandParameter="Closed"
+                Icon="{StaticResource icon}"
+                InputGestureText="{Binding MorphWeightsSendGestureTexts[5]}" />
         </MenuItem>
     </Menu.Items>
 </Menu>

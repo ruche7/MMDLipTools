@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using ruche.mmd.morph;
 using ruche.wpf.viewModel;
 
 namespace ruche.mmd.gui.lip
@@ -52,6 +53,12 @@ namespace ruche.mmd.gui.lip
                 new DelegateCommand(
                     this.ExecuteDeleteCommand,
                     _ => this.SelectedPresetIndex >= 0);
+            this.MorphWeightsSendCommand =
+                new DelegateCommand(
+                    this.ExecuteMorphWeightsSendCommand,
+                    _ =>
+                        this.MorphWeightsSender != null &&
+                        this.EditingMorphInfoSet.SelectedItemIndex >= 0);
         }
 
         /// <summary>
@@ -152,6 +159,38 @@ namespace ruche.mmd.gui.lip
                 new MorphInfoSetViewModel();
 
         /// <summary>
+        /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
+        /// </summary>
+        public Action<MorphWeightDataList> MorphWeightsSender
+        {
+            get { return _morphWeightsSender; }
+            set
+            {
+                if (value != _morphWeightsSender)
+                {
+                    bool oldEnabled = this.IsMorphWeightsSenderEnabled;
+
+                    _morphWeightsSender = value;
+                    this.NotifyPropertyChanged("MorphWeightsSender");
+
+                    if (this.IsMorphWeightsSenderEnabled != oldEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsMorphWeightsSenderEnabled");
+                    }
+                }
+            }
+        }
+        private Action<MorphWeightDataList> _morphWeightsSender = null;
+
+        /// <summary>
+        /// MorphWeightsSender に有効な値が設定されているか否かを取得する。
+        /// </summary>
+        public bool IsMorphWeightsSenderEnabled
+        {
+            get { return (this.MorphWeightsSender != null); }
+        }
+
+        /// <summary>
         /// 選択中のプリセットを上へ移動するコマンドを取得する。
         /// </summary>
         public ICommand PresetUpCommand { get; private set; }
@@ -175,6 +214,11 @@ namespace ruche.mmd.gui.lip
         /// 選択中のプリセットを削除するコマンドを取得する。
         /// </summary>
         public ICommand DeleteCommand { get; private set; }
+
+        /// <summary>
+        /// 編集中のモーフウェイトリストを送信するコマンドを取得する。
+        /// </summary>
+        public ICommand MorphWeightsSendCommand { get; private set; }
 
         /// <summary>
         /// PresetUpCommand を実行する。
@@ -292,6 +336,27 @@ namespace ruche.mmd.gui.lip
                 // 選択インデックスを保持
                 this.SelectedPresetIndex = index;
             }
+        }
+
+        /// <summary>
+        /// MorphWeightsSendCommand を実行する。
+        /// </summary>
+        private void ExecuteMorphWeightsSendCommand(object param)
+        {
+            var sender = this.MorphWeightsSender;
+            if (sender == null)
+            {
+                return;
+            }
+
+            var vm = this.EditingMorphInfoSet;
+            var index = vm.SelectedItemIndex;
+            if (index < 0 || index >= vm.Items.Count)
+            {
+                return;
+            }
+
+            sender(vm.Items[index].Info.MorphWeights);
         }
 
         /// <summary>

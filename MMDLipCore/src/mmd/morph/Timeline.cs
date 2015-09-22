@@ -1,26 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
 {
     /// <summary>
     /// キー領域のリストで構成されるモーフタイムラインを表すクラス。
     /// </summary>
+    [DataContract(Namespace = "")]
+    [KnownType(typeof(KeyAreaList))]
     public class Timeline
     {
+        /// <summary>
+        /// キー領域リストクラス。
+        /// </summary>
+        [CollectionDataContract(ItemName = "Item", Namespace = "")]
+        [KnownType(typeof(TimelineKeyArea))]
+        public class KeyAreaList : List<TimelineKeyArea>
+        {
+        }
+
         /// <summary>
         /// コンストラクタ。
         /// </summary>
         public Timeline()
         {
-            this.KeyAreas = new List<TimelineKeyArea>();
+            this.KeyAreas = new KeyAreaList();
         }
 
         /// <summary>
         /// キー領域のリストを取得する。
         /// </summary>
-        public List<TimelineKeyArea> KeyAreas { get; private set; }
+        [DataMember]
+        public KeyAreaList KeyAreas { get; private set; }
 
         /// <summary>
         /// KeyAreas が空であるか否かを取得する。
