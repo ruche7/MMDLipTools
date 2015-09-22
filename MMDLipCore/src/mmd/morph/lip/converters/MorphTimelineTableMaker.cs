@@ -69,12 +69,13 @@ namespace ruche.mmd.morph.lip.converters
             }
 
             // タイムラインに追加
+            // モーフ名が空文字列のものは弾く
             if (e2ai)
             {
                 table.GetOrAddNew("あ").KeyAreas.Add(area);
                 table.GetOrAddNew("い").KeyAreas.Add(area);
             }
-            else
+            else if (!string.IsNullOrEmpty(morphWeight.MorphName))
             {
                 table.GetOrAddNew(morphWeight.MorphName).KeyAreas.Add(area);
             }

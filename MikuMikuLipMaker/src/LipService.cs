@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel;
 using ruche.mmd.morph;
 using ruche.mmd.service.lip;
@@ -47,7 +48,15 @@ namespace MikuMikuLipMaker
         /// <param name="morphWeights">モーフウェイトリスト。</param>
         public void SetMorphWeightsCommand(MorphWeightDataList morphWeights)
         {
-            var param = morphWeights.Clone();
+            if (morphWeights == null)
+            {
+                throw new ArgumentNullException("morphWeights");
+            }
+
+            // モーフ名が空文字列のものは弾く
+            var param =
+                new MorphWeightDataList(
+                    morphWeights.Where(mw => !string.IsNullOrEmpty(mw.MorphName)));
 
             lock (commandLockObject)
             {
@@ -70,6 +79,15 @@ namespace MikuMikuLipMaker
             MorphTimelineTable tlTable,
             decimal unitSeconds)
         {
+            if (tlTable == null)
+            {
+                throw new ArgumentNullException("tlTable");
+            }
+            if (unitSeconds <= 0)
+            {
+                throw new ArgumentOutOfRangeException("unitSeconds");
+            }
+
             var param =
                 new KeyFramesCommandParameter
                 {
