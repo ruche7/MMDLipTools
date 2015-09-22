@@ -17,6 +17,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BB4EB221-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipServiceClientTest", "test\LipServiceClientTest\LipServiceClientTest.csproj", "{BF32FC65-C983-4683-BCE0-1B532169E873}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mmm", "mmm", "{11DCFCD3-57FA-4238-BE77-1E33B7D2D61F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuLipClient", "mmm\MikuMikuLipClient\MikuMikuLipClient.csproj", "{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{E304F128-CE29-40EB-8191-F885558C9192}"
+	ProjectSection(SolutionItems) = preProject
+		mmm\common\DxMath.dll = mmm\common\DxMath.dll
+		mmm\common\MikuMikuPlugin.dll = mmm\common\MikuMikuPlugin.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,11 +57,17 @@ Global
 		{BF32FC65-C983-4683-BCE0-1B532169E873}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF32FC65-C983-4683-BCE0-1B532169E873}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF32FC65-C983-4683-BCE0-1B532169E873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BF32FC65-C983-4683-BCE0-1B532169E873} = {BB4EB221-FE07-4C91-9782-82BCAB25B42E}
+		{5E200FE1-B73D-4D44-81AF-1961F6DB4B3B} = {11DCFCD3-57FA-4238-BE77-1E33B7D2D61F}
+		{E304F128-CE29-40EB-8191-F885558C9192} = {11DCFCD3-57FA-4238-BE77-1E33B7D2D61F}
 	EndGlobalSection
 EndGlobal
