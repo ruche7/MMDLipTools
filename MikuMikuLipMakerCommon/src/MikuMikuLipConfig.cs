@@ -22,6 +22,8 @@ namespace ruche.mmd.tools
                     @"MMD_Lip");
             this.IsAutoNamingOverwriteConfirmed = true;
             this.DefaultDirectoryPath = "";
+            this.IsSavingWithText = false;
+            this.IsEdgeWeightHeld = true;
         }
 
         /// <summary>
@@ -95,6 +97,13 @@ namespace ruche.mmd.tools
         /// </summary>
         [DataMember]
         public bool IsSavingWithText { get; set; }
+
+        /// <summary>
+        /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
+        /// ウェイト値を保持するか否かを取得または設定する。
+        /// </summary>
+        [DataMember]
+        public bool IsEdgeWeightHeld { get; set; }
 
         #region IExtensibleDataObject の明示的実装
 

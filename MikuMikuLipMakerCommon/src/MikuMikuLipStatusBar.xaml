@@ -17,20 +17,19 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="IsTabStop" Value="False" />
         </Style>
+        <Style TargetType="Image">
+            <Setter Property="Stretch" Value="None" />
+        </Style>
 
-        <TextBox x:Key="contentNull" Text="&#x0A;" />
+        <TextBox x:Key="contentNull" Text="&#10;" />
         <StackPanel x:Key="contentTrue" Orientation="Horizontal">
-            <Image
-                Source="/MikuMikuLipMakerCommon;component/resources/status_ok.png"
-                Stretch="None" />
+            <Image Source="/MikuMikuLipMakerCommon;component/resources/status_ok.png" />
             <TextBox
                 Text="{Binding LastSaveResult.Text, Mode=OneWay}"
                 Margin="2,0,0,0" />
         </StackPanel>
         <StackPanel x:Key="contentFalse" Orientation="Horizontal">
-            <Image
-                Source="/MikuMikuLipMakerCommon;component/resources/status_ng.png"
-                Stretch="None" />
+            <Image Source="/MikuMikuLipMakerCommon;component/resources/status_ng.png" />
             <TextBox
                 Text="{Binding LastSaveResult.Text, Mode=OneWay}"
                 Margin="2,0,0,0" />

@@ -4,11 +4,18 @@ using System.Runtime.Serialization;
 namespace ruche.mmd.morph
 {
     /// <summary>
-    /// モーフのキーフレームを保持する構造体。
+    /// モーフのキーフレームを保持するクラス。
     /// </summary>
     [DataContract(Namespace = "")]
-    public struct KeyFrame
+    public class KeyFrame
     {
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        public KeyFrame() : this("", 0, 0)
+        {
+        }
+
         /// <summary>
         /// コンストラクタ。
         /// </summary>
@@ -26,7 +33,12 @@ namespace ruche.mmd.morph
         /// モーフ名を取得または設定する。
         /// </summary>
         [DataMember]
-        public string MorphName { get; set; }
+        public string MorphName
+        {
+            get { return _morphName; }
+            set { _morphName = value ?? ""; }
+        }
+        private string _morphName = "";
 
         /// <summary>
         /// フレーム位置を取得または設定する。

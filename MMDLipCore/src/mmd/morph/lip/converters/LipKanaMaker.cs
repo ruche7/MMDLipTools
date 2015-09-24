@@ -47,31 +47,29 @@ namespace ruche.mmd.morph.lip.converters
         /// </remarks>
         public string Make(string src)
         {
-            return this.MakeAsync(src).Result;
+            return this.StartMake(src).Result;
         }
 
         /// <summary>
-        /// 入力文から口パク用の読み仮名を非同期で作成する。
+        /// 入力文から口パク用の読み仮名を非同期で作成開始する。
         /// </summary>
         /// <param name="src">入力文。</param>
         /// <returns>口パク用の読み仮名作成タスク。</returns>
         /// <remarks>
         /// メインスレッドから呼び出さなければ一部処理が失敗する。
         /// </remarks>
-        public Task<string> MakeAsync(string src)
+        public Task<string> StartMake(string src)
         {
+            // 読み仮名取得だけはメインスレッドで処理
+            var text = rexToPhonetic.Replace(src, m => GetPhonetic(m.Value));
+
             return
                 Task.Factory
                     .StartNew(
-                        () => rexToPhonetic.Replace(src, m => GetPhonetic(m.Value)),
-                        CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskScheduler.FromCurrentSynchronizationContext())
-                    .ContinueWith(
-                        t =>
+                        () =>
                         {
                             // 数字列を読み仮名に変換
-                            var dest = _digitConv.ConvertFrom(t.Result);
+                            var dest = _digitConv.ConvertFrom(text);
 
                             // 英字と記号を読み仮名に変換
                             dest = _alpGlyConv.ConvertFrom(dest);

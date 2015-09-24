@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using MikuMikuPlugin;
 using ruche.mmd.morph;
-using ruche.mmd.morph.converters;
 using ruche.mmd.service.lip;
 using ruche.mmm.resources;
 
@@ -123,25 +122,32 @@ namespace ruche.mmm
         /// <param name="param">コマンドパラメータ。</param>
         private void UpdateByKeyFramesCommand(object param)
         {
-            var p = param as KeyFramesCommandParameter;
+            var cmdParam = param as KeyFramesCommandParameter;
             var model = this.ActiveModel;
-            if (p == null || model == null)
+            if (cmdParam == null || model == null)
             {
                 return;
             }
 
             // キーフレームリスト作成
-            var maker = new KeyFrameListMaker();
-            maker.UnitFrameLength =
-                p.UnitSeconds * (decimal)this.Scene.KeyFramePerSec;
-            var keyFrames = maker.Make(p.TimelineTable, this.Scene.MarkerPosition);
+            var keyFrames =
+                cmdParam.MakeKeyFrames(
+                    (decimal)this.Scene.KeyFramePerSec,
+                    this.Scene.MarkerPosition,
+                    (name, frame) =>
+                    {
+                        var m = model.Morphs[name];
+                        return (m == null) ? 0 : m.Frames.GetFrame(frame).Weight;
+                    });
 
             // モーフ名ごとにグループ化してキーフレーム設定
             foreach (var morphKeyFrames in keyFrames.GroupBy(f => f.MorphName))
             {
+                // モーフ情報取得
                 var morph = model.Morphs[morphKeyFrames.Key];
                 if (morph != null)
                 {
+                    // キーフレーム追加
                     morph.Frames.AddKeyFrame(
                         morphKeyFrames
                             .Select(f => new MorphFrameData(f.Frame, f.Weight))

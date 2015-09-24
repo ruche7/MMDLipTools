@@ -106,9 +106,7 @@
                         ToolTip="Alt+Delete"
                         Grid.Column="0">
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Source="/MMDLipGui;component/resources/delete.png"
-                                Stretch="None" />
+                            <Image Source="/MMDLipGui;component/resources/delete.png" />
                             <TextBlock Text="削除" Margin="2,0,0,0" />
                         </StackPanel>
                     </Button>
@@ -154,9 +152,7 @@
                     Grid.Row="1">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="編集" Margin="0,0,2,0" />
-                        <Image
-                            Source="/MMDLipGui;component/resources/arrow_forward.png"
-                            Stretch="None" />
+                        <Image Source="/MMDLipGui;component/resources/arrow_forward.png" />
                     </StackPanel>
                 </Button>
                 <Button
@@ -165,9 +161,7 @@
                     HorizontalContentAlignment="Left"
                     Grid.Row="3">
                     <StackPanel Orientation="Horizontal">
-                        <Image
-                            Source="/MMDLipGui;component/resources/arrow_back.png"
-                            Stretch="None" />
+                        <Image Source="/MMDLipGui;component/resources/arrow_back.png" />
                         <TextBlock Text="適用" Margin="2,0,0,0" />
                     </StackPanel>
                 </Button>
@@ -313,9 +307,7 @@
                                         ToolTip="Alt+Enter"
                                         Grid.Column="0">
                                         <StackPanel Orientation="Horizontal">
-                                            <Image
-                                                Source="/MMDLipGui;component/resources/add.png"
-                                                Stretch="None" />
+                                            <Image Source="/MMDLipGui;component/resources/add.png" />
                                             <TextBlock Text="追加" Margin="2,0,0,0" />
                                         </StackPanel>
                                     </Button>
@@ -324,9 +316,7 @@
                                         ToolTip="Alt+Delete"
                                         Grid.Column="2">
                                         <StackPanel Orientation="Horizontal">
-                                            <Image
-                                                Source="/MMDLipGui;component/resources/delete.png"
-                                                Stretch="None" />
+                                            <Image Source="/MMDLipGui;component/resources/delete.png" />
                                             <TextBlock Text="削除" Margin="2,0,0,0" />
                                         </StackPanel>
                                     </Button>
@@ -368,9 +358,7 @@
                         ToolTip="F8"
                         HorizontalAlignment="Left">
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Source="/MMDLipGui;component/resources/remote.png"
-                                Stretch="None" />
+                            <Image Source="/MMDLipGui;component/resources/remote.png" />
                             <TextBlock Text="送信して表示確認" Margin="2,0,0,0" />
                         </StackPanel>
                     </Button>

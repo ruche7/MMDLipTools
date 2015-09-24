@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ruche.mmd.morph
@@ -37,6 +38,14 @@ namespace ruche.mmd.morph
                     this.Table[morphName] = value;
                 }
             }
+        }
+
+        /// <summary>
+        /// モーフ名コレクションを取得する。
+        /// </summary>
+        public Dictionary<string, Timeline>.KeyCollection MorphNames
+        {
+            get { return this.Table.Keys; }
         }
 
         /// <summary>

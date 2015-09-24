@@ -63,7 +63,7 @@ namespace ruche.mmd.morph.lip.converters
 
             // キー領域作成
             var area = lipKeyArea.Clone();
-            foreach (var p in area.Points.Keys.ToList())
+            foreach (var p in lipKeyArea.Points.Keys)
             {
                 area.Points[p] *= morphWeight.Weight * (e2ai ? 0.5f : 1.0f);
             }

@@ -113,39 +113,43 @@
                 Command="{Binding TimelineSendCommand}"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding TimelineSendGestureText}" />
+            <MenuItem
+                Header="登録位置前後のウェイト値を保持(_W)"
+                IsCheckable="True"
+                IsChecked="{Binding IsEdgeWeightHeld}" />
             <Separator />
             <MenuItem
-                Header="選択プリセットの「あ」を表示確認"
+                Header="選択プリセットの「あ」を表示確認(_1)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="A"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[0]}" />
             <MenuItem
-                Header="選択プリセットの「い」を表示確認"
+                Header="選択プリセットの「い」を表示確認(_2)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="I"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[1]}" />
             <MenuItem
-                Header="選択プリセットの「う」を表示確認"
+                Header="選択プリセットの「う」を表示確認(_3)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="U"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[2]}" />
             <MenuItem
-                Header="選択プリセットの「え」を表示確認"
+                Header="選択プリセットの「え」を表示確認(_4)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="E"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[3]}" />
             <MenuItem
-                Header="選択プリセットの「お」を表示確認"
+                Header="選択プリセットの「お」を表示確認(_5)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="O"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[4]}" />
             <MenuItem
-                Header="選択プリセットの「閉」を表示確認"
+                Header="選択プリセットの「閉」を表示確認(_6)"
                 Command="{Binding MorphWeightsSendCommand}"
                 CommandParameter="Closed"
                 Icon="{StaticResource icon}"

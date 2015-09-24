@@ -52,9 +52,19 @@ namespace ruche.mmd.tools
         /// <param name="unitSeconds">
         /// ユニット基準長(「ア」の長さ)に相当する秒数値。
         /// </param>
+        /// <param name="edgeWeightZero">
+        /// キーフレームリストの先頭と終端で、
+        /// 含まれている全モーフのウェイト値をゼロ初期化するならば true 。
+        /// </param>
+        /// <param name="edgeWeightHeld">
+        /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
+        /// ウェイト値を保持するならば true 。
+        /// </param>
         public delegate void TimelineTableSendDelegate(
             MorphTimelineTable tlTable,
-            decimal unitSeconds);
+            decimal unitSeconds,
+            bool edgeWeightZero,
+            bool edgeWeightHeld);
 
         /// <summary>
         /// ファイルフォーマット情報構造体。
@@ -578,6 +588,24 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
+        /// ウェイト値を保持するか否かを取得または設定する。
+        /// </summary>
+        public bool IsEdgeWeightHeld
+        {
+            get { return this.Config.IsEdgeWeightHeld; }
+            set
+            {
+                var old = this.IsEdgeWeightHeld;
+                this.Config.IsEdgeWeightHeld = value;
+                if (this.IsEdgeWeightHeld != old)
+                {
+                    this.NotifyPropertyChanged("IsEdgeWeightHeld");
+                }
+            }
+        }
+
+        /// <summary>
         /// 自動命名保存コマンドを取得する。
         /// </summary>
         public ICommand AutoNamingSaveCommand { get; private set; }
@@ -873,10 +901,12 @@ namespace ruche.mmd.tools
             }
 
             var spanRange = this.EditViewModel.SpanRange;
-            var spanSeconds = this.EditViewModel.CalcSpanSeconds();
+            var spanSeconds = this.EditViewModel.EditConfig.SpanSeconds;
+            bool edgeWeightZero = this.EditViewModel.IsEdgeWeightZero;
+            bool edgeWeightHeld = this.IsEdgeWeightHeld;
 
             this.EditViewModel
-                .MakeMorphTimelineTableAsync()
+                .StartMakeMorphTimelineTable()
                 .ContinueWith(
                     t =>
                     {
@@ -894,7 +924,7 @@ namespace ruche.mmd.tools
                         }
 
                         // 送信
-                        sender(tlTable, unitSeconds);
+                        sender(tlTable, unitSeconds, edgeWeightZero, edgeWeightHeld);
                     });
         }
 

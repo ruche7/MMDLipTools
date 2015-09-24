@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ruche.mmd.morph.converters
 {
@@ -12,6 +13,26 @@ namespace ruche.mmd.morph.converters
         /// ユニット基準長(「ア」の長さ)に相当するフレーム長の既定値。
         /// </summary>
         public static readonly decimal DefaultUnitFrameLength = 10;
+
+        /// <summary>
+        /// ウェイト値が 0 のキーフレームをまとめて追加する。
+        /// </summary>
+        /// <param name="keyFrames">追加先のキーフレームリスト。</param>
+        /// <param name="morphNames">追加対象のモーフ名列挙。</param>
+        /// <param name="frame">フレーム位置。</param>
+        /// <remarks>
+        /// 既に同位置にキーフレームが存在する場合は追加しない。
+        /// </remarks>
+        private static void AddZeroWeightKeyFrames(
+            KeyFrameList keyFrames,
+            IEnumerable<string> morphNames,
+            long frame)
+        {
+            keyFrames.AddRange(
+                from name in morphNames
+                where !keyFrames.Any(f => f.MorphName == name && f.Frame == frame)
+                select new KeyFrame(name, frame, 0));
+        }
 
         /// <summary>
         /// コンストラクタ。
@@ -37,6 +58,15 @@ namespace ruche.mmd.morph.converters
             }
         }
         private decimal _unitFrameLength = DefaultUnitFrameLength;
+
+        /// <summary>
+        /// キーフレームリストの先頭と終端で、
+        /// 含まれている全モーフのウェイト値をゼロ初期化するか否かを取得する。
+        /// </summary>
+        /// <remarks>
+        /// 既にキーフレーム登録されているモーフについては上書きしない。
+        /// </remarks>
+        public bool IsEdgeWeightZero { get; set; }
 
         /// <summary>
         /// モーフ別タイムラインテーブルを基にキーフレームリストを作成する。
@@ -77,6 +107,14 @@ namespace ruche.mmd.morph.converters
                                     beginFrame + destPos,
                                     tlTable[name].GetWeight(srcPos.Value))));
                 }
+            }
+
+            if (dest.Count > 0 && this.IsEdgeWeightZero)
+            {
+                // 先頭と末尾のウェイト値をゼロ初期化
+                var morphNames = tlTable.MorphNames;
+                AddZeroWeightKeyFrames(dest, morphNames, dest.Min(f => f.Frame));
+                AddZeroWeightKeyFrames(dest, morphNames, dest.Max(f => f.Frame));
             }
 
             return dest;

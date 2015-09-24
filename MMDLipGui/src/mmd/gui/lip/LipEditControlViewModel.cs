@@ -87,30 +87,6 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
-        /// FPS値変更によるフレーム数の変換を行う。
-        /// </summary>
-        /// <param name="frame">変更前のフレーム数。</param>
-        /// <param name="oldFps">変更前のFPS値。</param>
-        /// <param name="newFps">変更後のFPS値。</param>
-        /// <returns>変更後のフレーム数。</returns>
-        private static decimal ConvertSpanFrameFps(
-            decimal frame,
-            decimal oldFps,
-            decimal newFps)
-        {
-            if (oldFps <= 0)
-            {
-                throw new ArgumentOutOfRangeException("oldFps");
-            }
-            if (newFps <= 0)
-            {
-                throw new ArgumentOutOfRangeException("newFps");
-            }
-
-            return (oldFps == newFps) ? frame : (frame * newFps / oldFps);
-        }
-
-        /// <summary>
         /// モーフ別タイムラインテーブルを作成する。
         /// </summary>
         /// <returns>モーフ別タイムラインテーブル。</returns>
@@ -148,7 +124,8 @@ namespace ruche.mmd.gui.lip
             MorphTimelineTable tlTable,
             LipSpanRange spanRange,
             decimal spanFrame,
-            long beginFrame)
+            long beginFrame,
+            bool edgeWeightZero)
         {
             // 基準フレーム長算出
             if (spanRange == LipSpanRange.All)
@@ -165,6 +142,7 @@ namespace ruche.mmd.gui.lip
             {
                 var maker = new KeyFrameListMaker();
                 maker.UnitFrameLength = spanFrame;
+                maker.IsEdgeWeightZero = edgeWeightZero;
                 dest = maker.Make(tlTable, beginFrame);
             }
 
@@ -490,19 +468,19 @@ namespace ruche.mmd.gui.lip
             {
                 return
                     ConvertSpanValueUnit(
-                        this.EditConfig.SpanFrame,
-                        LipSpanUnit.Frames,
+                        this.EditConfig.SpanSeconds,
+                        LipSpanUnit.Seconds,
                         this.SpanUnit,
                         this.Fps);
             }
             set
             {
                 var old = this.SpanValue;
-                this.EditConfig.SpanFrame =
+                this.EditConfig.SpanSeconds =
                     ConvertSpanValueUnit(
                         value,
                         this.SpanUnit,
-                        LipSpanUnit.Frames,
+                        LipSpanUnit.Seconds,
                         this.Fps);
                 if (this.SpanValue != old)
                 {
@@ -544,8 +522,8 @@ namespace ruche.mmd.gui.lip
             {
                 return
                     ConvertSpanValueUnit(
-                        LipEditConfig.MinSpanFrame,
-                        LipSpanUnit.Frames,
+                        LipEditConfig.MinSpanSeconds,
+                        LipSpanUnit.Seconds,
                         this.SpanUnit,
                         this.Fps);
             }
@@ -560,8 +538,8 @@ namespace ruche.mmd.gui.lip
             {
                 return
                     ConvertSpanValueUnit(
-                        LipEditConfig.MaxSpanFrame,
-                        LipSpanUnit.Frames,
+                        LipEditConfig.MaxSpanSeconds,
+                        LipSpanUnit.Seconds,
                         this.SpanUnit,
                         this.Fps);
             }
@@ -592,10 +570,10 @@ namespace ruche.mmd.gui.lip
             {
                 switch (this.SpanUnit)
                 {
-                case LipSpanUnit.MilliSeconds: return "0.###";
-                case LipSpanUnit.Seconds: return "0.000###";
+                case LipSpanUnit.MilliSeconds: return "0.#";
+                case LipSpanUnit.Seconds: return "0.00##";
                 }
-                return "0.###";
+                return "0.##";
             }
         }
 
@@ -707,6 +685,24 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
+        /// キーフレームリストの先頭と終端で、含まれている全モーフのウェイト値を
+        /// ゼロ初期化するか否かを取得または設定する。
+        /// </summary>
+        public bool IsEdgeWeightZero
+        {
+            get { return this.EditConfig.IsEdgeWeightZero; }
+            set
+            {
+                var old = this.IsEdgeWeightZero;
+                this.EditConfig.IsEdgeWeightZero = value;
+                if (this.IsEdgeWeightZero != old)
+                {
+                    this.NotifyPropertyChanged("IsEdgeWeightZero");
+                }
+            }
+        }
+
+        /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
         public bool IsMorphEtoAI
@@ -734,37 +730,23 @@ namespace ruche.mmd.gui.lip
         public ICommand PresetsEditCommand { get; private set; }
 
         /// <summary>
-        /// 秒単位での口パク時間指定値を算出する。
-        /// </summary>
-        /// <returns>秒単位での口パク時間指定値。</returns>
-        public decimal CalcSpanSeconds()
-        {
-            return
-                ConvertSpanValueUnit(
-                    this.EditConfig.SpanFrame,
-                    LipSpanUnit.Frames,
-                    LipSpanUnit.Seconds,
-                    this.Fps);
-        }
-
-        /// <summary>
         /// 現在の設定値からモーフ別タイムラインテーブルを作成する。
         /// </summary>
         /// <returns>モーフ別タイムラインテーブル。</returns>
         public MorphTimelineTable MakeMorphTimelineTable()
         {
-            return this.MakeMorphTimelineTableAsync().Result;
+            return this.StartMakeMorphTimelineTable().Result;
         }
 
         /// <summary>
-        /// 現在の設定値からモーフ別タイムラインテーブルを非同期で作成する。
+        /// 現在の設定値からモーフ別タイムラインテーブルを非同期で作成開始する。
         /// </summary>
         /// <returns>モーフ別タイムラインテーブル。</returns>
         /// <remarks>
         /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
         /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
         /// </remarks>
-        public Task<MorphTimelineTable> MakeMorphTimelineTableAsync()
+        public Task<MorphTimelineTable> StartMakeMorphTimelineTable()
         {
             var linkLengthPercent = this.LinkLengthPercent;
             var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
@@ -802,11 +784,11 @@ namespace ruche.mmd.gui.lip
         /// <returns>キーフレームリスト。</returns>
         public KeyFrameList MakeKeyFrameList(decimal fps, long beginFrame)
         {
-            return this.MakeKeyFrameListAsync(fps, beginFrame).Result;
+            return this.StartMakeKeyFrameList(fps, beginFrame).Result;
         }
 
         /// <summary>
-        /// 現在の設定値からキーフレームリストを非同期で作成する。
+        /// 現在の設定値からキーフレームリストを非同期で作成開始する。
         /// </summary>
         /// <param name="fps">出力FPS値。</param>
         /// <param name="beginFrame">出力開始フレーム位置。出力FPS値基準。</param>
@@ -815,23 +797,29 @@ namespace ruche.mmd.gui.lip
         /// リップシンクユニットリストが作成途中であれば作成完了まで待機する。
         /// それ以外のパラメータはこのメソッドを呼び出した時点の値が利用される。
         /// </remarks>
-        public Task<KeyFrameList> MakeKeyFrameListAsync(
+        public Task<KeyFrameList> StartMakeKeyFrameList(
             decimal fps,
             long beginFrame)
         {
             var spanRange = this.SpanRange;
             var spanFrame =
-                ConvertSpanFrameFps(this.EditConfig.SpanFrame, this.Fps, fps);
+                ConvertSpanValueUnit(
+                    this.EditConfig.SpanSeconds,
+                    LipSpanUnit.Seconds,
+                    LipSpanUnit.Frames,
+                    fps);
+            var edgeWeightZero = this.IsEdgeWeightZero;
 
             return
-                MakeMorphTimelineTableAsync()
+                StartMakeMorphTimelineTable()
                     .ContinueWith(
                         t =>
                             MakeKeyFrameListCore(
                                 t.Result,
                                 spanRange,
                                 spanFrame,
-                                beginFrame));
+                                beginFrame,
+                                edgeWeightZero));
         }
 
         /// <summary>
@@ -880,7 +868,7 @@ namespace ruche.mmd.gui.lip
             // 読み仮名更新タスク開始
             // 後続タスクはメインスレッドで処理する
             (new LipKanaMaker())
-                .MakeAsync(text)
+                .StartMake(text)
                 .ContinueWith(
                     t =>
                     {

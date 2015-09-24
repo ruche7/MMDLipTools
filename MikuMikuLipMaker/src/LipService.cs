@@ -75,9 +75,19 @@ namespace MikuMikuLipMaker
         /// <param name="unitSeconds">
         /// ユニット基準長(「ア」の長さ)に相当する秒数値。
         /// </param>
+        /// <param name="edgeWeightZero">
+        /// キーフレームリストの先頭と終端で、
+        /// 含まれている全モーフのウェイト値をゼロ初期化するならば true 。
+        /// </param>
+        /// <param name="edgeWeightHeld">
+        /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
+        /// ウェイト値を保持するならば true 。
+        /// </param>
         public void SetKeyFramesCommand(
             MorphTimelineTable tlTable,
-            decimal unitSeconds)
+            decimal unitSeconds,
+            bool edgeWeightZero,
+            bool edgeWeightHeld)
         {
             if (tlTable == null)
             {
@@ -93,6 +103,8 @@ namespace MikuMikuLipMaker
                 {
                     TimelineTable = tlTable,
                     UnitSeconds = unitSeconds,
+                    IsEdgeWeightZero = edgeWeightZero,
+                    IsEdgeWeightHeld = edgeWeightHeld,
                 };
 
             lock (commandLockObject)

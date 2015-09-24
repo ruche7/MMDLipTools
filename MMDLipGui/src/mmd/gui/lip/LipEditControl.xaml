@@ -201,6 +201,7 @@
                     Maximum="{Binding MaxSpanValue}"
                     Increment="{Binding SpanValueIncrement}"
                     FormatString="{Binding SpanValueFormat}"
+                    MinWidth="80"
                     Grid.Column="2" />
                 <ComboBox
                     ItemsSource="{Binding Source={StaticResource lipSpanUnit}}"
@@ -239,15 +240,32 @@
             Grid.Row="11">
             <xctk:DropDownButton.DropDownContent>
                 <Grid Margin="8">
+                    <Grid.Resources>
+                        <Style x:Shared="False" TargetType="Image">
+                            <Setter
+                                Property="Source"
+                                Value="/MMDLipGui;component/resources/help.png" />
+                            <Setter Property="Margin" Value="8,0,0,0" />
+                            <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+                            <Setter
+                                Property="ToolTipService.ShowDuration"
+                                Value="600000" />
+                            <Setter Property="Grid.Column" Value="2" />
+                        </Style>
+                    </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="8" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <!-- row 0 -->
@@ -264,6 +282,16 @@
                         FormatString="0.###"
                         Margin="4,0,0,0"
                         Grid.Row="0" Grid.Column="1" />
+                    <Image Grid.Row="0">
+                        <Image.ToolTip>
+                            <TextBlock>
+                                1音あたりの長さのうち、口を開き切るまでに掛かる時間割合を<LineBreak />
+                                パーセント値で指定します。既定値は 50 です。<LineBreak />
+                                この値は開口のみの割合であり、同じ時間を掛けて閉口するため、<LineBreak />
+                                この数値が大きいほど1音あたりの長さが伸びることになります。
+                            </TextBlock>
+                        </Image.ToolTip>
+                    </Image>
 
                     <!-- row 2 -->
                     <Label
@@ -279,13 +307,46 @@
                         FormatString="0.###"
                         Margin="4,0,0,0"
                         Grid.Row="2" Grid.Column="1" />
+                    <Image Grid.Row="2">
+                        <Image.ToolTip>
+                            <TextBlock>
+                                「あー」等の長音における、閉口開始直前での口の開き具合を<LineBreak />
+                                パーセント値で指定します。既定値は 100 です。<LineBreak />
+                                数値を下げると、発声中にだんだん口を閉じるようになります。
+                            </TextBlock>
+                        </Image.ToolTip>
+                    </Image>
 
-                    <!-- row 3 -->
+                    <!-- row 4 -->
+                    <CheckBox
+                        Content="モーフのウェイト値をゼロ初期化(_Z)"
+                        IsChecked="{Binding IsEdgeWeightZero}"
+                        Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <Image Grid.Row="4">
+                        <Image.ToolTip>
+                            <TextBlock>
+                                作成されたキーフレームリストの先頭と終端において、<LineBreak />
+                                そのリストに含まれる全モーフのウェイト値を一旦 0 にします。<LineBreak />
+                                既定ではチェック ON です。
+                            </TextBlock>
+                        </Image.ToolTip>
+                    </Image>
+
+                    <!-- row 6 -->
                     <CheckBox
                         Content="&quot;え&quot; のモーフを &quot;あ&quot;+&quot;い&quot; に変換(_M)"
                         IsChecked="{Binding IsMorphEtoAI}"
-                        Margin="0,8,0,0"
-                        Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" />
+                        Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <Image Grid.Row="6">
+                        <Image.ToolTip>
+                            <TextBlock>
+                                プリセット内で &quot;え&quot; に割り当てられているウェイト値を<LineBreak />
+                                &quot;あ&quot; と &quot;い&quot; に半分ずつ振り分けます。<LineBreak />
+                                既定ではチェック OFF です。<LineBreak />
+                                主に &quot;え&quot; のモーフを持たないモデル用の機能です。
+                            </TextBlock>
+                        </Image.ToolTip>
+                    </Image>
                 </Grid>
             </xctk:DropDownButton.DropDownContent>
         </xctk:DropDownButton>

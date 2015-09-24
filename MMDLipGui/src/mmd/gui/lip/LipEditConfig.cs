@@ -12,14 +12,14 @@ namespace ruche.mmd.gui.lip
     public class LipEditConfig : IExtensibleDataObject
     {
         /// <summary>
-        /// 口パクのフレーム数指定値の最小許容値。
+        /// 口パクの秒数指定値の最小許容値。
         /// </summary>
-        public static readonly decimal MinSpanFrame = 1;
+        public static readonly decimal MinSpanSeconds = 0.001m;
 
         /// <summary>
-        /// 口パクのフレーム数指定値の最大許容値。
+        /// 口パクの秒数指定値の最大許容値。
         /// </summary>
-        public static readonly decimal MaxSpanFrame = 99999.99m;
+        public static readonly decimal MaxSpanSeconds = 600m;
 
         /// <summary>
         /// FPSの最小許容値。
@@ -37,6 +37,7 @@ namespace ruche.mmd.gui.lip
         public LipEditConfig()
         {
             this.IsAutoLipKana = true;
+            this.IsEdgeWeightZero = true;
             this.IsMorphEtoAI = false;
         }
 
@@ -69,15 +70,19 @@ namespace ruche.mmd.gui.lip
         private LipSpanRange _spanRange = LipSpanRange.Letter;
 
         /// <summary>
-        /// 口パクのフレーム数指定値を取得または設定する。
+        /// 口パクの秒数指定値を取得または設定する。
         /// </summary>
         [DataMember]
-        public decimal SpanFrame
+        public decimal SpanSeconds
         {
-            get { return _spanFrame; }
-            set { _spanFrame = Math.Min(Math.Max(MinSpanFrame, value), MaxSpanFrame); }
+            get { return _spanSeconds; }
+            set
+            {
+                _spanSeconds =
+                    Math.Min(Math.Max(MinSpanSeconds, value), MaxSpanSeconds);
+            }
         }
-        private decimal _spanFrame = 4.5m;
+        private decimal _spanSeconds = 0.2m;
 
         /// <summary>
         /// 口パクの時間指定単位種別を取得または設定する。
@@ -141,6 +146,13 @@ namespace ruche.mmd.gui.lip
         }
         private float _longSoundLastWeightPercent =
             TimelineSetMaker.DefaultLongSoundLastWeight * 100;
+
+        /// <summary>
+        /// キーフレームリストの先頭と終端で、含まれている全モーフのウェイト値を
+        /// ゼロ初期化するか否かを取得または設定する。
+        /// </summary>
+        [DataMember]
+        public bool IsEdgeWeightZero { get; set; }
 
         /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
