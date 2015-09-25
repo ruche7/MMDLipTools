@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using dlg = ruche.dialogs;
 
 namespace ruche.mmd.tools
 {
@@ -27,17 +28,46 @@ namespace ruche.mmd.tools
 
                 if (vm.MessageBoxShower == null)
                 {
-                    // メッセージボックス表示処理デリゲートを設定
+                    // メッセージボックス表示デリゲートを設定
                     vm.MessageBoxShower =
                         (message, caption, button, icon) =>
-                            MessageBox.Show(window, message, caption, button, icon);
+                            dlg.MessageBox.Show(window, message, caption, button, icon);
                 }
-                if (vm.CommonFileDialogShower == null)
+                if (vm.SaveMotionFileDialogShower == null)
                 {
-                    // コモンファイルダイアログ表示処理デリゲートを設定
-                    vm.CommonFileDialogShower =
-                        dialog =>
-                            (dialog.ShowDialog(window) == CommonFileDialogResult.Ok);
+                    // モーションファイル保存ダイアログ表示デリゲートを設定
+                    vm.SaveMotionFileDialogShower =
+                        (dirPath, filters, filterIndex) =>
+                        {
+                            var dialog = new dlg.SaveFileDialog();
+                            dialog.DefaultDirectory = dirPath;
+                            dialog.Filters = filters;
+                            dialog.FilterIndex = filterIndex;
+                            dialog.IsExtensionAppended = true;
+                            dialog.IsOverwriteConfirmed = true;
+                            dialog.IsValidNameRequired = true;
+                            dialog.IsWritableRequired = true;
+
+                            return
+                                dialog.Show(window) ?
+                                    Tuple.Create(dialog.FileName, dialog.FilterIndex) :
+                                    null;
+                        };
+                }
+                if (vm.SelectAutoNamingDirectoryDialogShower == null)
+                {
+                    // 自動命名保存先ディレクトリ選択ダイアログ表示デリゲートを設定
+                    vm.SelectAutoNamingDirectoryDialogShower =
+                        dirPath =>
+                        {
+                            var dialog = new dlg.OpenFileDialog();
+                            dialog.IsFolderPicker = true;
+                            dialog.Title = @"自動命名保存先フォルダーの選択";
+                            dialog.DefaultDirectory = dirPath;
+                            dialog.IsValidNameRequired = true;
+
+                            return dialog.Show(window) ? dialog.FileName : null;
+                        };
                 }
             }
         }

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ruche.mmd.morph;
+using dlg = ruche.dialogs;
 
 namespace ruche.mmd.gui.lip
 {
@@ -49,7 +50,7 @@ namespace ruche.mmd.gui.lip
                 // メッセージボックス表示処理デリゲートを設定
                 vm.MessageBoxShower =
                     (message, caption, button, icon) =>
-                        MessageBox.Show(this, message, caption, button, icon);
+                        dlg.MessageBox.Show(this, message, caption, button, icon);
             }
         }
 

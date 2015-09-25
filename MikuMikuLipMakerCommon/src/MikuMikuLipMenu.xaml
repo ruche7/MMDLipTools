@@ -30,8 +30,13 @@
         </ObjectDataProvider>
     </Menu.Resources>
 
+    <Menu.ItemsPanel>
+        <ItemsPanelTemplate>
+            <DockPanel />
+        </ItemsPanelTemplate>
+    </Menu.ItemsPanel>
     <Menu.Items>
-        <MenuItem Header="ファイル(_F)">
+        <MenuItem Header="ファイル(_F)" DockPanel.Dock="Left">
             <MenuItem
                 Header="自動命名保存(_S)"
                 Command="{Binding AutoNamingSaveCommand}"
@@ -58,7 +63,7 @@
                 </MenuItem.Icon>
             </MenuItem>
         </MenuItem>
-        <MenuItem Header="設定(_C)">
+        <MenuItem Header="設定(_C)" DockPanel.Dock="Left">
             <MenuItem
                 Header="ファイル形式(_T)"
                 ItemsSource="{Binding FileFormats}">
@@ -100,7 +105,8 @@
         </MenuItem>
         <MenuItem
             Header="送信(_S)"
-            Visibility="{Binding IsSomeSenderEnabled, Converter={StaticResource boolVisibilityConv}}">
+            Visibility="{Binding IsSomeSenderEnabled, Converter={StaticResource boolVisibilityConv}}"
+            DockPanel.Dock="Left">
             <MenuItem.Resources>
                 <Image
                     x:Key="icon"
@@ -154,6 +160,10 @@
                 CommandParameter="Closed"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[5]}" />
+        </MenuItem>
+        <MenuItem Header="ヘルプ(_H)" HorizontalAlignment="Right" DockPanel.Dock="Right">
+            <MenuItem Header="バージョン情報(_V)..." />
+            <MenuItem Header="ライセンス表記(_L)..." />
         </MenuItem>
     </Menu.Items>
 </Menu>

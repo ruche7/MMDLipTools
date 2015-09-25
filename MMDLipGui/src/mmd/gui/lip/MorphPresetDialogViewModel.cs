@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using ruche.mmd.morph;
 using ruche.wpf.viewModel;
+using dlg = ruche.dialogs;
 
 namespace ruche.mmd.gui.lip
 {
@@ -17,13 +18,13 @@ namespace ruche.mmd.gui.lip
         /// <param name="message">メッセージ。</param>
         /// <param name="caption">キャプション。</param>
         /// <param name="button">ボタン種別。</param>
-        /// <param name="image">アイコン種別。</param>
+        /// <param name="icon">アイコン種別。</param>
         /// <returns>選択結果。</returns>
-        public delegate MessageBoxResult MessageBoxDelegate(
+        public delegate dlg.MessageBox.Result MessageBoxDelegate(
             string message,
             string caption,
-            MessageBoxButton button,
-            MessageBoxImage image);
+            dlg.MessageBox.Button button,
+            dlg.MessageBox.Icon icon);
 
         /// <summary>
         /// コンストラクタ。
@@ -277,7 +278,7 @@ namespace ruche.mmd.gui.lip
                 ShowErrorDialog(
                     @"プリセット名が不正です。" + Environment.NewLine +
                     @"空の名前や空白文字のみの名前は付けられません。",
-                    MessageBoxImage.Warning);
+                    dlg.MessageBox.Icon.Warning);
                 return;
             }
 
@@ -366,15 +367,15 @@ namespace ruche.mmd.gui.lip
         /// <returns>Yesが選択されたならば true 。</returns>
         private bool ShowOkCancelDialog(string message)
         {
-            var shower = this.MessageBoxShower ?? MessageBox.Show;
+            var shower = this.MessageBoxShower ?? dlg.MessageBox.Show;
             var result =
                 shower(
                     message,
                     @"確認",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Question);
+                    dlg.MessageBox.Button.OkCancel,
+                    dlg.MessageBox.Icon.Information);
 
-            return (result == MessageBoxResult.OK);
+            return (result == dlg.MessageBox.Result.Ok);
         }
 
         /// <summary>
@@ -382,10 +383,10 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         /// <param name="message">エラーメッセージ。</param>
         /// <param name="image">アイコン種別。</param>
-        private void ShowErrorDialog(string message, MessageBoxImage image)
+        private void ShowErrorDialog(string message, dlg.MessageBox.Icon icon)
         {
-            var shower = this.MessageBoxShower ?? MessageBox.Show;
-            shower(message, @"エラー", MessageBoxButton.OK, image);
+            var shower = this.MessageBoxShower ?? dlg.MessageBox.Show;
+            shower(message, @"エラー", dlg.MessageBox.Button.Ok, icon);
         }
     }
 }

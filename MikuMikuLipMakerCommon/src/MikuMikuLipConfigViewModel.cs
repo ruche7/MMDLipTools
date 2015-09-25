@@ -16,6 +16,7 @@ using ruche.mmd.morph.converters;
 using ruche.mmd.morph.lip;
 using ruche.util;
 using ruche.wpf.viewModel;
+using dlg = ruche.dialogs;
 
 namespace ruche.mmd.tools
 {
@@ -30,20 +31,37 @@ namespace ruche.mmd.tools
         /// <param name="message">メッセージ。</param>
         /// <param name="caption">キャプション。</param>
         /// <param name="button">ボタン種別。</param>
-        /// <param name="image">アイコン種別。</param>
+        /// <param name="icon">アイコン種別。</param>
         /// <returns>選択結果。</returns>
-        public delegate MessageBoxResult MessageBoxDelegate(
+        public delegate dlg.MessageBox.Result MessageBoxDelegate(
             string message,
             string caption,
-            MessageBoxButton button,
-            MessageBoxImage image);
+            dlg.MessageBox.Button button,
+            dlg.MessageBox.Icon icon);
 
         /// <summary>
-        /// コモンファイルダイアログの表示処理を提供するデリゲート。
+        /// ファイル保存ダイアログの表示処理を提供するデリゲート。
         /// </summary>
-        /// <param name="dialog">コモンファイルダイアログ。</param>
-        /// <returns>操作結果。</returns>
-        public delegate bool CommonFileDialogDelegate(CommonFileDialog dialog);
+        /// <param name="defaultDirectory">既定のディレクトリパス。</param>
+        /// <param name="filters">フィルターリスト。</param>
+        /// <param name="filterIndex">初期フィルターインデックス。</param>
+        /// <returns>
+        /// 選択されたファイルパスとフィルターインデックス。
+        /// 選択されなかった場合は null 。
+        /// </returns>
+        public delegate Tuple<string, int> SaveFileDialogDelegate(
+            string defaultDirectory,
+            List<dlg.SaveFileDialog.Filter> filters,
+            int filterIndex);
+
+        /// <summary>
+        /// ディレクトリ選択ダイアログの表示処理を提供するデリゲート。
+        /// </summary>
+        /// <param name="defaultDirectory">既定のディレクトリパス。</param>
+        /// <returns>
+        /// 選択されたディレクトリパス。選択されなかった場合は null 。
+        /// </returns>
+        public delegate string SelectDirectoryDialogDelegate(string defaultDirectory);
 
         /// <summary>
         /// タイムラインテーブル情報の送信処理を提供するデリゲート。
@@ -280,11 +298,11 @@ namespace ruche.mmd.tools
             this.SaveAsCommand =
                 new DelegateCommand(
                     this.ExecuteSaveAsCommand,
-                    _ => this.CommonFileDialogShower != null);
+                    _ => this.SaveMotionFileDialogShower != null);
             this.AutoNamingDirectoryCommand =
                 new DelegateCommand(
                     this.ExecuteAutoNamingDirectoryCommand,
-                    _ => this.CommonFileDialogShower != null);
+                    _ => this.SelectAutoNamingDirectoryDialogShower != null);
             this.TimelineSendCommand =
                 new DelegateCommand(
                     this.ExecuteTimelineSendCommand,
@@ -323,21 +341,41 @@ namespace ruche.mmd.tools
         private MessageBoxDelegate _messageBoxShower = null;
 
         /// <summary>
-        /// コモンファイルダイアログの表示処理を行うデリゲートを取得または設定する。
+        /// モーションファイル保存ダイアログの表示処理を行うデリゲートを
+        /// 取得または設定する。
         /// </summary>
-        public CommonFileDialogDelegate CommonFileDialogShower
+        public SaveFileDialogDelegate SaveMotionFileDialogShower
         {
-            get { return _commonFileDialogShower; }
+            get { return _saveMotionFileDialogShower; }
             set
             {
-                if (value != _commonFileDialogShower)
+                if (value != _saveMotionFileDialogShower)
                 {
-                    _commonFileDialogShower = value;
-                    this.NotifyPropertyChanged("CommonFileDialogShower");
+                    _saveMotionFileDialogShower = value;
+                    this.NotifyPropertyChanged("SaveMotionFileDialogShower");
                 }
             }
         }
-        private CommonFileDialogDelegate _commonFileDialogShower = null;
+        private SaveFileDialogDelegate _saveMotionFileDialogShower = null;
+
+        /// <summary>
+        /// 自動命名保存先ディレクトリ選択ダイアログの表示処理を行うデリゲートを
+        /// 取得または設定する。
+        /// </summary>
+        public SelectDirectoryDialogDelegate SelectAutoNamingDirectoryDialogShower
+        {
+            get { return _selectAutoNamingDirectoryDialogShower; }
+            set
+            {
+                if (value != _selectAutoNamingDirectoryDialogShower)
+                {
+                    _selectAutoNamingDirectoryDialogShower = value;
+                    this.NotifyPropertyChanged("SelectAutoNamingDirectoryDialogShower");
+                }
+            }
+        }
+        private SelectDirectoryDialogDelegate _selectAutoNamingDirectoryDialogShower =
+            null;
 
         /// <summary>
         /// LipEditControl の ViewModel を取得または設定する。
@@ -838,40 +876,33 @@ namespace ruche.mmd.tools
         /// </summary>
         private void ExecuteSaveAsCommand(object param)
         {
-            var shower = this.CommonFileDialogShower;
+            var shower = this.SaveMotionFileDialogShower;
             if (shower == null)
             {
                 return;
             }
 
-            // 保存先選択ダイアログ作成
-            var dialog = new CommonSaveFileDialog();
-            foreach (var info in FileFormatInfos)
-            {
-                dialog.Filters.Add(
-                    new CommonFileDialogFilter(info.Description, info.Extension)
-                    {
-                        ShowExtensions = true
-                    });
-                if (info.Format == this.ActiveFileFormat)
-                {
-                    dialog.DefaultExtension = info.Extension;
-                }
-            }
-            dialog.DefaultDirectory = this.DefaultDirectoryPath;
-            dialog.AlwaysAppendDefaultExtension = true;
-            dialog.OverwritePrompt = true;
-            dialog.EnsureValidNames = true;
-            dialog.EnsureReadOnly = false;
+            var filters =
+                FileFormatInfos
+                    .Select(
+                        info =>
+                            new dlg.SaveFileDialog.Filter(
+                                info.Description + " (*." + info.Extension + ")",
+                                info.Extension))
+                    .ToList();
+            var filterIndex =
+                FileFormatInfos.ToList().FindIndex(
+                    info => info.Format == this.ActiveFileFormat);
 
-            // 表示
-            if (!shower(dialog))
+            // ダイアログ表示
+            var result = shower(this.DefaultDirectoryPath, filters, filterIndex);
+            if (result == null)
             {
                 return;
             }
 
-            var path = dialog.FileName;
-            var format = FileFormatInfos[dialog.SelectedFileTypeIndex - 1].Format;
+            var path = result.Item1;
+            var format = FileFormatInfos[result.Item2].Format;
 
             // 保存
             if (this.SaveFile(ref path, format, false))
@@ -963,28 +994,21 @@ namespace ruche.mmd.tools
         /// <returns></returns>
         private bool SelectAutoNamingDirectory()
         {
-            var shower = this.CommonFileDialogShower;
+            var shower = this.SelectAutoNamingDirectoryDialogShower;
             if (shower == null)
             {
                 return false;
             }
 
-            // ディレクトリ選択ダイアログ作成
-            var dialog = new CommonOpenFileDialog();
-            dialog.Title = @"自動命名保存先フォルダーの選択";
-            dialog.IsFolderPicker = true;
-            dialog.DefaultDirectory = this.AutoNamingDirectoryPath;
-            dialog.EnsureValidNames = true;
-            dialog.AllowNonFileSystemItems = false;
-
-            // 表示
-            if (!shower(dialog))
+            // ダイアログ表示
+            var path = shower(this.AutoNamingDirectoryPath);
+            if (path == null)
             {
                 return false;
             }
 
             // パス更新
-            this.AutoNamingDirectoryPath = Path.GetFullPath(dialog.FileName);
+            this.AutoNamingDirectoryPath = Path.GetFullPath(path);
 
             return true;
         }
@@ -1245,18 +1269,18 @@ namespace ruche.mmd.tools
         /// OK/キャンセルダイアログを表示する。
         /// </summary>
         /// <param name="message">表示するメッセージ。</param>
-        /// <returns>Yesが選択されたならば true 。</returns>
+        /// <returns>OKが選択されたならば true 。</returns>
         private bool ShowOkCancelDialog(string message)
         {
-            var shower = this.MessageBoxShower ?? MessageBox.Show;
+            var shower = this.MessageBoxShower ?? dlg.MessageBox.Show;
             var result =
                 shower(
                     message,
                     @"確認",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Question);
+                    dlg.MessageBox.Button.OkCancel,
+                    dlg.MessageBox.Icon.Information);
 
-            return (result == MessageBoxResult.OK);
+            return (result == dlg.MessageBox.Result.Ok);
         }
     }
 }
