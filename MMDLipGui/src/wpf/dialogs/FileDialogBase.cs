@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace ruche.dialogs
+namespace ruche.wpf.dialogs
 {
     /// <summary>
     /// ファイルダイアログの抽象基底クラス。

@@ -38,3 +38,4 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/mmd/gui/lip", "ruche.mmd.gui.lip")]
 [assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf", "ruche.wpf")]
 [assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/converters", "ruche.wpf.converters")]
+[assembly: XmlnsDefinition("http://schemas.ruche-home.net/xaml/wpf/viewModel", "ruche.wpf.viewModel")]

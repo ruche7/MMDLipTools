@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using ruche.mmd.morph;
 using ruche.wpf.viewModel;
-using dlg = ruche.dialogs;
+using dlg = ruche.wpf.dialogs;
 
 namespace ruche.mmd.gui.lip
 {

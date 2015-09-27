@@ -29,6 +29,19 @@ namespace MikuMikuLipMaker
         private LipServiceServer lipServiceServer = null;
 
         /// <summary>
+        /// ダイアログ表示を行う。
+        /// </summary>
+        /// <typeparam name="TWindow">ダイアログウィンドウ型。</typeparam>
+        /// <param name="owner">オーナーウィンドウ。</param>
+        private static void ShowDialog<TWindow>(Window owner)
+            where TWindow : Window, new()
+        {
+            var dialog = new TWindow();
+            dialog.Owner = owner;
+            dialog.ShowDialog();
+        }
+
+        /// <summary>
         /// MikuMikuLipMaker アプリケーションの開始時に呼び出される。
         /// </summary>
         /// <param name="viewModel">ViewModel 。</param>
@@ -50,6 +63,10 @@ namespace MikuMikuLipMaker
 
             // メインウィンドウ作成
             var window = new MainWindow();
+
+            // ViewModel にダイアログ表示処理を設定
+            viewModel.VersionShower = () => ShowDialog<VersionDialog>(window);
+            viewModel.LicenseShower = () => ShowDialog<LicenseDialog>(window);
 
             // パラメータ設定
             this.windowConfig.Value.ApplyTo(window);

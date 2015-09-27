@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using dlg = ruche.dialogs;
+using dlg = ruche.wpf.dialogs;
 
 namespace ruche.mmd.tools
 {

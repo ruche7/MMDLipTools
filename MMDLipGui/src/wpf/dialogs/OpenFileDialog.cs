@@ -4,7 +4,7 @@ using System.Windows.Interop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Forms = System.Windows.Forms;
 
-namespace ruche.dialogs
+namespace ruche.wpf.dialogs
 {
     /// <summary>
     /// ファイルやディレクトリを開くダイアログの表示を行うクラス。

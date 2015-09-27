@@ -3,17 +3,32 @@ using System.Windows.Input;
 
 namespace ruche.wpf.viewModel
 {
+    /// <summary>
+    /// デリゲートによるコマンドを定義するクラス。
+    /// </summary>
     public class DelegateCommand : ICommand
     {
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
         public DelegateCommand() : this(null, null)
         {
         }
 
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="executeDelegate">実行デリゲート。</param>
         public DelegateCommand(Action<object> executeDelegate)
             : this(executeDelegate, null)
         {
         }
 
+        /// <summary>
+        /// コンストラクタ。
+        /// </summary>
+        /// <param name="executeDelegate">実行デリゲート。</param>
+        /// <param name="canExecuteDelegate">実行可否判定デリゲート。</param>
         public DelegateCommand(
             Action<object> executeDelegate,
             Func<object, bool> canExecuteDelegate)
@@ -22,9 +37,21 @@ namespace ruche.wpf.viewModel
             CanExecuteDelegate = canExecuteDelegate;
         }
 
+        /// <summary>
+        /// 実行デリゲートを取得または設定する。
+        /// </summary>
         public Action<object> ExecuteDelegate { get; set; }
 
+        /// <summary>
+        /// 実行可否判定デリゲートを取得または設定する。
+        /// </summary>
+        /// <remarks>
+        /// null の場合、 ExecuteDelegate プロパティが
+        /// null であるか否かによって実行可否判定される。
+        /// </remarks>
         public Func<object, bool> CanExecuteDelegate { get; set; }
+
+        #region ICommand の実装
 
         public event EventHandler CanExecuteChanged
         {
@@ -34,15 +61,20 @@ namespace ruche.wpf.viewModel
 
         public void Execute(object parameter)
         {
-            if (ExecuteDelegate != null)
+            if (this.ExecuteDelegate != null)
             {
-                ExecuteDelegate(parameter);
+                this.ExecuteDelegate(parameter);
             }
         }
 
         public bool CanExecute(object parameter)
         {
-            return (CanExecuteDelegate == null) ? true : CanExecuteDelegate(parameter);
+            return
+                (this.CanExecuteDelegate == null) ?
+                    (this.ExecuteDelegate != null) :
+                    this.CanExecuteDelegate(parameter);
         }
+
+        #endregion
     }
 }

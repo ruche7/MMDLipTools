@@ -1,0 +1,58 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cvt="http://schemas.ruche-home.net/xaml/wpf/converters"
+    xmlns:vm="http://schemas.ruche-home.net/xaml/wpf/viewModel"
+    xmlns:local="clr-namespace:MikuMikuLipMaker"
+    x:Class="MikuMikuLipMaker.LicenseDialog"
+    Title="ライセンス表記"
+    WindowStyle="ToolWindow"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <cvt:BooleanVisibilityConverter x:Key="boolVisibilityConv" />
+    </Window.Resources>
+
+    <StackPanel Margin="16">
+        <TextBlock Text="当ツールは下記のプロダクトを利用しています。" />
+        <ItemsControl ItemsSource="{Binding}" Margin="8,8,0,8">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="0,8">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="20,2,0,0" />
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <TextBlock Margin="0">
+                            <Bold><Run Text="{Binding Name, Mode=OneWay}" /></Bold>
+                        </TextBlock>
+                        <TextBlock>
+                            Version <Run Text="{Binding Version, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock
+                            Text="{Binding License}"
+                            Visibility="{Binding IsLicenseEnabled, Converter={StaticResource boolVisibilityConv}}" />
+                        <TextBlock
+                            Visibility="{Binding IsAddressEnabled, Converter={StaticResource boolVisibilityConv}}">
+                            <Hyperlink
+                                NavigateUri="{Binding Address, Mode=OneWay}"
+                                Command="{x:Static vm:ProcessStartCommand.Instance}"
+                                CommandParameter="{Binding Address, Mode=OneWay}">
+                                <Run Text="{Binding Address, Mode=OneWay}" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock Text="有用なプロダクトの開発者各位に厚く御礼申し上げます。" />
+    </StackPanel>
+</Window>

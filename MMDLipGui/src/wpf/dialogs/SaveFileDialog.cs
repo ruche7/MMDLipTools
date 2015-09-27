@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace ruche.dialogs
+namespace ruche.wpf.dialogs
 {
     /// <summary>
     /// ファイルの保存先を決定するダイアログの表示を行うクラス。

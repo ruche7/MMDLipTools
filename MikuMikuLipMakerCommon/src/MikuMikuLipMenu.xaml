@@ -161,9 +161,19 @@
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding MorphWeightsSendGestureTexts[5]}" />
         </MenuItem>
-        <MenuItem Header="ヘルプ(_H)" HorizontalAlignment="Right" DockPanel.Dock="Right">
-            <MenuItem Header="バージョン情報(_V)..." />
-            <MenuItem Header="ライセンス表記(_L)..." />
+        <MenuItem
+            Header="情報(_I)"
+            Visibility="{Binding IsSomeInfoShowerEnabled, Converter={StaticResource boolVisibilityConv}}"
+            HorizontalAlignment="Right"
+            DockPanel.Dock="Right">
+            <MenuItem
+                Header="バージョン情報(_V)..."
+                Command="{Binding VersionInfoCommand}"
+                Visibility="{Binding IsVersionShowerEnabled, Converter={StaticResource boolVisibilityConv}}" />
+            <MenuItem
+                Header="ライセンス表記(_L)..."
+                Command="{Binding LicenseInfoCommand}"
+                Visibility="{Binding IsLicenseShowerEnabled, Converter={StaticResource boolVisibilityConv}}" />
         </MenuItem>
     </Menu.Items>
 </Menu>

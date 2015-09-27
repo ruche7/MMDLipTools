@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using ruche.mmd.gui.lip;
 using ruche.mmd.morph;
 using ruche.mmd.morph.converters;
 using ruche.mmd.morph.lip;
 using ruche.util;
 using ruche.wpf.viewModel;
-using dlg = ruche.dialogs;
+using dlg = ruche.wpf.dialogs;
 
 namespace ruche.mmd.tools
 {
@@ -303,6 +302,12 @@ namespace ruche.mmd.tools
                 new DelegateCommand(
                     this.ExecuteAutoNamingDirectoryCommand,
                     _ => this.SelectAutoNamingDirectoryDialogShower != null);
+            this.LastDirectoryOpenCommand =
+                new DelegateCommand(
+                    this.ExecuteLastDirectoryOpenCommand,
+                    _ =>
+                        this.LastSaveResult != null &&
+                        !string.IsNullOrWhiteSpace(this.LastSaveResult.DirectoryPath));
             this.TimelineSendCommand =
                 new DelegateCommand(
                     this.ExecuteTimelineSendCommand,
@@ -313,6 +318,14 @@ namespace ruche.mmd.tools
                     _ =>
                         this.MorphWeightsSender != null &&
                         this.EditViewModel.SelectedPresetIndex >= 0);
+            this.VersionInfoCommand =
+                new DelegateCommand(
+                    _ => this.VersionShower(),
+                    _ => this.IsVersionShowerEnabled);
+            this.LicenseInfoCommand =
+                new DelegateCommand(
+                    _ => this.LicenseShower(),
+                    _ => this.IsLicenseShowerEnabled);
         }
 
         /// <summary>
@@ -644,6 +657,92 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// バージョン情報の表示を行うデリゲートを取得または設定する。
+        /// </summary>
+        public Action VersionShower
+        {
+            get { return _versionShower; }
+            set
+            {
+                if (value != _versionShower)
+                {
+                    var oldEnabled = this.IsVersionShowerEnabled;
+                    var oldSomeEnabled = this.IsSomeInfoShowerEnabled;
+
+                    _versionShower = value;
+                    this.NotifyPropertyChanged("VersionShower");
+
+                    if (this.IsVersionShowerEnabled != oldEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsVersionShowerEnabled");
+                    }
+                    if (this.IsSomeInfoShowerEnabled != oldSomeEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsSomeInfoShowerEnabled");
+                    }
+                }
+            }
+        }
+        private Action _versionShower = null;
+
+        /// <summary>
+        /// VersionShower プロパティに有効な値が設定されているか否かを取得する。
+        /// </summary>
+        public bool IsVersionShowerEnabled
+        {
+            get { return (this.VersionShower != null); }
+        }
+
+        /// <summary>
+        /// ライセンス表記の表示を行うデリゲートを取得または設定する。
+        /// </summary>
+        public Action LicenseShower
+        {
+            get { return _licenseShower; }
+            set
+            {
+                if (value != _licenseShower)
+                {
+                    var oldEnabled = this.IsLicenseShowerEnabled;
+                    var oldSomeEnabled = this.IsSomeInfoShowerEnabled;
+
+                    _licenseShower = value;
+                    this.NotifyPropertyChanged("LicenseShower");
+
+                    if (this.IsLicenseShowerEnabled != oldEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsLicenseShowerEnabled");
+                    }
+                    if (this.IsSomeInfoShowerEnabled != oldSomeEnabled)
+                    {
+                        this.NotifyPropertyChanged("IsSomeInfoShowerEnabled");
+                    }
+                }
+            }
+        }
+        private Action _licenseShower = null;
+
+        /// <summary>
+        /// LicenseShower プロパティに有効な値が設定されているか否かを取得する。
+        /// </summary>
+        public bool IsLicenseShowerEnabled
+        {
+            get { return (this.LicenseShower != null); }
+        }
+
+        /// <summary>
+        /// VersionShower プロパティまたは LicenseShower プロパティに有効な値が
+        /// 設定されているか否かを取得する。
+        /// </summary>
+        public bool IsSomeInfoShowerEnabled
+        {
+            get
+            {
+                return (this.IsVersionShowerEnabled || this.IsLicenseShowerEnabled);
+            }
+        }
+
+        /// <summary>
         /// 自動命名保存コマンドを取得する。
         /// </summary>
         public ICommand AutoNamingSaveCommand { get; private set; }
@@ -761,6 +860,11 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// 保存先フォルダーを開くコマンドを取得する。
+        /// </summary>
+        public ICommand LastDirectoryOpenCommand { get; private set; }
+
+        /// <summary>
         /// タイムライン送信コマンドを取得する。
         /// </summary>
         public ICommand TimelineSendCommand { get; private set; }
@@ -850,6 +954,16 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
+        /// バージョン情報表示コマンドを取得する。
+        /// </summary>
+        public ICommand VersionInfoCommand { get; private set; }
+
+        /// <summary>
+        /// ライセンス表記表示コマンドを取得する。
+        /// </summary>
+        public ICommand LicenseInfoCommand { get; private set; }
+
+        /// <summary>
         /// AutoNamingSaveCommand を実行する。
         /// </summary>
         private void ExecuteAutoNamingSaveCommand(object param)
@@ -918,6 +1032,30 @@ namespace ruche.mmd.tools
         private void ExecuteAutoNamingDirectoryCommand(object param)
         {
             this.SelectAutoNamingDirectory();
+        }
+
+        /// <summary>
+        /// LastDirectoryOpenCommand を実行する。
+        /// </summary>
+        private void ExecuteLastDirectoryOpenCommand(object param)
+        {
+            var result = this.LastSaveResult;
+            if (result == null || string.IsNullOrWhiteSpace(result.DirectoryPath))
+            {
+                return;
+            }
+
+            if (Directory.Exists(result.DirectoryPath))
+            {
+                Process.Start(result.DirectoryPath);
+            }
+            else
+            {
+                this.ShowErrorDialog(
+                    result.DirectoryPath + Environment.NewLine + Environment.NewLine +
+                    @"フォルダーが見つかりません。",
+                    dlg.MessageBox.Icon.Error);
+            }
         }
 
         /// <summary>
@@ -1212,8 +1350,7 @@ namespace ruche.mmd.tools
             {
                 var lastFrame = keyFrames.Any() ? keyFrames.Max(f => f.Frame) : 0;
                 var text =
-                    filePath + Environment.NewLine + @"保存成功 : 長さ " +
-                    lastFrame + @" フレーム (" + fps + @" fps.";
+                    @"保存成功 : 長さ " + lastFrame + @" フレーム (" + fps + @" fps.";
                 if (fps != this.EditViewModel.Fps)
                 {
                     text += @" 換算で作成";
@@ -1224,14 +1361,12 @@ namespace ruche.mmd.tools
                     text += " with 入力文";
                 }
 
-                this.LastSaveResult = new FileSaveResult(true, text);
+                this.LastSaveResult = new FileSaveResult(true, filePath, text);
             }
             else
             {
-                var text =
-                    filePath + Environment.NewLine + @"保存失敗 : " + errorMessage;
-
-                this.LastSaveResult = new FileSaveResult(false, text);
+                var text = @"保存失敗 : " + errorMessage;
+                this.LastSaveResult = new FileSaveResult(false, filePath, text);
             }
 
             return (this.LastSaveResult.IsSucceeded == true);
@@ -1263,6 +1398,17 @@ namespace ruche.mmd.tools
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// エラーダイアログを表示する。
+        /// </summary>
+        /// <param name="message">表示するメッセージ。</param>
+        /// <param name="icon">表示するアイコン。</param>
+        private void ShowErrorDialog(string message, dlg.MessageBox.Icon icon)
+        {
+            var shower = this.MessageBoxShower ?? dlg.MessageBox.Show;
+            shower(message, @"エラー", dlg.MessageBox.Button.Ok, icon);
         }
 
         /// <summary>
