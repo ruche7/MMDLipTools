@@ -3,7 +3,7 @@
 
 set SRC_EXE_DIR=%~dp0\MikuMikuLipMaker\bin\Release
 set SRC_EXE_FILE=%SRC_EXE_DIR%\MikuMikuLipMaker.exe
-set SRC_DOC_FILE=%~dp0\MikuMikuLipMaker\doc\readme.txt
+set SRC_DOC_FILE=%~dp0\data\MikuMikuLipMaker\readme.txt
 set SRC_PLUGIN_FILE=%~dp0\mmm\MikuMikuLipClient\bin\Release\ruche.mmm.MikuMikuLipClient.dll
 set DEST_BASE_DIR=%~dp0\__release\MikuMikuLipMaker
 set DEST_SYSTEM_DIR=%DEST_BASE_DIR%\system
