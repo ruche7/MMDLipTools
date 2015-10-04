@@ -55,7 +55,7 @@ namespace ruche.mmd.morph
         protected InnerTable Table
         {
             get { return _table; }
-            set { _table = value ?? new InnerTable(); }
+            set { _table = value ?? (new InnerTable()); }
         }
         private InnerTable _table = new InnerTable();
 
@@ -77,6 +77,15 @@ namespace ruche.mmd.morph
             return (this.Table.Count > 0) ?
                 this.Table.Min(it => it.Value.GetBeginPlace()) :
                 0;
+        }
+
+        /// <summary>
+        /// すべてのキー位置を示す遅延列挙オブジェクトを取得する。
+        /// </summary>
+        /// <returns>すべてのキー位置を示す遅延列挙オブジェクト。</returns>
+        public IEnumerable<decimal> GetAllPlaces()
+        {
+            return this.Table.SelectMany(it => it.Value.GetAllPlaces()).Distinct();
         }
 
         /// <summary>

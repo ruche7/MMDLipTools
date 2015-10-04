@@ -38,6 +38,36 @@ namespace ruche.mmd.morph
         }
 
         /// <summary>
+        /// 線形補間したウェイト値を算出する。
+        /// </summary>
+        /// <param name="placeBegin">開始キー位置。</param>
+        /// <param name="weightBegin">開始キーのウェイト値。</param>
+        /// <param name="placeEnd">終端キー位置。</param>
+        /// <param name="weightEnd">終端キーのウェイト値。</param>
+        /// <param name="place">求めるキー位置。</param>
+        /// <returns>求めるキー位置におけるウェイト値。</returns>
+        private static float Interpolate(
+            decimal placeBegin,
+            float weightBegin,
+            decimal placeEnd,
+            float weightEnd,
+            decimal place)
+        {
+            if (placeBegin == placeEnd)
+            {
+                throw new ArgumentException(
+                    @"The value of `placeBegin` and `placeEnd` are the same.");
+            }
+
+            var placeDiff = placeEnd - placeBegin;
+            var weightDiff = weightEnd - weightBegin;
+            var weightInt =
+                (float)((decimal)weightDiff * (place - placeBegin) / placeDiff);
+
+            return (weightBegin + weightInt);
+        }
+
+        /// <summary>
         /// コンストラクタ。
         /// </summary>
         public TimelineKeyArea()
@@ -112,11 +142,7 @@ namespace ruche.mmd.morph
             var gt = this.Points.FirstOrDefault(p => (p.Key > place));
 
             // 補間したウェイト値を返す
-            decimal placeDiff = gt.Key - lt.Key;
-            float weightDiff = gt.Value - lt.Value;
-            float weightInt =
-                (float)((decimal)weightDiff * (place - lt.Key) / placeDiff);
-            return (lt.Value + weightInt);
+            return Interpolate(lt.Key, lt.Value, gt.Key, gt.Value, place);
         }
 
         /// <summary>
@@ -175,6 +201,33 @@ namespace ruche.mmd.morph
                 where predicate(p)
                 select (decimal?)p)
                 .LastOrDefault();
+        }
+
+        /// <summary>
+        /// 無意味なキーを削除する。
+        /// </summary>
+        public void RemoveUselessPoints()
+        {
+            for (int i = 0; i + 2 < this.Points.Count; )
+            {
+                // 3つのキーを取得
+                var p0 = this.Points.Keys[i];
+                var w0 = this.Points.Values[i];
+                var p1 = this.Points.Keys[i + 1];
+                var w1 = this.Points.Values[i + 1];
+                var p2 = this.Points.Keys[i + 2];
+                var w2 = this.Points.Values[i + 2];
+
+                // 挟まれているキーが補間に不要なら削除
+                if (Interpolate(p0, w0, p2, w2, p1) == w1)
+                {
+                    this.Points.RemoveAt(i + 1);
+                }
+                else
+                {
+                    ++i;
+                }
+            }
         }
 
         /// <summary>

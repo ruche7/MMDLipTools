@@ -60,6 +60,7 @@ namespace ruche.mmd.morph.lip.converters
             switch (after.LipId)
             {
             case LipId.I:
+            case LipId.Closed:
                 return 1.0f;
 
             case LipId.U:
@@ -118,13 +119,32 @@ namespace ruche.mmd.morph.lip.converters
         public SameLipLinkWeightDecider SameLipLinkWeightDecider { get; set; }
 
         /// <summary>
-        /// リップシンクユニットリストから口形状種別ごとのタイムラインを作成する。
+        /// リップシンクユニット列挙から口形状種別ごとのタイムラインを作成する。
         /// </summary>
-        /// <param name="units">リップシンクユニットリスト。</param>
+        /// <param name="units">リップシンクユニット列挙。</param>
         /// <returns>口形状種別ごとのタイムライン。</returns>
         public TimelineSet Make(IEnumerable<LipSyncUnit> units)
         {
             var tlSet = new TimelineSet();
+
+            // タイムラインセット作成
+            this.AddAreaUnitLists(tlSet, units);
+
+            // 閉口タイムラインを修正
+            this.FixClosedTimeline(tlSet);
+
+            return tlSet;
+        }
+
+        /// <summary>
+        /// リップシンクユニット列挙を各々キー領域に変換してタイムラインに追加する。
+        /// </summary>
+        /// <param name="tlSet">追加先のタイムラインセット。</param>
+        /// <param name="units">リップシンクユニット列挙。</param>
+        private void AddAreaUnitLists(
+            TimelineSet tlSet,
+            IEnumerable<LipSyncUnit> units)
+        {
             var areaUnits = new List<LipSyncUnit>();
             LipSyncUnit prevUnit = null;
             decimal place = 0;
@@ -146,8 +166,6 @@ namespace ruche.mmd.morph.lip.converters
 
             // 最後の音をタイムラインに追加
             AddAreaUnitList(tlSet, place, areaUnits, prevUnit, null);
-
-            return tlSet;
         }
 
         /// <summary>
@@ -275,7 +293,7 @@ namespace ruche.mmd.morph.lip.converters
 
             // 終端キーを追加
             var endPos = linkPos + openCloseLen;
-            if (nextUnit != null && nextUnit.LinkType == LinkType.PreClose)
+            if (nextUnit != null && nextUnit.LinkType != LinkType.Normal)
             {
                 // 一旦口を閉じるならば次の音の開口時間の1/2だけ終端を早める
                 var closeHalfPos = endPos - CalcOpenCloseLength(nextUnit) / 2;
@@ -306,6 +324,7 @@ namespace ruche.mmd.morph.lip.converters
             }
 
             // タイムラインに追加
+            area.RemoveUselessPoints();
             tlSet[id].KeyAreas.Add(area);
 
             // 次の音の開始位置を返す
@@ -335,7 +354,7 @@ namespace ruche.mmd.morph.lip.converters
         /// <returns>開口および閉口の長さ。</returns>
         private decimal CalcOpenCloseLength(LipSyncUnit unit)
         {
-            return ((decimal)unit.LengthPercent * this.LinkLengthPercent / 10000);
+            return (unit.LengthPercent * this.LinkLengthPercent / 10000);
         }
 
         /// <summary>
@@ -356,6 +375,71 @@ namespace ruche.mmd.morph.lip.converters
         private decimal CalcMaxOpenLength(LipSyncUnit unit)
         {
             return (CalcUnitLength(unit) - CalcOpenCloseLength(unit));
+        }
+
+        /// <summary>
+        /// 閉口タイムラインを修正する。
+        /// </summary>
+        /// <param name="tlSet">修正対象のタイムラインセット。</param>
+        private void FixClosedTimeline(TimelineSet tlSet)
+        {
+            // 閉口抜きのタイムライン配列作成
+            var tlAiueo = (
+                from it in tlSet
+                where it.Key != LipId.Closed
+                select it.Value)
+                .ToArray();
+
+            // 全キー位置と閉口以外のウェイト値合計のテーブル作成
+            var points =
+                new SortedList<decimal, float>(
+                    tlSet.GetAllPlaces().ToDictionary(
+                        p => p,
+                        p => tlAiueo.Sum(tl => tl.GetWeight(p))));
+
+            // 閉口タイムラインをクリア
+            tlSet.Closed.KeyAreas.Clear();
+
+            // (1 - 閉口以外のウェイト値合計) がウェイト値となるような
+            // 閉口タイムラインを作成
+            var area = new TimelineKeyArea();
+            area.SetWeight(0, 0);
+            foreach (var pw in points)
+            {
+                var weight = Math.Max(0, 1 - pw.Value);
+                if (weight > 0)
+                {
+                    // キー追加
+                    area.SetWeight(pw.Key, weight);
+                }
+                else
+                {
+                    if (area.Points.Count >= 2)
+                    {
+                        // 先頭と終端のウェイト値は 0 にする
+                        area.SetWeight(pw.Key, 0);
+                        area.Points[area.BeginPlace] = 0;
+
+                        // タイムラインにキー領域を追加
+                        area.RemoveUselessPoints();
+                        tlSet.Closed.KeyAreas.Add(area);
+                    }
+
+                    // 新しいキー領域を作成開始
+                    area = new TimelineKeyArea();
+                    area.SetWeight(pw.Key, 0);
+                }
+            }
+            if (area.Points.Count >= 3)
+            {
+                // 先頭と終端のウェイト値は 0 にする
+                area.Points[area.BeginPlace] = 0;
+                area.Points[area.EndPlace] = 0;
+
+                // タイムラインにキー領域を追加
+                area.RemoveUselessPoints();
+                tlSet.Closed.KeyAreas.Add(area);
+            }
         }
     }
 }

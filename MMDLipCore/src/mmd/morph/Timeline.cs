@@ -72,6 +72,15 @@ namespace ruche.mmd.morph
         }
 
         /// <summary>
+        /// すべてのキー位置を示す遅延列挙オブジェクトを取得する。
+        /// </summary>
+        /// <returns>すべてのキー位置を示す遅延列挙オブジェクト。</returns>
+        public IEnumerable<decimal> GetAllPlaces()
+        {
+            return this.KeyAreas.SelectMany(a => a.Points.Keys).Distinct();
+        }
+
+        /// <summary>
         /// 条件を満たす登録キー位置の中で最も小さい値を返す。
         /// </summary>
         /// <param name="predicate">キー位置の条件判定関数。</param>
