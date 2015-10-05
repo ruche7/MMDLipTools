@@ -94,6 +94,7 @@ namespace ruche.mmd.gui.lip
             IEnumerable<LipSyncUnit> units,
             decimal linkLengthPercent,
             float longSoundLastWeight,
+            bool edgeClosed,
             MorphInfoSet morphSet,
             bool morphEtoAI)
         {
@@ -103,6 +104,7 @@ namespace ruche.mmd.gui.lip
                 var maker = new TimelineSetMaker();
                 maker.LinkLengthPercent = linkLengthPercent;
                 maker.LongSoundLastWeight = longSoundLastWeight;
+                maker.IsEdgeClosed = edgeClosed;
                 tlSet = maker.Make(units);
             }
 
@@ -672,6 +674,24 @@ namespace ruche.mmd.gui.lip
         }
 
         /// <summary>
+        /// キーフレームリストの先頭と終端に閉口時モーフ設定を適用するか否かを
+        /// 取得または設定する。
+        /// </summary>
+        public bool IsEdgeClosed
+        {
+            get { return this.EditConfig.IsEdgeClosed; }
+            set
+            {
+                var old = this.IsEdgeClosed;
+                this.EditConfig.IsEdgeClosed = value;
+                if (this.IsEdgeClosed != old)
+                {
+                    this.NotifyPropertyChanged(nameof(IsEdgeClosed));
+                }
+            }
+        }
+
+        /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
         public bool IsMorphEtoAI
@@ -717,6 +737,7 @@ namespace ruche.mmd.gui.lip
         {
             var linkLengthPercent = this.LinkLengthPercent;
             var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
+            var edgeClosed = this.IsEdgeClosed;
             var preset = this.SelectedPreset;
             var morphSet =
                 (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
@@ -738,6 +759,7 @@ namespace ruche.mmd.gui.lip
                                 this.LipSyncUnits,
                                 linkLengthPercent,
                                 longSoundLastWeight,
+                                edgeClosed,
                                 morphSet,
                                 morphEtoAI);
                     });

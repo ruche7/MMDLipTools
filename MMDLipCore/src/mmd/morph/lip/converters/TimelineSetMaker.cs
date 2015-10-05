@@ -111,6 +111,16 @@ namespace ruche.mmd.morph.lip.converters
         public float LongSoundLastWeight { get; set; } = DefaultLongSoundLastWeight;
 
         /// <summary>
+        /// タイムラインの先頭と終端を閉口状態とするか否かを取得または設定する。
+        /// </summary>
+        /// <remarks>
+        /// true の場合、タイムライン全体の先頭と終端における閉口タイムラインの
+        /// ウェイト値が 1 になります。
+        /// false の場合は 0 になります。
+        /// </remarks>
+        public bool IsEdgeClosed { get; set; } = true;
+
+        /// <summary>
         /// 同じ口形状かつ LinkType.Normal のユニットが連続する場合の
         /// 接続ウェイト値を決定するデリゲートを取得または設定する。
         /// </summary>
@@ -392,13 +402,39 @@ namespace ruche.mmd.morph.lip.converters
             // 閉口タイムラインをクリア
             tlSet.Closed.KeyAreas.Clear();
 
-            // (1 - 閉口以外のウェイト値合計) がウェイト値となるような
-            // 閉口タイムラインを作成
+            // 閉口タイムラインにキー領域を追加するデリゲート作成
+            Action<TimelineKeyArea> areaAdder =
+                a =>
+                {
+                    // キーが足りなければ追加しない
+                    if (a.Points.Count < 2)
+                    {
+                        return;
+                    }
+
+                    // エッジを閉口状態としないなら先頭と終端のウェイト値を 0 にする
+                    if (!this.IsEdgeClosed)
+                    {
+                        a.Points[a.BeginPlace] = 0;
+                        a.Points[a.EndPlace] = 0;
+                    }
+
+                    // 0 より大きいウェイト値が1つでもあれば追加
+                    a.RemoveUselessPoints();
+                    if (a.Points.Values.Any(w => w > 0))
+                    {
+                        tlSet.Closed.KeyAreas.Add(a);
+                    }
+                };
+
             var area = new TimelineKeyArea();
-            area.SetWeight(0, 0);
+
+            // 閉口タイムラインを作成
             foreach (var pw in points)
             {
+                // (1 - 閉口以外のウェイト値合計) を閉口ウェイト値とする
                 var weight = Math.Max(0, 1 - pw.Value);
+
                 if (weight > 0)
                 {
                     // キー追加
@@ -406,32 +442,20 @@ namespace ruche.mmd.morph.lip.converters
                 }
                 else
                 {
-                    if (area.Points.Count >= 2)
-                    {
-                        // 先頭と終端のウェイト値は 0 にする
-                        area.SetWeight(pw.Key, 0);
-                        area.Points[area.BeginPlace] = 0;
+                    // 終端キー追加
+                    area.SetWeight(pw.Key, 0);
 
-                        // タイムラインにキー領域を追加
-                        area.RemoveUselessPoints();
-                        tlSet.Closed.KeyAreas.Add(area);
-                    }
+                    // 閉口タイムラインにキー領域を追加
+                    areaAdder(area);
 
                     // 新しいキー領域を作成開始
                     area = new TimelineKeyArea();
                     area.SetWeight(pw.Key, 0);
                 }
             }
-            if (area.Points.Count >= 3)
-            {
-                // 先頭と終端のウェイト値は 0 にする
-                area.Points[area.BeginPlace] = 0;
-                area.Points[area.EndPlace] = 0;
 
-                // タイムラインにキー領域を追加
-                area.RemoveUselessPoints();
-                tlSet.Closed.KeyAreas.Add(area);
-            }
+            // 閉口タイムラインに最後のキー領域を追加
+            areaAdder(area);
         }
     }
 }

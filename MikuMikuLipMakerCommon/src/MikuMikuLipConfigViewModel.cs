@@ -533,7 +533,7 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
-        /// 入力文テキストファイルを同時に保存するか否かを取得または設定する。
+        /// テキストファイルを同時に保存するか否かを取得または設定する。
         /// </summary>
         public bool IsSavingWithText
         {
@@ -1254,10 +1254,18 @@ namespace ruche.mmd.tools
                     writer.Write(fs, keyFrames);
                 }
 
-                // 入力文を保存
+                // テキストを保存
                 if (this.IsSavingWithText)
                 {
-                    withText = this.SaveTextFile(filePath, this.EditViewModel.Text);
+                    var text = this.EditViewModel.Text;
+                    if (text != "")
+                    {
+                        text += Environment.NewLine;
+                        text += @"--------------------" + Environment.NewLine;
+                    }
+                    text += this.EditViewModel.LipKana + Environment.NewLine;
+
+                    withText = this.SaveTextFile(filePath, text);
                 }
             }
             catch (UnauthorizedAccessException)

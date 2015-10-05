@@ -261,6 +261,8 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="8" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -319,14 +321,14 @@
 
                     <!-- row 4 -->
                     <CheckBox
-                        Content="モーフのウェイト値をゼロ初期化(_Z)"
+                        Content="モーフのウェイト値をリセット(_Z)"
                         IsChecked="{Binding IsEdgeWeightZero}"
                         Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
                     <Image Grid.Row="4">
                         <Image.ToolTip>
                             <TextBlock>
-                                作成されたキーフレームリストの先頭と終端において、<LineBreak />
-                                そのリストに含まれる全モーフのウェイト値を一旦 0 にします。<LineBreak />
+                                モーションの開始時と終了時に、キーフレームが1つ以上<LineBreak />
+                                含まれているすべてのモーフのウェイト値を 0 にします。<LineBreak />
                                 既定ではチェック ON です。
                             </TextBlock>
                         </Image.ToolTip>
@@ -334,10 +336,27 @@
 
                     <!-- row 6 -->
                     <CheckBox
-                        Content="&quot;え&quot; のモーフを &quot;あ&quot;+&quot;い&quot; に変換(_M)"
-                        IsChecked="{Binding IsMorphEtoAI}"
+                        Content="閉口モーフ適用状態で開始/終了する(_G)"
+                        IsChecked="{Binding IsEdgeClosed}"
                         Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" />
                     <Image Grid.Row="6">
+                        <Image.ToolTip>
+                            <TextBlock>
+                                選択したプリセットに閉口モーフが1つ以上設定されている場合、<LineBreak />
+                                モーションの開始時と終了時にその設定値を適用します。<LineBreak />
+                                <Bold>モーフのウェイト値をリセット</Bold> の設定よりも優先されます。<LineBreak />
+                                既定ではチェック ON です。<LineBreak />
+                                閉口モーフが1つも設定されていないプリセットでは無意味です。
+                            </TextBlock>
+                        </Image.ToolTip>
+                    </Image>
+
+                    <!-- row 8 -->
+                    <CheckBox
+                        Content="&quot;え&quot; のモーフを &quot;あ&quot;+&quot;い&quot; に変換(_M)"
+                        IsChecked="{Binding IsMorphEtoAI}"
+                        Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <Image Grid.Row="8">
                         <Image.ToolTip>
                             <TextBlock>
                                 プリセット内で &quot;え&quot; に割り当てられているウェイト値を<LineBreak />

@@ -47,7 +47,7 @@ namespace MikuMikuLipMaker
         /// <param name="viewModel">ViewModel 。</param>
         protected override void OnAppStartup(MikuMikuLipConfigViewModel viewModel)
         {
-            // 設定をロード
+            // ウィンドウ設定をロード
             if (!this.windowConfig.Load())
             {
                 this.windowConfig.Value = new MainWindowConfig();
@@ -69,12 +69,13 @@ namespace MikuMikuLipMaker
             viewModel.LicenseShower = () => ShowDialog<LicenseDialog>(window);
 
             // パラメータ設定
-            this.windowConfig.Value.ApplyTo(window);
             window.ViewModel = viewModel;
             window.Closing += this.OnMainWindowClosing;
 
             // メインウィンドウ表示開始
+            this.windowConfig.Value.ApplyLocationTo(window);
             window.Show();
+            this.windowConfig.Value.ApplyMaximizedTo(window);
         }
 
         /// <summary>

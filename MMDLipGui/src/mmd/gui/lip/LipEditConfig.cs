@@ -152,6 +152,13 @@ namespace ruche.mmd.gui.lip
         public bool IsEdgeWeightZero { get; set; } = true;
 
         /// <summary>
+        /// キーフレームリストの先頭と終端に閉口時モーフ設定を適用するか否かを
+        /// 取得または設定する。
+        /// </summary>
+        [DataMember]
+        public bool IsEdgeClosed { get; set; } = true;
+
+        /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
         [DataMember]

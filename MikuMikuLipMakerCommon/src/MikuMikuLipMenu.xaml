@@ -3,12 +3,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:cvt="http://schemas.ruche-home.net/xaml/wpf/converters"
+    xmlns:vm="http://schemas.ruche-home.net/xaml/wpf/viewModel"
     xmlns:local="clr-namespace:ruche.mmd.tools"
     x:Class="ruche.mmd.tools.MikuMikuLipMenu">
     <Menu.DataContext>
         <local:MikuMikuLipConfigViewModel />
     </Menu.DataContext>
     <Menu.Resources>
+        <Style TargetType="MenuItem">
+            <Setter Property="ToolTipService.ShowDuration" Value="20000" />
+        </Style>
+
         <cvt:BooleanVisibilityConverter x:Key="boolVisibilityConv" />
         <cvt:EnumValueDisplayConverter x:Key="enumDisplayConv" />
 
@@ -44,6 +49,14 @@
                 <MenuItem.Icon>
                     <Image Source="/MikuMikuLipMakerCommon;component/resources/save.png" />
                 </MenuItem.Icon>
+                <MenuItem.ToolTip>
+                    <TextBlock>
+                        名前を自動で付けてモーションファイルを保存します。<LineBreak />
+                        <LineBreak />
+                        <Bold>保存先フォルダ:</Bold><LineBreak />
+                        <Run Text="{Binding AutoNamingDirectoryPath, Mode=OneWay}" />
+                    </TextBlock>
+                </MenuItem.ToolTip>
             </MenuItem>
             <MenuItem
                 Header="名前を付けて保存(_A)..."
@@ -97,11 +110,27 @@
                 <MenuItem.Icon>
                     <Image Source="/MikuMikuLipMakerCommon;component/resources/folder.png" />
                 </MenuItem.Icon>
+                <MenuItem.ToolTip>
+                    <TextBlock>
+                        自動命名保存先フォルダを変更します。<LineBreak />
+                        <LineBreak />
+                        <Bold>現在の保存先フォルダ:</Bold><LineBreak />
+                        <Run Text="{Binding AutoNamingDirectoryPath, Mode=OneWay}" />
+                    </TextBlock>
+                </MenuItem.ToolTip>
             </MenuItem>
             <MenuItem
-                Header="入力文を同時保存(_I)"
+                Header="テキストを同時保存(_I)"
                 IsCheckable="True"
-                IsChecked="{Binding IsSavingWithText}" />
+                IsChecked="{Binding IsSavingWithText}">
+                <MenuItem.ToolTip>
+                    <TextBlock>
+                        モーションファイルを保存する際、<LineBreak />
+                        入力文と読み仮名が書かれたファイルを一緒に保存します。<LineBreak />
+                        既定ではチェック OFF です。
+                    </TextBlock>
+                </MenuItem.ToolTip>
+            </MenuItem>
         </MenuItem>
         <MenuItem
             Header="送信(_S)"
@@ -122,7 +151,15 @@
             <MenuItem
                 Header="登録位置前後のウェイト値を保持(_W)"
                 IsCheckable="True"
-                IsChecked="{Binding IsEdgeWeightHeld}" />
+                IsChecked="{Binding IsEdgeWeightHeld}">
+                <MenuItem.ToolTip>
+                    <TextBlock>
+                        キーフレーム登録時、登録先の現在のモーフ状態に対して<LineBreak />
+                        極力自然にモーションが始まる/終わるように補正します。<LineBreak />
+                        既定ではチェック ON です。
+                    </TextBlock>
+                </MenuItem.ToolTip>
+            </MenuItem>
             <Separator />
             <MenuItem
                 Header="選択プリセットの「あ」を表示確認(_1)"
@@ -163,9 +200,19 @@
         </MenuItem>
         <MenuItem
             Header="情報(_I)"
-            Visibility="{Binding IsSomeInfoShowerEnabled, Converter={StaticResource boolVisibilityConv}}"
             HorizontalAlignment="Right"
             DockPanel.Dock="Right">
+            <MenuItem
+                Header="Webマニュアル(_M)"
+                Command="{x:Static vm:ProcessStartCommand.Instance}"
+                CommandParameter="http://www.ruche-home.net/doc/mmd-lipmake"
+                ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
+                <MenuItem.Icon>
+                    <Image Source="/MikuMikuLipMakerCommon;component/resources/web.png" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator
+                Visibility="{Binding IsSomeInfoShowerEnabled, Converter={StaticResource boolVisibilityConv}}" />
             <MenuItem
                 Header="バージョン情報(_V)..."
                 Command="{Binding VersionInfoCommand}"

@@ -88,7 +88,7 @@ namespace ruche.mmd.tools
         public string DefaultDirectoryPath { get; set; } = "";
 
         /// <summary>
-        /// 入力文テキストファイルを同時に保存するか否かを取得または設定する。
+        /// テキストファイルを同時に保存するか否かを取得または設定する。
         /// </summary>
         [DataMember]
         public bool IsSavingWithText { get; set; } = false;

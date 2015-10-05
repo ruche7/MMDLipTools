@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
+using draw = System.Drawing;
 
 namespace ruche.mmd.tools
 {
@@ -10,6 +12,69 @@ namespace ruche.mmd.tools
     [DataContract(Namespace = "")]
     public abstract class WindowConfigBase : IExtensibleDataObject
     {
+        #region ウィンドウ位置チェック
+
+        /// <summary>
+        /// スクリーン内に収まっていると判断する幅。
+        /// </summary>
+        private static readonly int WindowOnScreenWidth = 48;
+
+        /// <summary>
+        /// スクリーン内に収まっていると判断する高さ。
+        /// </summary>
+        private static readonly int WindowOnScreenHeight = 48;
+
+        /// <summary>
+        /// ウィンドウがいずれかのスクリーン内に収まっているか否かを取得する。
+        /// </summary>
+        /// <param name="window">ウィンドウ。</param>
+        /// <returns>収まっているならば true 。そうでなければ false 。</returns>
+        private static bool IsWindowOnScreen(Window window)
+        {
+            var winRect = GetWindowRect(window);
+            return
+                System.Windows.Forms.Screen.AllScreens.Any(
+                    screen =>
+                    {
+                        var r = draw.Rectangle.Intersect(screen.WorkingArea, winRect);
+                        return (
+                            r.Top <= winRect.Top &&
+                            r.Width >= WindowOnScreenWidth &&
+                            r.Height >= WindowOnScreenHeight);
+                    });
+        }
+
+        /// <summary>
+        /// ウィンドウの位置とサイズをデバイス依存ピクセル単位で取得する。
+        /// </summary>
+        /// <param name="window">ウィンドウ。</param>
+        /// <returns>デバイス依存ピクセル単位での位置とサイズ。</returns>
+        private static draw.Rectangle GetWindowRect(Window window)
+        {
+            // 左上端と右下端のDIP座標作成
+            var lt = new Point(window.Left, window.Top);
+            var rb = new Point(lt.X + window.Width, lt.Y + window.Height);
+
+            // デバイス依存ピクセル座標に変換
+            // 変換できなければそのままの値を使う
+            var src = PresentationSource.FromVisual(window);
+            var target = src?.CompositionTarget;
+            if (target != null)
+            {
+                lt = target.TransformToDevice.Transform(lt);
+                rb = target.TransformToDevice.Transform(rb);
+            }
+
+            return
+                draw.Rectangle.FromLTRB(
+                    (int)(lt.X + 0.5),
+                    (int)(lt.Y + 0.5),
+                    (int)(rb.X + 0.5),
+                    (int)(rb.Y + 0.5));
+        }
+
+        #endregion
+
         /// <summary>
         /// コンストラクタ。
         /// </summary>
@@ -53,6 +118,11 @@ namespace ruche.mmd.tools
         /// <param name="window">コピー元のウィンドウ。</param>
         public void CopyFrom(Window window)
         {
+            if (window == null)
+            {
+                throw new ArgumentNullException(nameof(window));
+            }
+
             this.Left = window.Left;
             this.Top = window.Top;
             this.Width = window.Width;
@@ -61,11 +131,19 @@ namespace ruche.mmd.tools
         }
 
         /// <summary>
-        /// ウィンドウに値を適用する。
+        /// ウィンドウに座標値を適用する。
         /// </summary>
         /// <param name="window">適用先のウィンドウ。</param>
-        public void ApplyTo(Window window)
+        public void ApplyLocationTo(Window window)
         {
+            if (window == null)
+            {
+                throw new ArgumentNullException(nameof(window));
+            }
+
+            var oldLeft = window.Left;
+            var oldTop = window.Top;
+
             if (this.Left.HasValue)
             {
                 window.Left = this.Left.Value;
@@ -82,10 +160,29 @@ namespace ruche.mmd.tools
             {
                 window.Height = this.Height.Value;
             }
-            if (this.IsMaximized.HasValue)
+
+            // ウィンドウがスクリーン内にいないなら位置を戻す
+            if (!IsWindowOnScreen(window))
             {
-                window.WindowState =
-                    this.IsMaximized.Value ? WindowState.Maximized : WindowState.Normal;
+                window.Left = oldLeft;
+                window.Top = oldTop;
+            }
+        }
+
+        /// <summary>
+        /// ウィンドウに最大化状態値を適用する。
+        /// </summary>
+        /// <param name="window">適用先のウィンドウ。</param>
+        public void ApplyMaximizedTo(Window window)
+        {
+            if (window == null)
+            {
+                throw new ArgumentNullException(nameof(window));
+            }
+
+            if (this.IsMaximized == true)
+            {
+                window.WindowState = WindowState.Maximized;
             }
         }
 
