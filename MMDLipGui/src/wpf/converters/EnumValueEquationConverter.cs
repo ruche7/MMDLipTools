@@ -32,11 +32,8 @@ namespace ruche.wpf.converters
         /// </summary>
         /// <param name="parameter">コンバータパラメータ。</param>
         /// <returns>列挙値名として用いる値。</returns>
-        private string DecideValueName(object parameter)
-        {
-            var param = parameter ?? this.Value;
-            return (param == null) ? null : param.ToString();
-        }
+        private string DecideValueName(object parameter) =>
+            (parameter ?? this.Value)?.ToString();
 
         #region IValueConverter 実装
 

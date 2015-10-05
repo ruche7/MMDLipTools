@@ -54,7 +54,7 @@ namespace ruche.wpf.dialogs
             /// <summary>
             /// 拡張子リストを取得する。
             /// </summary>
-            public List<string> Extensions { get; private set; }
+            public List<string> Extensions { get; }
         }
 
         /// <summary>
@@ -62,31 +62,27 @@ namespace ruche.wpf.dialogs
         /// </summary>
         public SaveFileDialog()
         {
-            this.Filters = new List<Filter>();
-            this.FilterIndex = 0;
-            this.IsExtensionAppended = true;
-            this.IsOverwriteConfirmed = true;
         }
 
         /// <summary>
         /// フィルターリストを取得または設定する。
         /// </summary>
-        public List<Filter> Filters { get; set; }
+        public List<Filter> Filters { get; set; } = new List<Filter>();
 
         /// <summary>
         /// 選択中のフィルターインデックスを取得または設定する。
         /// </summary>
-        public int FilterIndex { get; set; }
+        public int FilterIndex { get; set; } = 0;
 
         /// <summary>
         /// 選択されたパスに拡張子を付与するか否かを取得または設定する。
         /// </summary>
-        public bool IsExtensionAppended { get; set; }
+        public bool IsExtensionAppended { get; set; } = true;
 
         /// <summary>
         /// 上書きの確認表示を行うか否かを取得または設定する。
         /// </summary>
-        public bool IsOverwriteConfirmed { get; set; }
+        public bool IsOverwriteConfirmed { get; set; } = true;
 
         /// <summary>
         /// ダイアログを表示する。

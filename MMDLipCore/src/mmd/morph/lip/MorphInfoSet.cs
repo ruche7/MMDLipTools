@@ -62,9 +62,9 @@ namespace ruche.mmd.morph.lip
 
             default:
                 throw new InvalidEnumArgumentException(
-                    "id",
+                    nameof(id),
                     (int)id,
-                    typeof(LipId));
+                    id.GetType());
             }
 
             return new MorphInfo(weights);
@@ -83,24 +83,11 @@ namespace ruche.mmd.morph.lip
         /// <param name="table">初期値テーブル。</param>
         public MorphInfoSet(IDictionary<LipId, MorphInfo> table)
         {
-            this.Table = new MorphInfoTable(LipIds.Length);
-
             foreach (var id in LipIds)
             {
                 MorphInfo value = null;
-
-                if (table != null && table.ContainsKey(id))
-                {
-                    value = table[id];
-                    if (value != null)
-                    {
-                        value = value.Clone();
-                    }
-                }
-                if (value == null)
-                {
-                    value = CreateDefaultLipMorph(id);
-                }
+                table?.TryGetValue(id, out value);
+                value = value?.Clone() ?? CreateDefaultLipMorph(id);
 
                 this.Table.Add(id, value);
             }
@@ -180,50 +167,37 @@ namespace ruche.mmd.morph.lip
         }
 
         /// <summary>
-        /// モーフ情報テーブルを取得または設定する。
+        /// モーフ情報テーブルを取得する。
         /// </summary>
         [DataMember]
-        private MorphInfoTable Table { get; set; }
+        private MorphInfoTable Table { get; } = new MorphInfoTable(LipIds.Length);
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="other">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphInfoSet other)
-        {
-            return (
-                other != null &&
-                LipIds.All(id => this[id].Equals(other[id])));
-        }
+        public bool Equals(MorphInfoSet other) =>
+            (other != null && LipIds.All(id => this[id].Equals(other[id])));
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="obj">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MorphInfoSet);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as MorphInfoSet);
 
         /// <summary>
         /// ハッシュコードを取得する。
         /// </summary>
         /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode()
-        {
-            return this.A.GetHashCode();
-        }
+        public override int GetHashCode() => this.A.GetHashCode();
 
         /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphInfoSet Clone()
-        {
-            return new MorphInfoSet(this.Table);
-        }
+        public MorphInfoSet Clone() => new MorphInfoSet(this.Table);
 
         /// <summary>
         /// 口形状種別IDが有効な値か検証する。
@@ -237,18 +211,15 @@ namespace ruche.mmd.morph.lip
             if (!this.Table.ContainsKey(id))
             {
                 throw new InvalidEnumArgumentException(
-                    "id",
+                    nameof(id),
                     (int)id,
-                    typeof(LipId));
+                    id.GetType());
             }
         }
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

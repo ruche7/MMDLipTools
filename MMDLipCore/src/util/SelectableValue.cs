@@ -29,7 +29,7 @@ namespace ruche.util
                     _value = value;
 
                     this.OnValueChanged(EventArgs.Empty);
-                    this.NotifyPropertyChanged("Value");
+                    this.NotifyPropertyChanged(nameof(Value));
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace ruche.util
                     _selected = value;
 
                     this.OnIsSelectedChanged(EventArgs.Empty);
-                    this.NotifyPropertyChanged("IsSelected");
+                    this.NotifyPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -73,45 +73,29 @@ namespace ruche.util
         /// 値の文字列表現を作成する。
         /// </summary>
         /// <returns>値の文字列表現。</returns>
-        public override string ToString()
-        {
-            return string.Format("{0}", this.Value);
-        }
+        public override string ToString() => $"{this.Value}";
 
         /// <summary>
         /// プロパティ値の変更を通知する。
         /// </summary>
         /// <param name="propertyName">プロパティ名。</param>
-        protected void NotifyPropertyChanged(string propertyName)
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        protected void NotifyPropertyChanged(string propertyName) =>
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// Value プロパティ値の変更時に呼び出される。
         /// </summary>
         /// <param name="e">常に EventArgs.Empty 。</param>
-        protected virtual void OnValueChanged(EventArgs e)
-        {
-            if (this.ValueChanged != null)
-            {
-                this.ValueChanged(this, e);
-            }
-        }
+        protected virtual void OnValueChanged(EventArgs e) =>
+            this.ValueChanged?.Invoke(this, e);
 
         /// <summary>
         /// IsSelected プロパティ値の変更時に呼び出される。
         /// </summary>
         /// <param name="e">常に EventArgs.Empty 。</param>
-        protected virtual void OnIsSelectedChanged(EventArgs e)
-        {
-            if (this.IsSelectedChanged != null)
-            {
-                this.IsSelectedChanged(this, e);
-            }
-        }
+        protected virtual void OnIsSelectedChanged(EventArgs e) =>
+            this.IsSelectedChanged?.Invoke(this, e);
     }
 }

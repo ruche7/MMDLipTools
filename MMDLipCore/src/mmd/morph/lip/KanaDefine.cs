@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ruche.mmd.morph.lip
 {
@@ -80,85 +77,62 @@ namespace ruche.mmd.morph.lip
         /// 母音文字の配列を取得する。
         /// </summary>
         /// <returns>母音文字の配列。</returns>
-        public static char[] GetVowelLetters()
-        {
-            return (char[])VowelLetters.Clone();
-        }
+        public static char[] GetVowelLetters() => (char[])VowelLetters.Clone();
 
         /// <summary>
         /// 一旦口を閉じる文字の配列を取得する。
         /// </summary>
         /// <returns>一旦口を閉じる文字の配列。</returns>
-        public static char[] GetPreCloseLetters()
-        {
-            return (char[])PreCloseLetters.Clone();
-        }
+        public static char[] GetPreCloseLetters() => (char[])PreCloseLetters.Clone();
 
         /// <summary>
         /// 一旦半分口を閉じる文字の配列を取得する。
         /// </summary>
         /// <returns>一旦半分口を閉じる文字の配列。</returns>
-        public static char[] GetPreHalfCloseLetters()
-        {
-            return (char[])PreHalfCloseLetters.Clone();
-        }
+        public static char[] GetPreHalfCloseLetters() =>
+            (char[])PreHalfCloseLetters.Clone();
 
         /// <summary>
         /// 促音として扱う文字の配列を取得する。
         /// </summary>
         /// <returns>促音として扱う文字の配列。 0 番目が代表文字。</returns>
-        public static char[] GetSmallTsuLetters()
-        {
-            return (char[])SmallTsuLetters.Clone();
-        }
+        public static char[] GetSmallTsuLetters() => (char[])SmallTsuLetters.Clone();
 
         /// <summary>
         /// 長音として扱う文字の配列を取得する。
         /// </summary>
         /// <returns>長音として扱う文字の配列。 0 番目が代表文字。</returns>
-        public static char[] GetLongSoundLetters()
-        {
-            return (char[])LongSoundLetters.Clone();
-        }
+        public static char[] GetLongSoundLetters() =>(char[])LongSoundLetters.Clone();
 
         /// <summary>
         /// 母音文字であるか否かを取得する。
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>母音文字ならば true 。</returns>
-        public static bool IsVowel(char c)
-        {
-            return (Array.IndexOf(VowelLetters, c) >= 0);
-        }
+        public static bool IsVowel(char c) => (Array.IndexOf(VowelLetters, c) >= 0);
 
         /// <summary>
         /// 一旦口を閉じる文字であるか否かを取得する。
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>一旦口を閉じる文字ならば true 。</returns>
-        public static bool IsPreClose(char c)
-        {
-            return (Array.IndexOf(PreCloseLetters, c) >= 0);
-        }
+        public static bool IsPreClose(char c) =>
+            (Array.IndexOf(PreCloseLetters, c) >= 0);
 
         /// <summary>
         /// 一旦半分口を閉じる文字であるか否かを取得する。
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>一旦口を閉じる文字ならば true 。</returns>
-        public static bool IsPreHalfClose(char c)
-        {
-            return (Array.IndexOf(PreHalfCloseLetters, c) >= 0);
-        }
+        public static bool IsPreHalfClose(char c) =>
+            (Array.IndexOf(PreHalfCloseLetters, c) >= 0);
 
         /// <summary>
         /// 長音として扱う文字であるか否かを取得する。
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>長音として扱う文字ならば true 。</returns>
-        public static bool IsLongSound(char c)
-        {
-            return (Array.IndexOf(LongSoundLetters, c) >= 0);
-        }
+        public static bool IsLongSound(char c) =>
+            (Array.IndexOf(LongSoundLetters, c) >= 0);
     }
 }

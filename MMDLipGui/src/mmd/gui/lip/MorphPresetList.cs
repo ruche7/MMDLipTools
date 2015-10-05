@@ -48,10 +48,8 @@ namespace ruche.mmd.gui.lip
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphPresetList Clone()
-        {
-            return new MorphPresetList(this.Select(p => p.Clone()));
-        }
+        public MorphPresetList Clone() =>
+            new MorphPresetList(this.Select(p => p.Clone()));
 
         #region ObservableCollection<MorphPreset> のオーバライド
 
@@ -59,7 +57,7 @@ namespace ruche.mmd.gui.lip
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             base.SetItem(index, item);
@@ -69,7 +67,7 @@ namespace ruche.mmd.gui.lip
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             base.InsertItem(index, item);
@@ -79,10 +77,7 @@ namespace ruche.mmd.gui.lip
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

@@ -50,15 +50,17 @@ namespace ruche.mmd.morph.converters
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
             if (!stream.CanWrite)
             {
-                throw new ArgumentException("`stream` is not writable.", "stream");
+                throw new ArgumentException(
+                    "`" + nameof(stream) + "` is not writable.",
+                    nameof(stream));
             }
             if (keyFrames == null)
             {
-                throw new ArgumentNullException("keyFrames");
+                throw new ArgumentNullException(nameof(keyFrames));
             }
 
             // baseFrame 基準のキーフレームリスト作成
@@ -89,10 +91,8 @@ namespace ruche.mmd.morph.converters
         /// <param name="src">文字列。</param>
         /// <param name="encoding">エンコード。</param>
         /// <returns>バイト列。</returns>
-        protected static byte[] MakeStringBytes(string src, Encoding encoding)
-        {
-            return MakeStringBytes(src, encoding, -1);
-        }
+        protected static byte[] MakeStringBytes(string src, Encoding encoding) =>
+            MakeStringBytes(src, encoding, -1);
 
         /// <summary>
         /// 文字列から指定エンコードのバイト列を作成する。
@@ -108,11 +108,11 @@ namespace ruche.mmd.morph.converters
         {
             if (src == null)
             {
-                throw new ArgumentNullException("src");
+                throw new ArgumentNullException(nameof(src));
             }
             if (encoding == null)
             {
-                throw new ArgumentNullException("encoding");
+                throw new ArgumentNullException(nameof(encoding));
             }
 
             var dest = encoding.GetBytes(src);

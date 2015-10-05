@@ -70,78 +70,56 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>有効な値ならば true 。</returns>
-        public static bool IsDefined(this NumberPhoneType self)
-        {
-            return (
-                self >= NumberPhoneType.Begin &&
-                self < NumberPhoneType.End);
-        }
+        public static bool IsDefined(this NumberPhoneType self) =>
+            (self >= NumberPhoneType.Begin && self < NumberPhoneType.End);
 
         /// <summary>
         /// 自身が None を表すか否かを取得する。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>None ならば true 。</returns>
-        public static bool IsNone(this NumberPhoneType self)
-        {
-            return (self == NumberPhoneType.None);
-        }
+        public static bool IsNone(this NumberPhoneType self) =>
+            (self == NumberPhoneType.None);
 
         /// <summary>
         /// 自身が Point を表すか否かを取得する。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>Point ならば true 。</returns>
-        public static bool IsPoint(this NumberPhoneType self)
-        {
-            return (self == NumberPhoneType.Point);
-        }
+        public static bool IsPoint(this NumberPhoneType self) =>
+            (self == NumberPhoneType.Point);
 
         /// <summary>
         /// 自身が None または Point を表すか否かを取得する。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>None または Point ならば true 。</returns>
-        public static bool IsNoneOrPoint(this NumberPhoneType self)
-        {
-            return (self.IsNone() || self.IsPoint());
-        }
+        public static bool IsNoneOrPoint(this NumberPhoneType self) =>
+            (self.IsNone() || self.IsPoint());
 
         /// <summary>
         /// 自身が 0 ～ 9 の数字を表すか否かを取得する拡張メソッド。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>Digit0 ～ Digit9 ならば true 。</returns>
-        public static bool IsDigit(this NumberPhoneType self)
-        {
-            return (
-                self >= NumberPhoneType.DigitBegin &&
-                self < NumberPhoneType.DigitEnd);
-        }
+        public static bool IsDigit(this NumberPhoneType self) =>
+            (self >= NumberPhoneType.DigitBegin && self < NumberPhoneType.DigitEnd);
 
         /// <summary>
         /// 自身が十の位～千の位を表すか否かを取得する拡張メソッド。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>Ten, Hundred, Thousand のいずれかならば true 。</returns>
-        public static bool IsBase(this NumberPhoneType self)
-        {
-            return (
-                self >= NumberPhoneType.BaseBegin &&
-                self < NumberPhoneType.BaseEnd);
-        }
+        public static bool IsBase(this NumberPhoneType self) =>
+            (self >= NumberPhoneType.BaseBegin && self < NumberPhoneType.BaseEnd);
 
         /// <summary>
         /// 自身が10000の乗算桁を表すか否かを取得する拡張メソッド。
         /// </summary>
         /// <param name="self">自分自身。</param>
         /// <returns>Man ～ Infinity のいずれかならば true 。</returns>
-        public static bool IsBig(this NumberPhoneType self)
-        {
-            return (
-                self >= NumberPhoneType.BigBegin &&
-                self < NumberPhoneType.BigEnd);
-        }
+        public static bool IsBig(this NumberPhoneType self) =>
+            (self >= NumberPhoneType.BigBegin && self < NumberPhoneType.BigEnd);
     }
 
     #endregion
@@ -212,10 +190,8 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="type">対象の種別。</param>
         /// <returns>読み仮名。</returns>
-        private static string GetDefaultNumberKana(NumberPhoneType type)
-        {
-            return DefaultNumberKanas[(int)type];
-        }
+        private static string GetDefaultNumberKana(NumberPhoneType type) =>
+            DefaultNumberKanas[(int)type];
 
         /// <summary>
         /// NumberPhoneType に対応する読み仮名決定デリゲート。
@@ -730,9 +706,7 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>数値。変換できなければ 0 。</returns>
-        private int ParseChar(char c)
-        {
-            return char.IsDigit(c) ? int.Parse(c.ToString()) : 0;
-        }
+        private int ParseChar(char c) =>
+            char.IsDigit(c) ? int.Parse(c.ToString()) : 0;
     }
 }

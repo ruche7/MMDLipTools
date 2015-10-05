@@ -23,10 +23,8 @@ namespace ruche.mmd.morph.converters
         /// <param name="src">文字列。</param>
         /// <param name="fixedSize">固定サイズ。固定しないならば -1 。</param>
         /// <returns>CodePage932エンコードのバイト列。</returns>
-        private static byte[] MakeStringBytes(string src, int fixedSize = -1)
-        {
-            return MakeStringBytes(src, Encoding.UTF8, fixedSize);
-        }
+        private static byte[] MakeStringBytes(string src, int fixedSize = -1) =>
+            MakeStringBytes(src, Encoding.UTF8, fixedSize);
 
         /// <summary>
         /// コンストラクタ。
@@ -74,7 +72,7 @@ namespace ruche.mmd.morph.converters
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 }
                 _fps = value;
             }

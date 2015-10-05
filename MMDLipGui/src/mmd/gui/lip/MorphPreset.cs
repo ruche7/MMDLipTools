@@ -21,10 +21,8 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         /// <param name="name">調べる文字列。</param>
         /// <returns>プリセット名として使えるならば true 。</returns>
-        public static bool IsValidName(string name)
-        {
-            return !string.IsNullOrWhiteSpace(name);
-        }
+        public static bool IsValidName(string name) =>
+            !string.IsNullOrWhiteSpace(name);
 
         /// <summary>
         /// 既定値で初期化するコンストラクタ。
@@ -46,7 +44,7 @@ namespace ruche.mmd.gui.lip
         {
             if (name != null && !IsValidName(name))
             {
-                throw new ArgumentException("Invalid preset name.", "name");
+                throw new ArgumentException("Invalid preset name.", nameof(name));
             }
 
             this.Name = name ?? DefaultName;
@@ -70,48 +68,33 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         /// <param name="other">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphPreset other)
-        {
-            return (
-                other != null &&
-                this.Name == other.Name &&
-                this.Value.Equals(other.Value));
-        }
+        public bool Equals(MorphPreset other) =>
+            (this.Name == other?.Name && this.Value.Equals(other?.Value));
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="obj">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MorphPreset);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as MorphPreset);
 
         /// <summary>
         /// ハッシュコードを取得する。
         /// </summary>
         /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode()
-        {
-            return (this.Name.GetHashCode() ^ this.Value.GetHashCode());
-        }
+        public override int GetHashCode() =>
+            (this.Name.GetHashCode() ^ this.Value.GetHashCode());
 
         /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphPreset Clone()
-        {
-            return new MorphPreset(this.Name, this.Value.Clone());
-        }
+        public MorphPreset Clone() =>
+            new MorphPreset(this.Name, this.Value.Clone());
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

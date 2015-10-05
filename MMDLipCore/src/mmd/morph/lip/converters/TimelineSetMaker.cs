@@ -75,8 +75,6 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         public TimelineSetMaker()
         {
-            this.LinkLengthPercent = DefaultLinkLengthPercent;
-            this.LongSoundLastWeight = DefaultLongSoundLastWeight;
         }
 
         /// <summary>
@@ -110,13 +108,13 @@ namespace ruche.mmd.morph.lip.converters
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値を取得または設定する。
         /// </summary>
-        public float LongSoundLastWeight { get; set; }
+        public float LongSoundLastWeight { get; set; } = DefaultLongSoundLastWeight;
 
         /// <summary>
         /// 同じ口形状かつ LinkType.Normal のユニットが連続する場合の
         /// 接続ウェイト値を決定するデリゲートを取得または設定する。
         /// </summary>
-        public SameLipLinkWeightDecider SameLipLinkWeightDecider { get; set; }
+        public SameLipLinkWeightDecider SameLipLinkWeightDecider { get; set; } = null;
 
         /// <summary>
         /// リップシンクユニット列挙から口形状種別ごとのタイムラインを作成する。
@@ -352,30 +350,24 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>開口および閉口の長さ。</returns>
-        private decimal CalcOpenCloseLength(LipSyncUnit unit)
-        {
-            return (unit.LengthPercent * this.LinkLengthPercent / 10000);
-        }
+        private decimal CalcOpenCloseLength(LipSyncUnit unit) =>
+            (unit.LengthPercent * this.LinkLengthPercent / 10000);
 
         /// <summary>
         /// ユニットの開口開始位置から最大開口終了位置までの長さを算出する。
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>開口開始位置から最大開口終了位置までの長さ。</returns>
-        private decimal CalcUnitLength(LipSyncUnit unit)
-        {
-            return (unit.LengthPercent / 100m);
-        }
+        private decimal CalcUnitLength(LipSyncUnit unit) =>
+            (unit.LengthPercent / 100m);
 
         /// <summary>
         /// ユニットの最大開口の長さを算出する。
         /// </summary>
         /// <param name="unit">ユニット。</param>
         /// <returns>最大開口の長さ。</returns>
-        private decimal CalcMaxOpenLength(LipSyncUnit unit)
-        {
-            return (CalcUnitLength(unit) - CalcOpenCloseLength(unit));
-        }
+        private decimal CalcMaxOpenLength(LipSyncUnit unit) =>
+            (CalcUnitLength(unit) - CalcOpenCloseLength(unit));
 
         /// <summary>
         /// 閉口タイムラインを修正する。

@@ -56,12 +56,9 @@ namespace ruche.mmd.morph.lip
         /// </summary>
         /// <param name="self">LinkType 値。</param>
         /// <returns>単独で音を持つならば true 。</returns>
-        public static bool HasSingleSound(this LinkType self)
-        {
-            return (
-                self == LinkType.Normal ||
-                self == LinkType.PreClose ||
-                self == LinkType.PreHalfClose);
-        }
+        public static bool HasSingleSound(this LinkType self) =>
+            (self == LinkType.Normal ||
+             self == LinkType.PreClose ||
+             self == LinkType.PreHalfClose);
     }
 }

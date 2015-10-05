@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ruche.mmd.morph.lip.converters
@@ -45,10 +44,7 @@ namespace ruche.mmd.morph.lip.converters
         /// <remarks>
         /// メインスレッドから呼び出さなければ一部処理が失敗する。
         /// </remarks>
-        public string Make(string src)
-        {
-            return this.StartMake(src).Result;
-        }
+        public string Make(string src) => this.StartMake(src).Result;
 
         /// <summary>
         /// 入力文から口パク用の読み仮名を非同期で作成開始する。

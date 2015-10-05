@@ -51,7 +51,7 @@ namespace ruche.util
         {
             if (src == null)
             {
-                throw new ArgumentNullException("src");
+                throw new ArgumentNullException(nameof(src));
             }
 
             this.IsAlwaysSelected = alwaysSelected;
@@ -101,7 +101,7 @@ namespace ruche.util
             {
                 if (value >= this.Count || (this.IsAlwaysSelected && value < 0))
                 {
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 }
                 for (int i = 0; i < this.Count; ++i)
                 {
@@ -122,7 +122,7 @@ namespace ruche.util
                 {
                     if (this.IsAlwaysSelected)
                     {
-                        throw new ArgumentNullException("value");
+                        throw new ArgumentNullException(nameof(value));
                     }
                     this.SelectedIndex = -1;
                 }
@@ -132,8 +132,8 @@ namespace ruche.util
                     if (index < 0)
                     {
                         throw new ArgumentException(
-                            "`value` is not contained.",
-                            "value");
+                            "`" + nameof(value) + "` is not contained.",
+                            nameof(value));
                     }
                     this.SelectedIndex = index;
                 }
@@ -158,8 +158,8 @@ namespace ruche.util
             if (target == null && this.IsAlwaysSelected)
             {
                 throw new ArgumentException(
-                    "`value` is not contained in items.",
-                    "value");
+                    "`" + nameof(value) + "` is not contained in items.",
+                    nameof(value));
             }
 
             this.SelectedIndex = (target == null) ? -1 : target.index;
@@ -170,7 +170,7 @@ namespace ruche.util
         /// <summary>
         /// SelectOne メソッドの処理中であるか否かを取得または設定する。
         /// </summary>
-        private bool IsSelectOneRunning { get; set; }
+        private bool IsSelectOneRunning { get; set; } = false;
 
         /// <summary>
         /// 単一のアイテムのみを選択状態にする。
@@ -244,7 +244,7 @@ namespace ruche.util
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             this[index].IsSelectedChanged -= this.OnItemIsSelectedChanged;
@@ -262,7 +262,7 @@ namespace ruche.util
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             item.IsSelectedChanged += OnItemIsSelectedChanged;

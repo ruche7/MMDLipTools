@@ -32,10 +32,8 @@ namespace ruche.mmd.morph
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphWeightDataList Clone()
-        {
-            return new MorphWeightDataList(this.Select(d => d.Clone()));
-        }
+        public MorphWeightDataList Clone() =>
+            new MorphWeightDataList(this.Select(d => d.Clone()));
 
         #region ObservableCollection<MorphWeightData> のオーバライド
 
@@ -43,7 +41,7 @@ namespace ruche.mmd.morph
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             base.SetItem(index, item);
@@ -53,7 +51,7 @@ namespace ruche.mmd.morph
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             }
 
             base.InsertItem(index, item);
@@ -63,10 +61,7 @@ namespace ruche.mmd.morph
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

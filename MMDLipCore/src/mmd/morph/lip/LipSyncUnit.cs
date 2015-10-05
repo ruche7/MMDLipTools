@@ -43,7 +43,10 @@ namespace ruche.mmd.morph.lip
             {
                 if (!Enum.IsDefined(typeof(LipId), value))
                 {
-                    throw new InvalidEnumArgumentException("LipId");
+                    throw new InvalidEnumArgumentException(
+                        nameof(value),
+                        (int)value,
+                        value.GetType());
                 }
                 _lipId = value;
             }
@@ -60,7 +63,10 @@ namespace ruche.mmd.morph.lip
             {
                 if (!Enum.IsDefined(typeof(LinkType), value))
                 {
-                    throw new InvalidEnumArgumentException("LinkType");
+                    throw new InvalidEnumArgumentException(
+                        nameof(value),
+                        (int)value,
+                        value.GetType());
                 }
                 _linkType = value;
             }
@@ -146,6 +152,10 @@ namespace ruche.mmd.morph.lip
         /// <param name="dest">コピー先。</param>
         public void CopyTo(LipSyncUnit dest)
         {
+            if (dest == null)
+            {
+                throw new ArgumentNullException(nameof(dest));
+            }
             dest.CloneCore(this);
         }
 
@@ -168,10 +178,8 @@ namespace ruche.mmd.morph.lip
         /// 派生先のクラスが引数なしの公開コンストラクタを持たない場合、
         /// このメソッドをオーバライドする必要がある。
         /// </remarks>
-        protected virtual LipSyncUnit CreateInstance()
-        {
-            return (LipSyncUnit)Activator.CreateInstance(GetType());
-        }
+        protected virtual LipSyncUnit CreateInstance() =>
+            (LipSyncUnit)Activator.CreateInstance(GetType());
 
         /// <summary>
         /// クローン元から内容を自身にコピーする。
@@ -190,10 +198,7 @@ namespace ruche.mmd.morph.lip
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

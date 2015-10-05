@@ -69,10 +69,8 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         /// <param name="c">文字。</param>
         /// <returns>カタカナならば true 。</returns>
-        private static bool IsKatakana(char c)
-        {
-            return rexKatakanaOnly.IsMatch(c.ToString());
-        }
+        private static bool IsKatakana(char c) =>
+            rexKatakanaOnly.IsMatch(c.ToString());
 
         /// <summary>
         /// 文字列をカタカナに変換する。

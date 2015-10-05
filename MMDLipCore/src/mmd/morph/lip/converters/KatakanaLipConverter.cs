@@ -20,12 +20,12 @@ namespace ruche.mmd.morph.lip.converters
         private struct SmallKanaInfo
         {
             /// <summary>
-            /// 対応する大文字。
+            /// 対応する大文字を取得または設定する。
             /// </summary>
             public char BigLetter { get; set; }
 
             /// <summary>
-            /// 1音にまとめる対象となる文字の配列。
+            /// 1音にまとめる対象となる文字の配列を取得または設定する。
             /// </summary>
             public char[] JoinLetters { get; set; }
         }
@@ -118,13 +118,12 @@ namespace ruche.mmd.morph.lip.converters
         /// </summary>
         public KatakanaLipConverter()
         {
-            this.IsColumnHaConverting = false;
         }
 
         /// <summary>
         /// 連続するハ行同段文字を長音化するか否かを取得または設定する。
         /// </summary>
-        public bool IsColumnHaConverting { get; set; }
+        public bool IsColumnHaConverting { get; set; } = false;
 
         /// <summary>
         /// 文字列を口パク前提のカタカナに変換する。

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
 
 namespace ruche.wpf.viewModel
 {
@@ -18,12 +17,9 @@ namespace ruche.wpf.viewModel
         /// プロパティ値の変更を通知する。
         /// </summary>
         /// <param name="propertyName">プロパティ名。</param>
-        protected void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        protected void NotifyPropertyChanged(string propertyName) =>
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
     }
 }

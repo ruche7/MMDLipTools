@@ -20,10 +20,8 @@ namespace ruche.mmd.service.lip
         /// <remarks>
         /// エンドポイントアドレスには空文字列が利用される。
         /// </remarks>
-        public static LipServiceServer OpenNetNamedPipe(ILipService service)
-        {
-            return OpenNetNamedPipe(service, "");
-        }
+        public static LipServiceServer OpenNetNamedPipe(ILipService service) =>
+            OpenNetNamedPipe(service, "");
 
         /// <summary>
         /// 名前付きパイプによるサービスサーバを作成し、サービス提供を開始する。
@@ -43,11 +41,11 @@ namespace ruche.mmd.service.lip
         {
             if (service == null)
             {
-                throw new ArgumentNullException("service");
+                throw new ArgumentNullException(nameof(service));
             }
             if (endpointAddress == null)
             {
-                throw new ArgumentNullException("endpointAddress");
+                throw new ArgumentNullException(nameof(endpointAddress));
             }
 
             var host =
@@ -71,7 +69,7 @@ namespace ruche.mmd.service.lip
         {
             if (host == null)
             {
-                throw new ArgumentNullException("host");
+                throw new ArgumentNullException(nameof(host));
             }
             this.Host = host;
         }
@@ -97,6 +95,7 @@ namespace ruche.mmd.service.lip
             if (this.Host != null)
             {
                 this.Host.Close();
+                this.Host = null;
             }
         }
 

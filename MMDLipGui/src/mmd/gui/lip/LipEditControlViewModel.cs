@@ -51,7 +51,7 @@ namespace ruche.mmd.gui.lip
         {
             if (fps <= 0)
             {
-                throw new ArgumentOutOfRangeException("fps");
+                throw new ArgumentOutOfRangeException(nameof(fps));
             }
 
             if (oldUnit == newUnit)
@@ -192,7 +192,7 @@ namespace ruche.mmd.gui.lip
         /// <remarks>
         /// バインディング用のプロパティではない。
         /// </remarks>
-        public LipEditConfig EditConfig { get; private set; }
+        public LipEditConfig EditConfig { get; }
 
         /// <summary>
         /// 口パクモーフプリセット編集設定を取得する。
@@ -200,7 +200,7 @@ namespace ruche.mmd.gui.lip
         /// <remarks>
         /// バインディング用のプロパティではない。
         /// </remarks>
-        public MorphPresetConfig PresetConfig { get; private set; }
+        public MorphPresetConfig PresetConfig { get; }
 
         /// <summary>
         /// 読み仮名変換元の文字列を取得または設定する。
@@ -214,7 +214,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _text)
                 {
                     _text = v;
-                    this.NotifyPropertyChanged("Text");
+                    this.NotifyPropertyChanged(nameof(Text));
 
                     // 自動変換開始
                     if (this.IsAutoLipKana)
@@ -238,7 +238,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.IsAutoLipKana = value;
                 if (this.IsAutoLipKana != old)
                 {
-                    this.NotifyPropertyChanged("IsAutoLipKana");
+                    this.NotifyPropertyChanged(nameof(IsAutoLipKana));
 
                     // true に変更されたら自動変換開始
                     if (this.IsAutoLipKana)
@@ -261,7 +261,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _lipKana)
                 {
                     _lipKana = v;
-                    this.NotifyPropertyChanged("LipKana");
+                    this.NotifyPropertyChanged(nameof(LipKana));
 
                     // リップシンクユニットリスト更新開始
                     this.StartLipSyncUnitsTask();
@@ -286,7 +286,7 @@ namespace ruche.mmd.gui.lip
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 bool changed = false;
@@ -301,7 +301,7 @@ namespace ruche.mmd.gui.lip
 
                 if (changed)
                 {
-                    this.NotifyPropertyChanged("LipSyncUnits");
+                    this.NotifyPropertyChanged(nameof(LipSyncUnits));
 
                     // 文字列表現値を作成
                     this.LipSyncText = string.Join("", value);
@@ -328,7 +328,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _lipSyncText)
                 {
                     _lipSyncText = v;
-                    this.NotifyPropertyChanged("LipSyncText");
+                    this.NotifyPropertyChanged(nameof(LipSyncText));
                 }
             }
         }
@@ -350,7 +350,7 @@ namespace ruche.mmd.gui.lip
                     var index =
                         this.Presets.FindIndex(this.PresetConfig.ActivePresetName);
 
-                    this.NotifyPropertyChanged("Presets");
+                    this.NotifyPropertyChanged(nameof(Presets));
 
                     // プリセットインデックスを更新
                     // 選択中のプリセットが削除された場合は 0 にする
@@ -376,7 +376,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _selectedPresetIndex)
                 {
                     _selectedPresetIndex = v;
-                    this.NotifyPropertyChanged("SelectedPresetIndex");
+                    this.NotifyPropertyChanged(nameof(SelectedPresetIndex));
 
                     // アクティブなプリセット名を更新
                     var activePreset = this.SelectedPreset;
@@ -401,11 +401,11 @@ namespace ruche.mmd.gui.lip
                     bool oldEditable = this.IsPresetsEditable;
 
                     _presetDialogShower = value;
-                    this.NotifyPropertyChanged("PresetDialogShower");
+                    this.NotifyPropertyChanged(nameof(PresetDialogShower));
 
                     if (this.IsPresetsEditable != oldEditable)
                     {
-                        this.NotifyPropertyChanged("IsPresetsEditable");
+                        this.NotifyPropertyChanged(nameof(IsPresetsEditable));
                     }
                 }
             }
@@ -419,10 +419,7 @@ namespace ruche.mmd.gui.lip
         /// PresetDialogShower プロパティに有効なデリゲートを設定することで
         /// true を返すようになる。
         /// </remarks>
-        public bool IsPresetsEditable
-        {
-            get { return (this.PresetDialogShower != null); }
-        }
+        public bool IsPresetsEditable => (this.PresetDialogShower != null);
 
         /// <summary>
         /// 口パクモーフプリセット編集ダイアログで用いる
@@ -436,7 +433,7 @@ namespace ruche.mmd.gui.lip
                 if (value != _morphWeightsSender)
                 {
                     _morphWeightsSender = value;
-                    this.NotifyPropertyChanged("MorphWeightsSender");
+                    this.NotifyPropertyChanged(nameof(MorphWeightsSender));
                 }
             }
         }
@@ -454,7 +451,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.SpanRange = value;
                 if (this.SpanRange != old)
                 {
-                    this.NotifyPropertyChanged("SpanRange");
+                    this.NotifyPropertyChanged(nameof(SpanRange));
                 }
             }
         }
@@ -484,7 +481,7 @@ namespace ruche.mmd.gui.lip
                         this.Fps);
                 if (this.SpanValue != old)
                 {
-                    this.NotifyPropertyChanged("SpanValue");
+                    this.NotifyPropertyChanged(nameof(SpanValue));
                 }
             }
         }
@@ -501,14 +498,14 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.SpanUnit = value;
                 if (this.SpanUnit != old)
                 {
-                    this.NotifyPropertyChanged("SpanUnit");
+                    this.NotifyPropertyChanged(nameof(SpanUnit));
 
                     // 関連プロパティの更新通知
-                    this.NotifyPropertyChanged("MinSpanValue");
-                    this.NotifyPropertyChanged("MaxSpanValue");
-                    this.NotifyPropertyChanged("SpanValue");
-                    this.NotifyPropertyChanged("SpanValueIncrement");
-                    this.NotifyPropertyChanged("SpanValueFormat");
+                    this.NotifyPropertyChanged(nameof(MinSpanValue));
+                    this.NotifyPropertyChanged(nameof(MaxSpanValue));
+                    this.NotifyPropertyChanged(nameof(SpanValue));
+                    this.NotifyPropertyChanged(nameof(SpanValueIncrement));
+                    this.NotifyPropertyChanged(nameof(SpanValueFormat));
                 }
             }
         }
@@ -516,34 +513,22 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 口パクの時間指定値の最小許容値を取得する。
         /// </summary>
-        public decimal MinSpanValue
-        {
-            get
-            {
-                return
-                    ConvertSpanValueUnit(
-                        LipEditConfig.MinSpanSeconds,
-                        LipSpanUnit.Seconds,
-                        this.SpanUnit,
-                        this.Fps);
-            }
-        }
+        public decimal MinSpanValue =>
+            ConvertSpanValueUnit(
+                LipEditConfig.MinSpanSeconds,
+                LipSpanUnit.Seconds,
+                this.SpanUnit,
+                this.Fps);
 
         /// <summary>
         /// 口パクの時間指定値の最大許容値を取得する。
         /// </summary>
-        public decimal MaxSpanValue
-        {
-            get
-            {
-                return
-                    ConvertSpanValueUnit(
-                        LipEditConfig.MaxSpanSeconds,
-                        LipSpanUnit.Seconds,
-                        this.SpanUnit,
-                        this.Fps);
-            }
-        }
+        public decimal MaxSpanValue =>
+            ConvertSpanValueUnit(
+                LipEditConfig.MaxSpanSeconds,
+                LipSpanUnit.Seconds,
+                this.SpanUnit,
+                this.Fps);
 
         /// <summary>
         /// 口パクの時間指定値の推奨インクリメント量を取得する。
@@ -589,12 +574,12 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.Fps = value;
                 if (this.Fps != old)
                 {
-                    this.NotifyPropertyChanged("Fps");
+                    this.NotifyPropertyChanged(nameof(Fps));
 
                     // 関連プロパティの更新通知
-                    this.NotifyPropertyChanged("MinSpanValue");
-                    this.NotifyPropertyChanged("MaxSpanValue");
-                    this.NotifyPropertyChanged("SpanValue");
+                    this.NotifyPropertyChanged(nameof(MinSpanValue));
+                    this.NotifyPropertyChanged(nameof(MaxSpanValue));
+                    this.NotifyPropertyChanged(nameof(SpanValue));
                 }
             }
         }
@@ -602,18 +587,12 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 実フレーム値への変換に用いるFPS値の最小許容値を取得する。
         /// </summary>
-        public decimal MinFps
-        {
-            get { return LipEditConfig.MinFps; }
-        }
+        public decimal MinFps { get; } = LipEditConfig.MinFps;
 
         /// <summary>
         /// 実フレーム値への変換に用いるFPS値の最大許容値を取得する。
         /// </summary>
-        public decimal MaxFps
-        {
-            get { return LipEditConfig.MaxFps; }
-        }
+        public decimal MaxFps { get; } = LipEditConfig.MaxFps;
 
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合のパーセント値を取得または設定する。
@@ -627,7 +606,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.LinkLengthPercent = value;
                 if (this.LinkLengthPercent != old)
                 {
-                    this.NotifyPropertyChanged("LinkLengthPercent");
+                    this.NotifyPropertyChanged(nameof(LinkLengthPercent));
                 }
             }
         }
@@ -635,18 +614,14 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合の最小許容パーセント値を取得する。
         /// </summary>
-        public decimal MinLinkLengthPercent
-        {
-            get { return TimelineSetMaker.MinLinkLengthPercent; }
-        }
+        public decimal MinLinkLengthPercent { get; } =
+            TimelineSetMaker.MinLinkLengthPercent;
 
         /// <summary>
         /// 前後のユニットとモーフ変化が重なる割合の最大許容パーセント値を取得する。
         /// </summary>
-        public decimal MaxLinkLengthPercent
-        {
-            get { return TimelineSetMaker.MaxLinkLengthPercent; }
-        }
+        public decimal MaxLinkLengthPercent { get; } =
+            TimelineSetMaker.MaxLinkLengthPercent;
 
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値割合のパーセント値を
@@ -661,7 +636,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.LongSoundLastWeightPercent = value;
                 if (this.LongSoundLastWeightPercent != old)
                 {
-                    this.NotifyPropertyChanged("LongSoundLastWeightPercent");
+                    this.NotifyPropertyChanged(nameof(LongSoundLastWeightPercent));
                 }
             }
         }
@@ -670,19 +645,13 @@ namespace ruche.mmd.gui.lip
         /// 長音の最大開口終端位置におけるウェイト値割合の最小許容パーセント値を
         /// 取得する。
         /// </summary>
-        public float MinLongSoundLastWeightPercent
-        {
-            get { return 0; }
-        }
+        public float MinLongSoundLastWeightPercent { get; } = 0;
 
         /// <summary>
         /// 長音の最大開口終端位置におけるウェイト値割合の最大許容パーセント値を
         /// 取得する。
         /// </summary>
-        public float MaxLongSoundLastWeightPercent
-        {
-            get { return 100; }
-        }
+        public float MaxLongSoundLastWeightPercent { get; } = 100;
 
         /// <summary>
         /// キーフレームリストの先頭と終端で、含まれている全モーフのウェイト値を
@@ -697,7 +666,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.IsEdgeWeightZero = value;
                 if (this.IsEdgeWeightZero != old)
                 {
-                    this.NotifyPropertyChanged("IsEdgeWeightZero");
+                    this.NotifyPropertyChanged(nameof(IsEdgeWeightZero));
                 }
             }
         }
@@ -714,7 +683,7 @@ namespace ruche.mmd.gui.lip
                 this.EditConfig.IsMorphEtoAI = value;
                 if (this.IsMorphEtoAI != old)
                 {
-                    this.NotifyPropertyChanged("IsMorphEtoAI");
+                    this.NotifyPropertyChanged(nameof(IsMorphEtoAI));
                 }
             }
         }
@@ -722,21 +691,19 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 読み仮名文字列への変換を開始するコマンドを取得する。
         /// </summary>
-        public ICommand TextToLipKanaCommand { get; private set; }
+        public ICommand TextToLipKanaCommand { get; }
 
         /// <summary>
         /// 口パクモーフプリセットリストの編集を開始するコマンドを取得する。
         /// </summary>
-        public ICommand PresetsEditCommand { get; private set; }
+        public ICommand PresetsEditCommand { get; }
 
         /// <summary>
         /// 現在の設定値からモーフ別タイムラインテーブルを作成する。
         /// </summary>
         /// <returns>モーフ別タイムラインテーブル。</returns>
-        public MorphTimelineTable MakeMorphTimelineTable()
-        {
-            return this.StartMakeMorphTimelineTable().Result;
-        }
+        public MorphTimelineTable MakeMorphTimelineTable() =>
+            this.StartMakeMorphTimelineTable().Result;
 
         /// <summary>
         /// 現在の設定値からモーフ別タイムラインテーブルを非同期で作成開始する。
@@ -782,10 +749,8 @@ namespace ruche.mmd.gui.lip
         /// <param name="fps">出力FPS値。</param>
         /// <param name="beginFrame">出力開始フレーム位置。出力FPS値基準。</param>
         /// <returns>キーフレームリスト。</returns>
-        public KeyFrameList MakeKeyFrameList(decimal fps, long beginFrame)
-        {
-            return this.StartMakeKeyFrameList(fps, beginFrame).Result;
-        }
+        public KeyFrameList MakeKeyFrameList(decimal fps, long beginFrame) =>
+            this.StartMakeKeyFrameList(fps, beginFrame).Result;
 
         /// <summary>
         /// 現在の設定値からキーフレームリストを非同期で作成開始する。
@@ -839,12 +804,12 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 読み仮名文字列更新タスクの実行カウンタを取得または設定する。
         /// </summary>
-        private ulong LipKanaTaskCounter { get; set; }
+        private ulong LipKanaTaskCounter { get; set; } = 0;
 
         /// <summary>
         /// リップシンクユニットリスト更新タスクの実行カウンタを取得または設定する。
         /// </summary>
-        private ulong LipSyncUnitsTaskCounter { get; set; }
+        private ulong LipSyncUnitsTaskCounter { get; set; } = 0;
 
         /// <summary>
         /// リップシンクユニットリスト更新タスク処理中であるか否かを

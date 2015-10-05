@@ -54,12 +54,9 @@ namespace LipServiceClientTest
                 if (v != _text)
                 {
                     _text = v;
-                    if (this.PropertyChanged != null)
-                    {
-                        this.PropertyChanged(
-                            this,
-                            new PropertyChangedEventArgs("Text"));
-                    }
+                    this.PropertyChanged?.Invoke(
+                        this,
+                        new PropertyChangedEventArgs("Text"));
                 }
             }
         }

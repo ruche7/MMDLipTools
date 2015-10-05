@@ -17,13 +17,12 @@ namespace MikuMikuLipMaker
         /// </summary>
         public LipService()
         {
-            this.Command = new LipServiceCommand();
         }
 
         /// <summary>
         /// コマンドを取得または設定する。
         /// </summary>
-        private LipServiceCommand Command { get; set; }
+        private LipServiceCommand Command { get; set; } = new LipServiceCommand();
 
         /// <summary>
         /// Command プロパティの排他制御用オブジェクト。
@@ -50,7 +49,7 @@ namespace MikuMikuLipMaker
         {
             if (morphWeights == null)
             {
-                throw new ArgumentNullException("morphWeights");
+                throw new ArgumentNullException(nameof(morphWeights));
             }
 
             // モーフ名が空文字列のものは弾く
@@ -91,11 +90,11 @@ namespace MikuMikuLipMaker
         {
             if (tlTable == null)
             {
-                throw new ArgumentNullException("tlTable");
+                throw new ArgumentNullException(nameof(tlTable));
             }
             if (unitSeconds <= 0)
             {
-                throw new ArgumentOutOfRangeException("unitSeconds");
+                throw new ArgumentOutOfRangeException(nameof(unitSeconds));
             }
 
             var param =

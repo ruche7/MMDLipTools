@@ -16,14 +16,6 @@ namespace ruche.mmd.tools
         /// </summary>
         public MikuMikuLipConfig()
         {
-            this.AutoNamingDirectoryPath =
-                Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    @"MMD_Lip");
-            this.IsAutoNamingOverwriteConfirmed = true;
-            this.DefaultDirectoryPath = "";
-            this.IsSavingWithText = false;
-            this.IsEdgeWeightHeld = true;
         }
 
         /// <summary>
@@ -42,7 +34,7 @@ namespace ruche.mmd.tools
                 if (!Enum.IsDefined(value.GetType(), value))
                 {
                     throw new InvalidEnumArgumentException(
-                        "value",
+                        nameof(value),
                         (int)value,
                         value.GetType());
                 }
@@ -64,7 +56,7 @@ namespace ruche.mmd.tools
                 if (!Enum.IsDefined(value.GetType(), value))
                 {
                     throw new InvalidEnumArgumentException(
-                        "value",
+                        nameof(value),
                         (int)value,
                         value.GetType());
                 }
@@ -78,32 +70,35 @@ namespace ruche.mmd.tools
         /// ファイル自動命名時の保存先ディレクトリパスを取得または設定する。
         /// </summary>
         [DataMember]
-        public string AutoNamingDirectoryPath { get; set; }
+        public string AutoNamingDirectoryPath { get; set; } =
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                @"MMD_Lip");
 
         /// <summary>
         /// ファイル自動命名時に上書き確認表示を行うか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsAutoNamingOverwriteConfirmed { get; set; }
+        public bool IsAutoNamingOverwriteConfirmed { get; set; } = true;
 
         /// <summary>
         /// 名前を付けて保存する際の既定のディレクトリパスを取得または設定する。
         /// </summary>
         [DataMember]
-        public string DefaultDirectoryPath { get; set; }
+        public string DefaultDirectoryPath { get; set; } = "";
 
         /// <summary>
         /// 入力文テキストファイルを同時に保存するか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsSavingWithText { get; set; }
+        public bool IsSavingWithText { get; set; } = false;
 
         /// <summary>
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
         /// ウェイト値を保持するか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsEdgeWeightHeld { get; set; }
+        public bool IsEdgeWeightHeld { get; set; } = true;
 
         #region IExtensibleDataObject の明示的実装
 

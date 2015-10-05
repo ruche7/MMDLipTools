@@ -36,16 +36,13 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public LipEditConfig()
         {
-            this.IsAutoLipKana = true;
-            this.IsEdgeWeightZero = true;
-            this.IsMorphEtoAI = false;
         }
 
         /// <summary>
         /// 読み仮名への自動変換を行うか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsAutoLipKana { get; set; }
+        public bool IsAutoLipKana { get; set; } = true;
 
         /// <summary>
         /// 口パクの時間指定範囲種別を取得または設定する。
@@ -59,7 +56,7 @@ namespace ruche.mmd.gui.lip
                 if (!Enum.IsDefined(value.GetType(), value))
                 {
                     throw new InvalidEnumArgumentException(
-                        "value",
+                        nameof(value),
                         (int)value,
                         value.GetType());
                 }
@@ -96,7 +93,7 @@ namespace ruche.mmd.gui.lip
                 if (!Enum.IsDefined(value.GetType(), value))
                 {
                     throw new InvalidEnumArgumentException(
-                        "value",
+                        nameof(value),
                         (int)value,
                         value.GetType());
                 }
@@ -152,13 +149,13 @@ namespace ruche.mmd.gui.lip
         /// ゼロ初期化するか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsEdgeWeightZero { get; set; }
+        public bool IsEdgeWeightZero { get; set; } = true;
 
         /// <summary>
         /// "え" から "あ","い" へのモーフ変更を行うか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool IsMorphEtoAI { get; set; }
+        public bool IsMorphEtoAI { get; set; } = false;
 
         #region IExtensibleDataObject の明示的実装
 

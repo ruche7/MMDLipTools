@@ -28,7 +28,7 @@ namespace ruche.mmd.morph
         {
             if (morphWeights == null)
             {
-                throw new ArgumentNullException("morphWeights");
+                throw new ArgumentNullException(nameof(morphWeights));
             }
 
             this.MorphWeights = new MorphWeightDataList(morphWeights);
@@ -38,66 +38,47 @@ namespace ruche.mmd.morph
         /// モーフ名とそのウェイト値のリストを取得する。
         /// </summary>
         [DataMember]
-        public MorphWeightDataList MorphWeights { get; private set; }
+        public MorphWeightDataList MorphWeights { get; }
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="other">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphInfo other)
-        {
-            return (
-                other != null &&
-                this.MorphWeights.SequenceEqual(other.MorphWeights));
-        }
+        public bool Equals(MorphInfo other) =>
+            (other != null && this.MorphWeights.SequenceEqual(other.MorphWeights));
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="obj">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MorphInfo);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as MorphInfo);
 
         /// <summary>
         /// ハッシュコードを取得する。
         /// </summary>
         /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode()
-        {
-            return
-                (this.MorphWeights.Count == 0) ?
-                    0 :
-                    (this.MorphWeights[0].GetHashCode() + this.MorphWeights.Count);
-        }
+        public override int GetHashCode() =>
+            (this.MorphWeights.Count == 0) ?
+                0 :
+                (this.MorphWeights[0].GetHashCode() + this.MorphWeights.Count);
 
         /// <summary>
         /// このオブジェクトの文字列表現を作成する。
         /// </summary>
         /// <returns>文字列表現。</returns>
-        public override string ToString()
-        {
-            return string.Join(", ", this.MorphWeights);
-        }
+        public override string ToString() => string.Join(", ", this.MorphWeights);
 
         /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphInfo Clone()
-        {
-            return new MorphInfo(this.MorphWeights.Clone());
-        }
+        public MorphInfo Clone() => new MorphInfo(this.MorphWeights.Clone());
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

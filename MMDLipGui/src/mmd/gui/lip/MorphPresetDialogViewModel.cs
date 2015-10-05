@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using ruche.mmd.morph;
 using ruche.wpf.viewModel;
@@ -73,7 +72,7 @@ namespace ruche.mmd.gui.lip
                 if (value != _messageBoxShower)
                 {
                     _messageBoxShower = value;
-                    this.NotifyPropertyChanged("MessageBoxShower");
+                    this.NotifyPropertyChanged(nameof(MessageBoxShower));
                 }
             }
         }
@@ -91,7 +90,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _presets)
                 {
                     _presets = v;
-                    this.NotifyPropertyChanged("Presets");
+                    this.NotifyPropertyChanged(nameof(Presets));
 
                     // 選択中インデックスも必要に応じて更新
                     if (this.SelectedPresetIndex >= v.Count)
@@ -116,7 +115,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _selectedPresetIndex)
                 {
                     _selectedPresetIndex = v;
-                    this.NotifyPropertyChanged("SelectedPresetIndex");
+                    this.NotifyPropertyChanged(nameof(SelectedPresetIndex));
                 }
             }
         }
@@ -134,7 +133,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _editingPresetName)
                 {
                     _editingPresetName = v;
-                    this.NotifyPropertyChanged("EditingPresetName");
+                    this.NotifyPropertyChanged(nameof(EditingPresetName));
                 }
             }
         }
@@ -152,12 +151,11 @@ namespace ruche.mmd.gui.lip
                 if (v != _editingMorphInfoSet)
                 {
                     _editingMorphInfoSet = v;
-                    this.NotifyPropertyChanged("EditingMorphInfoSet");
+                    this.NotifyPropertyChanged(nameof(EditingMorphInfoSet));
                 }
             }
         }
-        private MorphInfoSetViewModel _editingMorphInfoSet =
-                new MorphInfoSetViewModel();
+        private MorphInfoSetViewModel _editingMorphInfoSet = null;
 
         /// <summary>
         /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
@@ -172,11 +170,12 @@ namespace ruche.mmd.gui.lip
                     bool oldEnabled = this.IsMorphWeightsSenderEnabled;
 
                     _morphWeightsSender = value;
-                    this.NotifyPropertyChanged("MorphWeightsSender");
+                    this.NotifyPropertyChanged(nameof(MorphWeightsSender));
 
                     if (this.IsMorphWeightsSenderEnabled != oldEnabled)
                     {
-                        this.NotifyPropertyChanged("IsMorphWeightsSenderEnabled");
+                        this.NotifyPropertyChanged(
+                            nameof(IsMorphWeightsSenderEnabled));
                     }
                 }
             }
@@ -186,40 +185,37 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// MorphWeightsSender に有効な値が設定されているか否かを取得する。
         /// </summary>
-        public bool IsMorphWeightsSenderEnabled
-        {
-            get { return (this.MorphWeightsSender != null); }
-        }
+        public bool IsMorphWeightsSenderEnabled => (this.MorphWeightsSender != null);
 
         /// <summary>
         /// 選択中のプリセットを上へ移動するコマンドを取得する。
         /// </summary>
-        public ICommand PresetUpCommand { get; private set; }
+        public ICommand PresetUpCommand { get; }
 
         /// <summary>
         /// 選択中のプリセットを下へ移動するコマンドを取得する。
         /// </summary>
-        public ICommand PresetDownCommand { get; private set; }
+        public ICommand PresetDownCommand { get; }
 
         /// <summary>
         /// 選択中のプリセットを編集開始するコマンドを取得する。
         /// </summary>
-        public ICommand EditCommand { get; private set; }
+        public ICommand EditCommand { get; }
 
         /// <summary>
         /// 編集中のプリセットをプリセットリストへ適用するコマンドを取得する。
         /// </summary>
-        public ICommand ApplyCommand { get; private set; }
+        public ICommand ApplyCommand { get; }
 
         /// <summary>
         /// 選択中のプリセットを削除するコマンドを取得する。
         /// </summary>
-        public ICommand DeleteCommand { get; private set; }
+        public ICommand DeleteCommand { get; }
 
         /// <summary>
         /// 編集中のモーフウェイトリストを送信するコマンドを取得する。
         /// </summary>
-        public ICommand MorphWeightsSendCommand { get; private set; }
+        public ICommand MorphWeightsSendCommand { get; }
 
         /// <summary>
         /// PresetUpCommand を実行する。

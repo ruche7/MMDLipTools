@@ -49,7 +49,7 @@ namespace ruche.mmd.service.lip
         {
             if (fps <= 0)
             {
-                throw new ArgumentOutOfRangeException("fps");
+                throw new ArgumentOutOfRangeException(nameof(fps));
             }
 
             return (this.UnitSeconds * fps);

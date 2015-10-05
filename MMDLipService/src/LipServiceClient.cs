@@ -30,10 +30,7 @@ namespace ruche.mmd.service.lip
         /// <remarks>
         /// エンドポイントアドレスには空文字列が利用される。
         /// </remarks>
-        public static LipServiceClient OpenNetNamedPipe()
-        {
-            return OpenNetNamedPipe("");
-        }
+        public static LipServiceClient OpenNetNamedPipe() => OpenNetNamedPipe("");
 
         /// <summary>
         /// 名前付きパイプによるサービスクライアントを作成し、通信を開始する。
@@ -46,7 +43,7 @@ namespace ruche.mmd.service.lip
         {
             if (endpointAddress == null)
             {
-                throw new ArgumentNullException("endpointAddress");
+                throw new ArgumentNullException(nameof(endpointAddress));
             }
 
             var address =
@@ -68,7 +65,7 @@ namespace ruche.mmd.service.lip
         {
             if (factory == null)
             {
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(nameof(factory));
             }
             this.Factory = factory;
 
@@ -125,14 +122,9 @@ namespace ruche.mmd.service.lip
                 {
                     Action<LipServiceCommand> callback =
                         cmd =>
-                        {
-                            if (this.RaiseCommand != null)
-                            {
-                                this.RaiseCommand(
-                                    this,
-                                    new LipServiceCommandEventArgs(cmd));
-                            }
-                        };
+                            this.RaiseCommand?.Invoke(
+                                this,
+                                new LipServiceCommandEventArgs(cmd));
 
                     // 同期コンテキストが保持されているならそれを使う
                     if (this.MainThreadContext == null)
@@ -287,10 +279,7 @@ namespace ruche.mmd.service.lip
 
         #region IDisposable の明示的実装
 
-        void IDisposable.Dispose()
-        {
-            this.Close();
-        }
+        void IDisposable.Dispose() => this.Close();
 
         #endregion
     }

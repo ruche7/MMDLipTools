@@ -15,12 +15,12 @@ namespace ruche.mmd.morph.lip.converters
         private struct UnitTargetData
         {
             /// <summary>
-            /// ベースとなるリップシンクユニット。
+            /// ベースとなるリップシンクユニットを取得または設定する。
             /// </summary>
             public LipSyncUnit Unit { get; set; }
 
             /// <summary>
-            /// 適用対象となるカタカナ文字の配列。
+            /// 適用対象となるカタカナ文字の配列を取得または設定する。
             /// </summary>
             public char[] TargetLetters { get; set; }
         }

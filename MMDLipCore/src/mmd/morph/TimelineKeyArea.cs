@@ -56,7 +56,9 @@ namespace ruche.mmd.morph
             if (placeBegin == placeEnd)
             {
                 throw new ArgumentException(
-                    @"The value of `placeBegin` and `placeEnd` are the same.");
+                    "The value of `" +
+                    nameof(placeBegin) + "` and `" +
+                    nameof(placeEnd) + "` are the same.");
             }
 
             var placeDiff = placeEnd - placeBegin;
@@ -72,49 +74,34 @@ namespace ruche.mmd.morph
         /// </summary>
         public TimelineKeyArea()
         {
-            this.Points = new PointList();
         }
 
         /// <summary>
         /// キー位置とそのウェイト値のリストを取得する。
         /// </summary>
         [DataMember]
-        public PointList Points { get; private set; }
+        public PointList Points { get; private set; } = new PointList();
 
         /// <summary>
         /// Points が空であるか否かを取得する。
         /// </summary>
-        public bool IsEmpty
-        {
-            get { return (this.Points.Count <= 0); }
-        }
+        public bool IsEmpty => (this.Points.Count <= 0);
 
         /// <summary>
         /// 一番最初のキー位置を取得する。空ならば 0 を返す。
         /// </summary>
-        public decimal BeginPlace
-        {
-            get { return this.IsEmpty ? 0 : this.Points.Keys[0]; }
-        }
+        public decimal BeginPlace => this.IsEmpty ? 0 : this.Points.Keys[0];
 
         /// <summary>
         /// 一番最後のキー位置を取得する。空ならば 0 を返す。
         /// </summary>
-        public decimal EndPlace
-        {
-            get
-            {
-                return this.IsEmpty ? 0 : this.Points.Keys[this.Points.Count - 1];
-            }
-        }
+        public decimal EndPlace =>
+            this.IsEmpty ? 0 : this.Points.Keys[this.Points.Count - 1];
 
         /// <summary>
         /// キー領域の長さを取得する。
         /// </summary>
-        public decimal Length
-        {
-            get { return (this.EndPlace - this.BeginPlace); }
-        }
+        public decimal Length => (this.EndPlace - this.BeginPlace);
 
         /// <summary>
         /// 指定したキー位置におけるウェイト値を取得する。
@@ -177,14 +164,11 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も小さい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public decimal? FindFirstPlace(Func<decimal, bool> predicate)
-        {
-            return (
-                from p in this.Points.Keys
-                where predicate(p)
-                select (decimal?)p)
+        public decimal? FindFirstPlace(Func<decimal, bool> predicate) =>
+            this.Points.Keys
+                .Where(p => predicate(p))
+                .Cast<decimal?>()
                 .FirstOrDefault();
-        }
 
         /// <summary>
         /// 条件を満たす登録キー位置の中で最も大きい値を返す。
@@ -194,14 +178,11 @@ namespace ruche.mmd.morph
         /// 条件を満たす登録キー位置の中で最も大きい値。
         /// 条件を満たす登録キー位置が存在しなければ null 。
         /// </returns>
-        public decimal? FindLastPlace(Func<decimal, bool> predicate)
-        {
-            return (
-                from p in this.Points.Keys
-                where predicate(p)
-                select (decimal?)p)
+        public decimal? FindLastPlace(Func<decimal, bool> predicate) =>
+            this.Points.Keys
+                .Where(p => predicate(p))
+                .Cast<decimal?>()
                 .LastOrDefault();
-        }
 
         /// <summary>
         /// 無意味なキーを削除する。
@@ -234,19 +215,12 @@ namespace ruche.mmd.morph
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public TimelineKeyArea Clone()
-        {
-            var dest = new TimelineKeyArea();
-            dest.Points = new PointList(this.Points);
-            return dest;
-        }
+        public TimelineKeyArea Clone() =>
+            new TimelineKeyArea { Points = new PointList(this.Points) };
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

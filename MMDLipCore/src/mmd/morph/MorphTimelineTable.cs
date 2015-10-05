@@ -43,20 +43,15 @@ namespace ruche.mmd.morph
         /// <summary>
         /// モーフ名コレクションを取得する。
         /// </summary>
-        public Dictionary<string, Timeline>.KeyCollection MorphNames
-        {
-            get { return this.Table.Keys; }
-        }
+        public Dictionary<string, Timeline>.KeyCollection MorphNames =>
+            this.Table.Keys;
 
         /// <summary>
         /// タイムラインが格納されているか否かを取得する。
         /// </summary>
         /// <param name="morphName">モーフ名。</param>
         /// <returns>格納されているならば true 。</returns>
-        public bool Contains(string morphName)
-        {
-            return this.Table.ContainsKey(morphName);
-        }
+        public bool Contains(string morphName) => this.Table.ContainsKey(morphName);
 
         /// <summary>
         /// 空のタイムラインを新規追加する。既に存在する場合は上書きする。
@@ -65,7 +60,9 @@ namespace ruche.mmd.morph
         /// <returns>新規追加されたタイムライン。</returns>
         public Timeline AddNew(string morphName)
         {
-            return (this[morphName] = new Timeline());
+            var timeline = new Timeline();
+            this[morphName] = timeline;
+            return timeline;
         }
 
         /// <summary>
@@ -73,19 +70,14 @@ namespace ruche.mmd.morph
         /// </summary>
         /// <param name="morphName">モーフ名。</param>
         /// <returns>既存もしくは新規追加されたタイムライン。</returns>
-        public Timeline GetOrAddNew(string morphName)
-        {
-            return (this[morphName] ?? this.AddNew(morphName));
-        }
+        public Timeline GetOrAddNew(string morphName) =>
+            (this[morphName] ?? this.AddNew(morphName));
 
         /// <summary>
         /// タイムラインが格納されていれば削除する。
         /// </summary>
         /// <param name="morphName">モーフ名。</param>
         /// <returns>削除されたならば true 。</returns>
-        public bool Remove(string morphName)
-        {
-            return this.Table.Remove(morphName);
-        }
+        public bool Remove(string morphName) => this.Table.Remove(morphName);
     }
 }

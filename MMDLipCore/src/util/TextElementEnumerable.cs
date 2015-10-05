@@ -22,7 +22,7 @@ namespace ruche.util
         /// <summary>
         /// 列挙対象文字列を取得する。
         /// </summary>
-        public string Source { get; private set; }
+        public string Source { get; }
 
         /// <summary>
         /// Unicode文字の列挙子を取得する。
@@ -39,10 +39,7 @@ namespace ruche.util
 
         #region IEnumerable の明示的実装
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         #endregion
     }

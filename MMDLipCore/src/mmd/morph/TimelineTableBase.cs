@@ -63,41 +63,31 @@ namespace ruche.mmd.morph
         /// タイムラインテーブルの列挙子を取得する。
         /// </summary>
         /// <returns>タイムラインテーブルの列挙子。</returns>
-        public IEnumerator<KeyValuePair<TId, Timeline>> GetEnumerator()
-        {
-            return this.Table.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<TId, Timeline>> GetEnumerator() =>
+            this.Table.GetEnumerator();
 
         /// <summary>
         /// 一番最初のキー位置を取得する。
         /// </summary>
         /// <returns>一番最初のキー位置。キーが1つも無いならば 0 。</returns>
-        public decimal GetBeginPlace()
-        {
-            return (this.Table.Count > 0) ?
-                this.Table.Min(it => it.Value.GetBeginPlace()) :
-                0;
-        }
+        public decimal GetBeginPlace() =>
+            (this.Table.Count > 0) ?
+                this.Table.Min(it => it.Value.GetBeginPlace()) : 0;
 
         /// <summary>
         /// すべてのキー位置を示す遅延列挙オブジェクトを取得する。
         /// </summary>
         /// <returns>すべてのキー位置を示す遅延列挙オブジェクト。</returns>
-        public IEnumerable<decimal> GetAllPlaces()
-        {
-            return this.Table.SelectMany(it => it.Value.GetAllPlaces()).Distinct();
-        }
+        public IEnumerable<decimal> GetAllPlaces() =>
+            this.Table.SelectMany(it => it.Value.GetAllPlaces()).Distinct();
 
         /// <summary>
         /// 一番最後のキー位置を取得する。
         /// </summary>
         /// <returns>一番最後のキー位置。キーが1つも無いならば 0 。</returns>
-        public decimal GetEndPlace()
-        {
-            return (this.Table.Count > 0) ?
-                this.Table.Max(it => it.Value.GetEndPlace()) :
-                0;
-        }
+        public decimal GetEndPlace() =>
+            (this.Table.Count > 0) ?
+                this.Table.Max(it => it.Value.GetEndPlace()) : 0;
 
         /// <summary>
         /// 条件を満たす登録キー位置の中で最も小さい値を返す。
@@ -185,10 +175,7 @@ namespace ruche.mmd.morph
 
         #region IEnumerable の明示的実装
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         #endregion
     }

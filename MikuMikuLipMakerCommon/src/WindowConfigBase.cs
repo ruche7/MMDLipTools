@@ -15,42 +15,37 @@ namespace ruche.mmd.tools
         /// </summary>
         protected WindowConfigBase()
         {
-            this.Left = null;
-            this.Top = null;
-            this.Width = null;
-            this.Height = null;
-            this.IsMaximized = null;
         }
 
         /// <summary>
         /// ウィンドウの左端位置を取得または設定する。
         /// </summary>
         [DataMember]
-        public double? Left { get; set; }
+        public double? Left { get; set; } = null;
 
         /// <summary>
         /// ウィンドウの上端位置を取得または設定する。
         /// </summary>
         [DataMember]
-        public double? Top { get; set; }
+        public double? Top { get; set; } = null;
 
         /// <summary>
         /// ウィンドウの幅を取得または設定する。
         /// </summary>
         [DataMember]
-        public double? Width { get; set; }
+        public double? Width { get; set; } = null;
 
         /// <summary>
         /// ウィンドウの高さを取得または設定する。
         /// </summary>
         [DataMember]
-        public double? Height { get; set; }
+        public double? Height { get; set; } = null;
 
         /// <summary>
         /// ウィンドウが最大化されているか否かを取得または設定する。
         /// </summary>
         [DataMember]
-        public bool? IsMaximized { get; set; }
+        public bool? IsMaximized { get; set; } = null;
 
         /// <summary>
         /// ウィンドウから値をコピーする。

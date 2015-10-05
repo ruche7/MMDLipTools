@@ -105,17 +105,15 @@ namespace ruche.mmd.tools
 
                 // 列挙値のメタデータ取得
                 var info = format.GetType().GetField(format.ToString());
-                if (info != null)
+
+                // DisplayAttribute 属性を取得
+                var attrs =
+                    info?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                        as DisplayAttribute[];
+                if (attrs != null && attrs.Length > 0)
                 {
-                    // DisplayAttribute 属性を取得
-                    var attrs =
-                        info.GetCustomAttributes(typeof(DisplayAttribute), false)
-                            as DisplayAttribute[];
-                    if (attrs != null && attrs.Length > 0)
-                    {
-                        // 説明文字列に設定
-                        this.Description = attrs[0].GetShortName();
-                    }
+                    // 説明文字列に設定
+                    this.Description = attrs[0].GetShortName();
                 }
 
                 this.Format = format;
@@ -127,27 +125,27 @@ namespace ruche.mmd.tools
             /// <summary>
             /// ファイルフォーマットを取得する。
             /// </summary>
-            public MotionFileFormat Format { get; private set; }
+            public MotionFileFormat Format { get; }
 
             /// <summary>
             /// 説明文字列を取得する。
             /// </summary>
-            public string Description { get; private set; }
+            public string Description { get; }
 
             /// <summary>
             /// 既定の拡張子を取得する。
             /// </summary>
-            public string Extension { get; private set; }
+            public string Extension { get; }
 
             /// <summary>
             /// FPS値を取得する。負数ならば任意のFPS値で保存可能。
             /// </summary>
-            public decimal Fps { get; private set; }
+            public decimal Fps { get; }
 
             /// <summary>
             /// Writer を作成するデリゲートを取得する。
             /// </summary>
-            public Func<decimal, MotionDataWriterBase> WriterMaker { get; private set; }
+            public Func<decimal, MotionDataWriterBase> WriterMaker { get; }
         }
 
         /// <summary>
@@ -214,10 +212,8 @@ namespace ruche.mmd.tools
         /// </summary>
         /// <param name="format">ファイルフォーマット。</param>
         /// <returns>ファイルフォーマット情報</returns>
-        private static FileFormatInfo GetFileFormatInfo(MotionFileFormat format)
-        {
-            return FileFormatInfos.First(info => info.Format == format);
-        }
+        private static FileFormatInfo GetFileFormatInfo(MotionFileFormat format) =>
+            FileFormatInfos.First(info => info.Format == format);
 
         /// <summary>
         /// ファイル自動命名における入力文または読み仮名文字列を作成する。
@@ -334,7 +330,7 @@ namespace ruche.mmd.tools
         /// <remarks>
         /// バインディング用のプロパティではない。
         /// </remarks>
-        public MikuMikuLipConfig Config { get; private set; }
+        public MikuMikuLipConfig Config { get; }
 
         /// <summary>
         /// メッセージボックスの表示処理を行うデリゲートを取得または設定する。
@@ -347,7 +343,7 @@ namespace ruche.mmd.tools
                 if (value != _messageBoxShower)
                 {
                     _messageBoxShower = value;
-                    this.NotifyPropertyChanged("MessageBoxShower");
+                    this.NotifyPropertyChanged(nameof(MessageBoxShower));
                 }
             }
         }
@@ -365,7 +361,7 @@ namespace ruche.mmd.tools
                 if (value != _saveMotionFileDialogShower)
                 {
                     _saveMotionFileDialogShower = value;
-                    this.NotifyPropertyChanged("SaveMotionFileDialogShower");
+                    this.NotifyPropertyChanged(nameof(SaveMotionFileDialogShower));
                 }
             }
         }
@@ -383,7 +379,7 @@ namespace ruche.mmd.tools
                 if (value != _selectAutoNamingDirectoryDialogShower)
                 {
                     _selectAutoNamingDirectoryDialogShower = value;
-                    this.NotifyPropertyChanged("SelectAutoNamingDirectoryDialogShower");
+                    this.NotifyPropertyChanged(nameof(SelectAutoNamingDirectoryDialogShower));
                 }
             }
         }
@@ -405,15 +401,15 @@ namespace ruche.mmd.tools
                     var oldEnabled = this.IsSomeSenderEnabled;
 
                     _editViewModel = v;
-                    this.NotifyPropertyChanged("EditViewModel");
+                    this.NotifyPropertyChanged(nameof(EditViewModel));
 
                     if (this.MorphWeightsSender != oldSender)
                     {
-                        this.NotifyPropertyChanged("MorphWeightsSender");
+                        this.NotifyPropertyChanged(nameof(MorphWeightsSender));
                     }
                     if (this.IsSomeSenderEnabled != oldEnabled)
                     {
-                        this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                        this.NotifyPropertyChanged(nameof(IsSomeSenderEnabled));
                     }
                 }
             }
@@ -424,10 +420,7 @@ namespace ruche.mmd.tools
         /// <summary>
         /// 選択可能なファイルフォーマットのコレクションを取得する。
         /// </summary>
-        public SelectableValueCollection<MotionFileFormat> FileFormats
-        {
-            get; private set;
-        }
+        public SelectableValueCollection<MotionFileFormat> FileFormats { get; }
 
         /// <summary>
         /// アクティブなファイルフォーマットを取得または設定する。
@@ -444,13 +437,13 @@ namespace ruche.mmd.tools
         private void OnFileFormatsItemIsSelectedChanged(object sender, EventArgs e)
         {
             var item = sender as SelectableValue<MotionFileFormat>;
-            if (item != null && item.IsSelected)
+            if (item?.IsSelected == true)
             {
                 var old = this.Config.ActiveFileFormat;
                 this.Config.ActiveFileFormat = item.Value;
                 if (this.Config.ActiveFileFormat != old)
                 {
-                    this.NotifyPropertyChanged("ActiveFileFormat");
+                    this.NotifyPropertyChanged(nameof(ActiveFileFormat));
                 }
             }
         }
@@ -458,10 +451,7 @@ namespace ruche.mmd.tools
         /// <summary>
         /// 選択可能なファイル自動命名フォーマットのコレクションを取得する。
         /// </summary>
-        public SelectableValueCollection<AutoNamingFormat> AutoNamingFormats
-        {
-            get; private set;
-        }
+        public SelectableValueCollection<AutoNamingFormat> AutoNamingFormats { get; }
 
         /// <summary>
         /// ファイル自動命名フォーマットを取得または設定する。
@@ -480,13 +470,13 @@ namespace ruche.mmd.tools
             EventArgs e)
         {
             var item = sender as SelectableValue<AutoNamingFormat>;
-            if (item != null && item.IsSelected)
+            if (item?.IsSelected == true)
             {
                 var old = this.Config.AutoNamingFormat;
                 this.Config.AutoNamingFormat = item.Value;
                 if (this.Config.AutoNamingFormat != old)
                 {
-                    this.NotifyPropertyChanged("AutoNamingFormat");
+                    this.NotifyPropertyChanged(nameof(AutoNamingFormat));
                 }
             }
         }
@@ -503,7 +493,7 @@ namespace ruche.mmd.tools
                 this.Config.AutoNamingDirectoryPath = value;
                 if (this.AutoNamingDirectoryPath != old)
                 {
-                    this.NotifyPropertyChanged("AutoNamingDirectoryPath");
+                    this.NotifyPropertyChanged(nameof(AutoNamingDirectoryPath));
                 }
             }
         }
@@ -520,7 +510,7 @@ namespace ruche.mmd.tools
                 this.Config.IsAutoNamingOverwriteConfirmed = value;
                 if (this.IsAutoNamingOverwriteConfirmed != old)
                 {
-                    this.NotifyPropertyChanged("IsAutoNamingOverwriteConfirmed");
+                    this.NotifyPropertyChanged(nameof(IsAutoNamingOverwriteConfirmed));
                 }
             }
         }
@@ -537,7 +527,7 @@ namespace ruche.mmd.tools
                 this.Config.DefaultDirectoryPath = value;
                 if (this.DefaultDirectoryPath != old)
                 {
-                    this.NotifyPropertyChanged("DefaultDirectoryPath");
+                    this.NotifyPropertyChanged(nameof(DefaultDirectoryPath));
                 }
             }
         }
@@ -554,7 +544,7 @@ namespace ruche.mmd.tools
                 this.Config.IsSavingWithText = value;
                 if (this.IsSavingWithText != old)
                 {
-                    this.NotifyPropertyChanged("IsSavingWithText");
+                    this.NotifyPropertyChanged(nameof(IsSavingWithText));
                 }
             }
         }
@@ -571,7 +561,7 @@ namespace ruche.mmd.tools
                 if (v != _lastSaveResult)
                 {
                     _lastSaveResult = v;
-                    this.NotifyPropertyChanged("LastSaveResult");
+                    this.NotifyPropertyChanged(nameof(LastSaveResult));
                 }
             }
         }
@@ -590,11 +580,11 @@ namespace ruche.mmd.tools
                     bool oldEnabled = this.IsSomeSenderEnabled;
 
                     _timelineTableSender = value;
-                    this.NotifyPropertyChanged("TimelineTableSender");
+                    this.NotifyPropertyChanged(nameof(TimelineTableSender));
 
                     if (this.IsSomeSenderEnabled != oldEnabled)
                     {
-                        this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                        this.NotifyPropertyChanged(nameof(IsSomeSenderEnabled));
                     }
                 }
             }
@@ -615,12 +605,12 @@ namespace ruche.mmd.tools
                 this.EditViewModel.MorphWeightsSender = value;
                 if (this.MorphWeightsSender != old)
                 {
-                    this.NotifyPropertyChanged("MorphWeightsSender");
+                    this.NotifyPropertyChanged(nameof(MorphWeightsSender));
                 }
 
                 if (this.IsSomeSenderEnabled != oldEnabled)
                 {
-                    this.NotifyPropertyChanged("IsSomeSenderEnabled");
+                    this.NotifyPropertyChanged(nameof(IsSomeSenderEnabled));
                 }
             }
         }
@@ -628,15 +618,8 @@ namespace ruche.mmd.tools
         /// <summary>
         /// いずれかの送信デリゲートに有効な値が設定されているか否かを取得する。
         /// </summary>
-        public bool IsSomeSenderEnabled
-        {
-            get
-            {
-                return (
-                    this.TimelineTableSender != null ||
-                    this.MorphWeightsSender != null);
-            }
-        }
+        public bool IsSomeSenderEnabled =>
+            (this.TimelineTableSender != null || this.MorphWeightsSender != null);
 
         /// <summary>
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
@@ -651,7 +634,7 @@ namespace ruche.mmd.tools
                 this.Config.IsEdgeWeightHeld = value;
                 if (this.IsEdgeWeightHeld != old)
                 {
-                    this.NotifyPropertyChanged("IsEdgeWeightHeld");
+                    this.NotifyPropertyChanged(nameof(IsEdgeWeightHeld));
                 }
             }
         }
@@ -670,15 +653,15 @@ namespace ruche.mmd.tools
                     var oldSomeEnabled = this.IsSomeInfoShowerEnabled;
 
                     _versionShower = value;
-                    this.NotifyPropertyChanged("VersionShower");
+                    this.NotifyPropertyChanged(nameof(VersionShower));
 
                     if (this.IsVersionShowerEnabled != oldEnabled)
                     {
-                        this.NotifyPropertyChanged("IsVersionShowerEnabled");
+                        this.NotifyPropertyChanged(nameof(IsVersionShowerEnabled));
                     }
                     if (this.IsSomeInfoShowerEnabled != oldSomeEnabled)
                     {
-                        this.NotifyPropertyChanged("IsSomeInfoShowerEnabled");
+                        this.NotifyPropertyChanged(nameof(IsSomeInfoShowerEnabled));
                     }
                 }
             }
@@ -688,10 +671,7 @@ namespace ruche.mmd.tools
         /// <summary>
         /// VersionShower プロパティに有効な値が設定されているか否かを取得する。
         /// </summary>
-        public bool IsVersionShowerEnabled
-        {
-            get { return (this.VersionShower != null); }
-        }
+        public bool IsVersionShowerEnabled => (this.VersionShower != null);
 
         /// <summary>
         /// ライセンス表記の表示を行うデリゲートを取得または設定する。
@@ -707,15 +687,15 @@ namespace ruche.mmd.tools
                     var oldSomeEnabled = this.IsSomeInfoShowerEnabled;
 
                     _licenseShower = value;
-                    this.NotifyPropertyChanged("LicenseShower");
+                    this.NotifyPropertyChanged(nameof(LicenseShower));
 
                     if (this.IsLicenseShowerEnabled != oldEnabled)
                     {
-                        this.NotifyPropertyChanged("IsLicenseShowerEnabled");
+                        this.NotifyPropertyChanged(nameof(IsLicenseShowerEnabled));
                     }
                     if (this.IsSomeInfoShowerEnabled != oldSomeEnabled)
                     {
-                        this.NotifyPropertyChanged("IsSomeInfoShowerEnabled");
+                        this.NotifyPropertyChanged(nameof(IsSomeInfoShowerEnabled));
                     }
                 }
             }
@@ -725,27 +705,19 @@ namespace ruche.mmd.tools
         /// <summary>
         /// LicenseShower プロパティに有効な値が設定されているか否かを取得する。
         /// </summary>
-        public bool IsLicenseShowerEnabled
-        {
-            get { return (this.LicenseShower != null); }
-        }
+        public bool IsLicenseShowerEnabled => (this.LicenseShower != null);
 
         /// <summary>
         /// VersionShower プロパティまたは LicenseShower プロパティに有効な値が
         /// 設定されているか否かを取得する。
         /// </summary>
-        public bool IsSomeInfoShowerEnabled
-        {
-            get
-            {
-                return (this.IsVersionShowerEnabled || this.IsLicenseShowerEnabled);
-            }
-        }
+        public bool IsSomeInfoShowerEnabled =>
+            (this.IsVersionShowerEnabled || this.IsLicenseShowerEnabled);
 
         /// <summary>
         /// 自動命名保存コマンドを取得する。
         /// </summary>
-        public ICommand AutoNamingSaveCommand { get; private set; }
+        public ICommand AutoNamingSaveCommand { get; }
 
         /// <summary>
         /// 自動命名保存コマンドのキージェスチャを取得または設定する。
@@ -758,8 +730,8 @@ namespace ruche.mmd.tools
                 if (value != _autoNamingSaveGesture)
                 {
                     _autoNamingSaveGesture = value;
-                    this.NotifyPropertyChanged("AutoNamingSaveGesture");
-                    this.NotifyPropertyChanged("AutoNamingSaveGestureText");
+                    this.NotifyPropertyChanged(nameof(AutoNamingSaveGesture));
+                    this.NotifyPropertyChanged(nameof(AutoNamingSaveGestureText));
                 }
             }
         }
@@ -769,22 +741,16 @@ namespace ruche.mmd.tools
         /// <summary>
         /// 自動命名保存コマンドのキージェスチャ文字列を取得する。
         /// </summary>
-        public string AutoNamingSaveGestureText
-        {
-            get
-            {
-                return
-                    (this.AutoNamingSaveGesture == null) ?
-                        "" :
-                        this.AutoNamingSaveGesture.GetDisplayStringForCulture(
-                            CultureInfo.CurrentUICulture);
-            }
-        }
+        public string AutoNamingSaveGestureText =>
+            (this.AutoNamingSaveGesture == null) ?
+                "" :
+                this.AutoNamingSaveGesture.GetDisplayStringForCulture(
+                    CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// 名前を付けて保存コマンドを取得する。
         /// </summary>
-        public ICommand SaveAsCommand { get; private set; }
+        public ICommand SaveAsCommand { get; }
 
         /// <summary>
         /// 名前を付けて保存コマンドのキージェスチャを取得または設定する。
@@ -797,8 +763,8 @@ namespace ruche.mmd.tools
                 if (value != _saveAsGesture)
                 {
                     _saveAsGesture = value;
-                    this.NotifyPropertyChanged("SaveAsGesture");
-                    this.NotifyPropertyChanged("SaveAsGestureText");
+                    this.NotifyPropertyChanged(nameof(SaveAsGesture));
+                    this.NotifyPropertyChanged(nameof(SaveAsGestureText));
                 }
             }
         }
@@ -808,22 +774,16 @@ namespace ruche.mmd.tools
         /// <summary>
         /// 名前を付けて保存コマンドのキージェスチャ文字列を取得する。
         /// </summary>
-        public string SaveAsGestureText
-        {
-            get
-            {
-                return
-                    (this.SaveAsGesture == null) ?
-                        "" :
-                        this.SaveAsGesture.GetDisplayStringForCulture(
-                            CultureInfo.CurrentUICulture);
-            }
-        }
+        public string SaveAsGestureText =>
+            (this.SaveAsGesture == null) ?
+                "" :
+                this.SaveAsGesture.GetDisplayStringForCulture(
+                    CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// 自動命名保存先設定コマンドを取得する。
         /// </summary>
-        public ICommand AutoNamingDirectoryCommand { get; private set; }
+        public ICommand AutoNamingDirectoryCommand { get; }
 
         /// <summary>
         /// 自動命名保存先設定コマンドのキージェスチャを取得または設定する。
@@ -836,8 +796,8 @@ namespace ruche.mmd.tools
                 if (value != _autoNamingDirectoryGesture)
                 {
                     _autoNamingDirectoryGesture = value;
-                    this.NotifyPropertyChanged("AutoNamingDirectoryGesture");
-                    this.NotifyPropertyChanged("AutoNamingDirectoryGestureText");
+                    this.NotifyPropertyChanged(nameof(AutoNamingDirectoryGesture));
+                    this.NotifyPropertyChanged(nameof(AutoNamingDirectoryGestureText));
                 }
             }
         }
@@ -847,27 +807,21 @@ namespace ruche.mmd.tools
         /// <summary>
         /// 自動命名保存先設定コマンドのキージェスチャ文字列を取得する。
         /// </summary>
-        public string AutoNamingDirectoryGestureText
-        {
-            get
-            {
-                return
-                    (this.AutoNamingDirectoryGesture == null) ?
-                        "" :
-                        this.AutoNamingDirectoryGesture.GetDisplayStringForCulture(
-                            CultureInfo.CurrentUICulture);
-            }
-        }
+        public string AutoNamingDirectoryGestureText =>
+            (this.AutoNamingDirectoryGesture == null) ?
+                "" :
+                this.AutoNamingDirectoryGesture.GetDisplayStringForCulture(
+                    CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// 保存先フォルダーを開くコマンドを取得する。
         /// </summary>
-        public ICommand LastDirectoryOpenCommand { get; private set; }
+        public ICommand LastDirectoryOpenCommand { get; }
 
         /// <summary>
         /// タイムライン送信コマンドを取得する。
         /// </summary>
-        public ICommand TimelineSendCommand { get; private set; }
+        public ICommand TimelineSendCommand { get; }
 
         /// <summary>
         /// タイムライン送信コマンドのキージェスチャを取得または設定する。
@@ -880,8 +834,8 @@ namespace ruche.mmd.tools
                 if (value != _timelineSendGesture)
                 {
                     _timelineSendGesture = value;
-                    this.NotifyPropertyChanged("TimelineSendGesture");
-                    this.NotifyPropertyChanged("TimelineSendGestureText");
+                    this.NotifyPropertyChanged(nameof(TimelineSendGesture));
+                    this.NotifyPropertyChanged(nameof(TimelineSendGestureText));
                 }
             }
         }
@@ -890,17 +844,11 @@ namespace ruche.mmd.tools
         /// <summary>
         /// タイムライン送信コマンドのキージェスチャ文字列を取得する。
         /// </summary>
-        public string TimelineSendGestureText
-        {
-            get
-            {
-                return
-                    (this.TimelineSendGesture == null) ?
-                        "" :
-                        this.TimelineSendGesture.GetDisplayStringForCulture(
-                            CultureInfo.CurrentUICulture);
-            }
-        }
+        public string TimelineSendGestureText =>
+            (this.TimelineSendGesture == null) ?
+                "" :
+                this.TimelineSendGesture.GetDisplayStringForCulture(
+                    CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// モーフウェイトリスト送信コマンドを取得する。
@@ -908,7 +856,7 @@ namespace ruche.mmd.tools
         /// <remarks>
         /// コマンドパラメータで LipId 文字列を指定する。
         /// </remarks>
-        public ICommand MorphWeightsSendCommand { get; private set; }
+        public ICommand MorphWeightsSendCommand { get; }
 
         /// <summary>
         /// モーフウェイトリスト送信コマンドのキージェスチャコレクションを
@@ -925,7 +873,7 @@ namespace ruche.mmd.tools
                 if (value != _morphWeightsSendGestures)
                 {
                     _morphWeightsSendGestures = value;
-                    this.NotifyPropertyChanged("MorphWeightsSendGestures");
+                    this.NotifyPropertyChanged(nameof(MorphWeightsSendGestures));
 
                     this.MorphWeightsSendGestureTexts =
                         (value == null) ?
@@ -938,7 +886,7 @@ namespace ruche.mmd.tools
                                             CultureInfo.CurrentUICulture))
                                 .ToList()
                                 .AsReadOnly();
-                    this.NotifyPropertyChanged("MorphWeightsSendGestureTexts");
+                    this.NotifyPropertyChanged(nameof(MorphWeightsSendGestureTexts));
                 }
             }
         }
@@ -950,18 +898,19 @@ namespace ruche.mmd.tools
         /// </summary>
         public ReadOnlyCollection<string> MorphWeightsSendGestureTexts
         {
-            get; private set;
+            get;
+            private set;
         }
 
         /// <summary>
         /// バージョン情報表示コマンドを取得する。
         /// </summary>
-        public ICommand VersionInfoCommand { get; private set; }
+        public ICommand VersionInfoCommand { get; }
 
         /// <summary>
         /// ライセンス表記表示コマンドを取得する。
         /// </summary>
-        public ICommand LicenseInfoCommand { get; private set; }
+        public ICommand LicenseInfoCommand { get; }
 
         /// <summary>
         /// AutoNamingSaveCommand を実行する。

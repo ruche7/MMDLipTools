@@ -28,10 +28,8 @@ namespace ruche.mmd.morph.converters
         /// <param name="src">文字列。</param>
         /// <param name="fixedSize">固定サイズ。固定しないならば -1 。</param>
         /// <returns>CodePage932エンコードのバイト列。</returns>
-        private static byte[] MakeStringBytes(string src, int fixedSize = -1)
-        {
-            return MakeStringBytes(src, CP932, fixedSize);
-        }
+        private static byte[] MakeStringBytes(string src, int fixedSize = -1) =>
+            MakeStringBytes(src, CP932, fixedSize);
 
         /// <summary>
         /// コンストラクタ。
@@ -63,8 +61,9 @@ namespace ruche.mmd.morph.converters
             if (frames.Count > 0 && frames[frames.Count - 1].Frame > uint.MaxValue)
             {
                 throw new ArgumentException(
-                    "Frames with too large value are contained in `keyFrames`.",
-                    "keyFrames");
+                    "Frames with too large value are contained in `" +
+                    nameof(keyFrames) + "`.",
+                    nameof(keyFrames));
             }
 
             // 書き出し

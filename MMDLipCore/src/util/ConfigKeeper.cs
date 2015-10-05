@@ -60,7 +60,7 @@ namespace ruche.util
         /// <summary>
         /// 設定ファイルパスの既定値を取得する。
         /// </summary>
-        public string DefaultFilePath { get; private set; }
+        public string DefaultFilePath { get; }
 
         /// <summary>
         /// 設定を読み取る。

@@ -31,7 +31,7 @@ namespace ruche.mmd.morph
                 if (v != _morphName)
                 {
                     _morphName = v;
-                    this.NotifyPropertyChanged("MorphName");
+                    this.NotifyPropertyChanged(nameof(MorphName));
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace ruche.mmd.morph
                 if (v != _weight)
                 {
                     _weight = v;
-                    this.NotifyPropertyChanged("Weight");
+                    this.NotifyPropertyChanged(nameof(Weight));
                 }
             }
         }
@@ -66,74 +66,54 @@ namespace ruche.mmd.morph
         /// </summary>
         /// <param name="other">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphWeightData other)
-        {
-            return (
-                other != null &&
-                this.MorphName == other.MorphName &&
-                this.Weight == other.Weight);
-        }
+        public bool Equals(MorphWeightData other) =>
+            (this.MorphName == other?.MorphName && this.Weight == other?.Weight);
 
         /// <summary>
         /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
         /// </summary>
         /// <param name="obj">調べるオブジェクト。</param>
         /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MorphWeightData);
-        }
+        public override bool Equals(object obj) =>
+            this.Equals(obj as MorphWeightData);
 
         /// <summary>
         /// ハッシュコードを取得する。
         /// </summary>
         /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode()
-        {
-            return (this.MorphName.GetHashCode() ^ this.Weight.GetHashCode());
-        }
+        public override int GetHashCode() =>
+            (this.MorphName.GetHashCode() ^ this.Weight.GetHashCode());
 
         /// <summary>
         /// このオブジェクトの文字列表現を作成する。
         /// </summary>
         /// <returns>文字列表現。</returns>
-        public override string ToString()
-        {
-            return ("\"" + this.MorphName + "\" = " + this.Weight);
-        }
+        public override string ToString() =>
+            ("\"" + this.MorphName + "\" = " + this.Weight);
 
         /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
-        public MorphWeightData Clone()
-        {
-            return
-                new MorphWeightData
-                {
-                    MorphName = this.MorphName,
-                    Weight = this.Weight,
-                };
-        }
+        public MorphWeightData Clone() =>
+            new MorphWeightData
+            {
+                MorphName = this.MorphName,
+                Weight = this.Weight,
+            };
 
         /// <summary>
         /// プロパティの変更時に呼び出される。
         /// </summary>
         /// <param name="propertyName">プロパティ名。</param>
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        private void NotifyPropertyChanged(string propertyName) =>
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
 
         #region ICloneable の明示的実装
 
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         #endregion
     }

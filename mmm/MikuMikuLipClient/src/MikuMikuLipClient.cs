@@ -42,38 +42,33 @@ namespace ruche.mmm
         /// </summary>
         public MikuMikuLipClient()
         {
-            this.Scene = null;
-            this.Client = null;
-            this.CommandQueue = new Queue<LipServiceCommand>();
         }
 
         /// <summary>
         /// シーンオブジェクトを取得する。
         /// </summary>
-        public Scene Scene { get; private set; }
+        public Scene Scene { get; private set; } = null;
 
         /// <summary>
         /// 現在選択されているモデルを取得する。
         /// </summary>
-        public Model ActiveModel
-        {
-            get { return (this.Scene == null) ? null : this.Scene.ActiveModel; }
-        }
+        public Model ActiveModel => this.Scene?.ActiveModel;
 
         /// <summary>
         /// プラグインが有効な状態であるか否かを取得する。
         /// </summary>
-        public bool IsEnabled { get; private set; }
+        public bool IsEnabled { get; private set; } = false;
 
         /// <summary>
         /// 口パクサービスクライアントを取得または設定する。
         /// </summary>
-        private LipServiceClient Client { get; set; }
+        private LipServiceClient Client { get; set; } = null;
 
         /// <summary>
-        /// コマンドキューを取得または設定する。
+        /// コマンドキューを取得する。
         /// </summary>
-        private Queue<LipServiceCommand> CommandQueue { get; set; }
+        private Queue<LipServiceCommand> CommandQueue { get; } =
+            new Queue<LipServiceCommand>();
 
         /// <summary>
         /// 新規コマンド発行時に呼び出される。
@@ -158,35 +153,17 @@ namespace ruche.mmm
 
         #region IResidentPlugin の実装
 
-        public Guid GUID
-        {
-            get { return PluginGuid; }
-        }
+        public Guid GUID => PluginGuid;
 
-        public string Description
-        {
-            get { return PluginDescription; }
-        }
+        public string Description => PluginDescription;
 
-        public Image Image
-        {
-            get { return Resource.Icon32; }
-        }
+        public Image Image => Resource.Icon32;
 
-        public Image SmallImage
-        {
-            get { return Resource.Icon20; }
-        }
+        public Image SmallImage => Resource.Icon20;
 
-        public string Text
-        {
-            get { return PluginText; }
-        }
+        public string Text => PluginText;
 
-        public string EnglishText
-        {
-            get { return PluginEnglishText; }
-        }
+        public string EnglishText => PluginEnglishText;
 
         public void Initialize()
         {

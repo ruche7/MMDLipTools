@@ -16,7 +16,7 @@ namespace ruche.wpf.dialogs
         /// </summary>
         private class Win32Window : Forms.IWin32Window
         {
-            public IntPtr Handle { get; private set; }
+            public IntPtr Handle { get; }
 
             public Win32Window(Window window)
             {
@@ -29,13 +29,12 @@ namespace ruche.wpf.dialogs
         /// </summary>
         public OpenFileDialog()
         {
-            this.IsFolderPicker = false;
         }
 
         /// <summary>
         /// ディレクトリを選択するか否かを取得または設定する。
         /// </summary>
-        public bool IsFolderPicker { get; set; }
+        public bool IsFolderPicker { get; set; } = false;
 
         /// <summary>
         /// ダイアログを表示する。

@@ -104,9 +104,9 @@ namespace ruche.mmd.morph.lip
             if (!this.Table.ContainsKey(id))
             {
                 throw new InvalidEnumArgumentException(
-                    "id",
+                    nameof(id),
                     (int)id,
-                    typeof(LipId));
+                    id.GetType());
             }
         }
     }

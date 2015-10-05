@@ -33,8 +33,8 @@ namespace ruche.wpf.viewModel
             Action<object> executeDelegate,
             Func<object, bool> canExecuteDelegate)
         {
-            ExecuteDelegate = executeDelegate;
-            CanExecuteDelegate = canExecuteDelegate;
+            this.ExecuteDelegate = executeDelegate;
+            this.CanExecuteDelegate = canExecuteDelegate;
         }
 
         /// <summary>
@@ -59,21 +59,13 @@ namespace ruche.wpf.viewModel
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public void Execute(object parameter)
-        {
-            if (this.ExecuteDelegate != null)
-            {
-                this.ExecuteDelegate(parameter);
-            }
-        }
+        public void Execute(object parameter) =>
+            this.ExecuteDelegate?.Invoke(parameter);
 
-        public bool CanExecute(object parameter)
-        {
-            return
-                (this.CanExecuteDelegate == null) ?
-                    (this.ExecuteDelegate != null) :
-                    this.CanExecuteDelegate(parameter);
-        }
+        public bool CanExecute(object parameter) =>
+            (this.CanExecuteDelegate == null) ?
+                (this.ExecuteDelegate != null) :
+                this.CanExecuteDelegate(parameter);
 
         #endregion
     }

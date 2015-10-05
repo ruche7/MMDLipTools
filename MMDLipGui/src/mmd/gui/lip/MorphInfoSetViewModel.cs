@@ -49,12 +49,12 @@ namespace ruche.mmd.gui.lip
             /// <summary>
             /// 口形状IDを取得する。
             /// </summary>
-            public LipId Id { get; private set; }
+            public LipId Id { get; }
 
             /// <summary>
             /// モーフ情報を取得する。
             /// </summary>
-            public MorphInfo Info { get; private set; }
+            public MorphInfo Info { get; }
 
             /// <summary>
             /// アクセス名を取得する。
@@ -91,7 +91,7 @@ namespace ruche.mmd.gui.lip
                     if (v != _selectedMorphWeightIndex)
                     {
                         _selectedMorphWeightIndex = v;
-                        this.NotifyPropertyChanged("SelectedMorphWeightIndex");
+                        this.NotifyPropertyChanged(nameof(SelectedMorphWeightIndex));
                     }
                 }
             }
@@ -100,22 +100,22 @@ namespace ruche.mmd.gui.lip
             /// <summary>
             /// 空のモーフウェイト情報を新規追加するコマンドを取得する。
             /// </summary>
-            public ICommand AddCommand { get; private set; }
+            public ICommand AddCommand { get; }
 
             /// <summary>
             /// 選択中のモーフウェイト情報を削除するコマンドを取得する。
             /// </summary>
-            public ICommand DeleteCommand { get; private set; }
+            public ICommand DeleteCommand { get; }
 
             /// <summary>
             /// 選択中のモーフウェイト情報を上へ移動するコマンドを取得する。
             /// </summary>
-            public ICommand UpCommand { get; private set; }
+            public ICommand UpCommand { get; }
 
             /// <summary>
             /// 選択中のモーフウェイト情報を下へ移動するコマンドを取得する。
             /// </summary>
-            public ICommand DownCommand { get; private set; }
+            public ICommand DownCommand { get; }
 
             /// <summary>
             /// AddCommand を実行する。
@@ -191,7 +191,7 @@ namespace ruche.mmd.gui.lip
         {
             if (src == null)
             {
-                throw new ArgumentNullException("src");
+                throw new ArgumentNullException(nameof(src));
             }
 
             this.Source = src;
@@ -211,12 +211,12 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// 編集対象の MorphInfoSet を取得する。
         /// </summary>
-        public MorphInfoSet Source { get; private set; }
+        public MorphInfoSet Source { get; }
 
         /// <summary>
         /// 口形状別モーフ情報アイテムコレクションを取得する。
         /// </summary>
-        public ReadOnlyObservableCollection<Item> Items { get; private set; }
+        public ReadOnlyObservableCollection<Item> Items { get; }
 
         /// <summary>
         /// 現在選択中の口形状別モーフ情報アイテムのインデックスを取得または設定する。
@@ -230,7 +230,7 @@ namespace ruche.mmd.gui.lip
                 if (v != _selectedItemIndex)
                 {
                     _selectedItemIndex = v;
-                    this.NotifyPropertyChanged("SelectedItemIndex");
+                    this.NotifyPropertyChanged(nameof(SelectedItemIndex));
                 }
             }
         }

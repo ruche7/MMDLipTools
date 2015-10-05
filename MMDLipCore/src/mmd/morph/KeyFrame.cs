@@ -56,9 +56,7 @@ namespace ruche.mmd.morph
         /// このオブジェクトの文字列表現を作成する。
         /// </summary>
         /// <returns>文字列表現。</returns>
-        public override string ToString()
-        {
-            return (this.Frame + " : \"" + this.MorphName + "\" = " + this.Weight);
-        }
+        public override string ToString() =>
+            (this.Frame + " : \"" + this.MorphName + "\" = " + this.Weight);
     }
 }

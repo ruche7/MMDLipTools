@@ -39,7 +39,6 @@ namespace ruche.mmd.morph.converters
         /// </summary>
         public KeyFrameListMaker()
         {
-            this.UnitFrameLength = DefaultUnitFrameLength;
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace ruche.mmd.morph.converters
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 }
                 _unitFrameLength = value;
             }
@@ -66,7 +65,7 @@ namespace ruche.mmd.morph.converters
         /// <remarks>
         /// 既にキーフレーム登録されているモーフについては上書きしない。
         /// </remarks>
-        public bool IsEdgeWeightZero { get; set; }
+        public bool IsEdgeWeightZero { get; set; } = false;
 
         /// <summary>
         /// モーフ別タイムラインテーブルを基にキーフレームリストを作成する。
@@ -125,9 +124,7 @@ namespace ruche.mmd.morph.converters
         /// </summary>
         /// <param name="place">タイムラインのキー位置。</param>
         /// <returns>実フレーム位置。</returns>
-        private long CalcFrame(decimal place)
-        {
-            return (long)(place * this.UnitFrameLength + 0.5m);
-        }
+        private long CalcFrame(decimal place) =>
+            (long)(place * this.UnitFrameLength + 0.5m);
     }
 }

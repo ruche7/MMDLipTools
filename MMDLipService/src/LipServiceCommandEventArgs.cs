@@ -19,6 +19,6 @@ namespace ruche.mmd.service.lip
         /// <summary>
         /// イベントに紐付くコマンドを取得する。
         /// </summary>
-        public LipServiceCommand Command { get; private set; }
+        public LipServiceCommand Command { get; }
     }
 }
