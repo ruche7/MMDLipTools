@@ -33,7 +33,7 @@ namespace ruche.mmd.gui.lip
         /// </returns>
         public delegate MorphPresetList MorphPresetDialogDelegate(
             MorphPresetList presets,
-            Action<MorphWeightDataList> morphWeightsSender);
+            Action<IEnumerable<MorphWeightData>> morphWeightsSender);
 
         /// <summary>
         /// 口パク時間指定単位種別変更による時間指定値の変換を行う。
@@ -390,6 +390,23 @@ namespace ruche.mmd.gui.lip
         private int _selectedPresetIndex = 0;
 
         /// <summary>
+        /// 現在選択中の口パクモーフプリセットを取得する。
+        /// </summary>
+        /// <remarks>
+        /// バインディング用のプロパティではない。
+        /// </remarks>
+        public MorphPreset SelectedPreset
+        {
+            get
+            {
+                var index = this.SelectedPresetIndex;
+                return
+                    (index >= 0 && index < this.Presets.Count) ?
+                        this.Presets[index] : null;
+            }
+        }
+
+        /// <summary>
         /// 口パクモーフプリセット編集ダイアログの表示処理を行うデリゲートを
         /// 取得または設定する。
         /// </summary>
@@ -427,7 +444,7 @@ namespace ruche.mmd.gui.lip
         /// 口パクモーフプリセット編集ダイアログで用いる
         /// モーフウェイトリストの送信インタフェースを取得または設定する。
         /// </summary>
-        public Action<MorphWeightDataList> MorphWeightsSender
+        public Action<IEnumerable<MorphWeightData>> MorphWeightsSender
         {
             get { return _morphWeightsSender; }
             set
@@ -439,7 +456,7 @@ namespace ruche.mmd.gui.lip
                 }
             }
         }
-        private Action<MorphWeightDataList> _morphWeightsSender = null;
+        private Action<IEnumerable<MorphWeightData>> _morphWeightsSender = null;
 
         /// <summary>
         /// 口パクの時間指定範囲種別を取得または設定する。
@@ -738,9 +755,7 @@ namespace ruche.mmd.gui.lip
             var linkLengthPercent = this.LinkLengthPercent;
             var longSoundLastWeight = this.LongSoundLastWeightPercent / 100;
             var edgeClosed = this.IsEdgeClosed;
-            var preset = this.SelectedPreset;
-            var morphSet =
-                (preset == null) ? (new MorphInfoSet()) : preset.Value.Clone();
+            var morphSet = this.SelectedPreset?.Value.Clone() ?? (new MorphInfoSet());
             var morphEtoAI = this.IsMorphEtoAI;
 
             return
@@ -807,20 +822,6 @@ namespace ruche.mmd.gui.lip
                                 spanFrame,
                                 beginFrame,
                                 edgeWeightZero));
-        }
-
-        /// <summary>
-        /// 現在選択中の口パクモーフプリセットを取得する。
-        /// </summary>
-        private MorphPreset SelectedPreset
-        {
-            get
-            {
-                var index = this.SelectedPresetIndex;
-                return
-                    (index >= 0 && index < this.Presets.Count) ?
-                        this.Presets[index] : null;
-            }
         }
 
         /// <summary>

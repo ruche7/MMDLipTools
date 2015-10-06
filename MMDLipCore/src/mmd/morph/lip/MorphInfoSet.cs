@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Collections;
 
 namespace ruche.mmd.morph.lip
 {
@@ -12,7 +13,10 @@ namespace ruche.mmd.morph.lip
     [DataContract(Namespace = "")]
     [KnownType(typeof(MorphInfoTable))]
     [KnownType(typeof(MorphInfo))]
-    public sealed class MorphInfoSet : IEquatable<MorphInfoSet>, ICloneable
+    public sealed class MorphInfoSet
+        : IEquatable<MorphInfoSet>,
+        IEnumerable<KeyValuePair<LipId, MorphInfo>>,
+        ICloneable
     {
         /// <summary>
         /// 口形状ID配列。
@@ -200,6 +204,13 @@ namespace ruche.mmd.morph.lip
         public MorphInfoSet Clone() => new MorphInfoSet(this.Table);
 
         /// <summary>
+        /// モーフ情報テーブルの列挙子を取得する。
+        /// </summary>
+        /// <returns>モーフ情報テーブルの列挙子。</returns>
+        public IEnumerator<KeyValuePair<LipId, MorphInfo>> GetEnumerator() =>
+            this.Table.GetEnumerator();
+
+        /// <summary>
         /// 口形状種別IDが有効な値か検証する。
         /// </summary>
         /// <param name="id">口形状種別ID。</param>
@@ -216,6 +227,12 @@ namespace ruche.mmd.morph.lip
                     id.GetType());
             }
         }
+
+        #region IEnumerable の明示的実装
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        #endregion
 
         #region ICloneable の明示的実装
 

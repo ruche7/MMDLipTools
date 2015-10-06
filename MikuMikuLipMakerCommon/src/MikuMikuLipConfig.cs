@@ -95,10 +95,17 @@ namespace ruche.mmd.tools
 
         /// <summary>
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
-        /// ウェイト値を保持するか否かを取得または設定する。
+        /// ウェイト値から自然に繋ぐか否かを取得する。
         /// </summary>
         [DataMember]
-        public bool IsEdgeWeightHeld { get; set; } = true;
+        public bool IsNaturalLink { get; set; } = true;
+
+        /// <summary>
+        /// クライアント側が対応していれば、キーフレームリスト挿入範囲の
+        /// 既存キーフレームを削除して置き換えるか否かを取得する。
+        /// </summary>
+        [DataMember]
+        public bool IsKeyFrameReplacing { get; set; } = true;
 
         #region IExtensibleDataObject の明示的実装
 

@@ -15,6 +15,16 @@ namespace ruche.mmd.service.lip
     public class KeyFramesCommandParameter
     {
         /// <summary>
+        /// 操作対象モーフ名配列を取得または設定する。
+        /// </summary>
+        /// <remarks>
+        /// 実際に利用する操作対象モーフ名列挙は
+        /// GetTargetMorphNames メソッドで取得すること。
+        /// </remarks>
+        [DataMember]
+        public string[] TargetMorphNames { get; set; }
+
+        /// <summary>
         /// モーフ別タイムラインを取得または設定する。
         /// </summary>
         [DataMember]
@@ -35,10 +45,28 @@ namespace ruche.mmd.service.lip
 
         /// <summary>
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
-        /// ウェイト値を保持するか否かを取得または設定する。
+        /// ウェイト値から自然に繋ぐか否かを取得する。
         /// </summary>
         [DataMember]
-        public bool IsEdgeWeightHeld { get; set; }
+        public bool IsNaturalLink { get; set; }
+
+        /// <summary>
+        /// クライアント側が対応していれば、キーフレームリスト挿入範囲の
+        /// 既存キーフレームを削除して置き換えるか否かを取得する。
+        /// </summary>
+        [DataMember]
+        public bool IsKeyFrameReplacing { get; set; }
+
+        /// <summary>
+        /// 操作対象モーフ名列挙を取得する。
+        /// </summary>
+        /// <returns>操作対象モーフ名列挙。</returns>
+        /// <remarks>
+        /// TargetMorphNames が null でなければそれを用いる。
+        /// そうでなければ TimelineTable.MorphNames を用いる。
+        /// </remarks>
+        public IEnumerable<string> GetTargetMorphNames() =>
+            this.TargetMorphNames?.AsEnumerable() ?? this.TimelineTable?.MorphNames;
 
         /// <summary>
         /// ユニット基準長(「ア」の長さ)に相当するフレーム長を算出する。
@@ -72,6 +100,12 @@ namespace ruche.mmd.service.lip
             long beginFrame,
             Func<string, long, float> morphFrameWeightGetter)
         {
+            if (this.TimelineTable == null)
+            {
+                throw new InvalidOperationException(
+                    "`" + nameof(TimelineTable) + "` is null.");
+            }
+
             // キーフレームリスト作成
             var maker =
                 new KeyFrameListMaker
@@ -84,12 +118,12 @@ namespace ruche.mmd.service.lip
             // 必要ならウェイト値修正
             if (
                 keyFrames.Count > 0 &&
-                this.IsEdgeWeightHeld &&
+                this.IsNaturalLink &&
                 morphFrameWeightGetter != null)
             {
                 ModifyKeyFramesForEdgeWeightHeld(
                     keyFrames,
-                    this.TimelineTable.MorphNames,
+                    this.GetTargetMorphNames(),
                     morphFrameWeightGetter);
             }
 

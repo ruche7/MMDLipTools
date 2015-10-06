@@ -65,6 +65,9 @@ namespace ruche.mmd.tools
         /// <summary>
         /// タイムラインテーブル情報の送信処理を提供するデリゲート。
         /// </summary>
+        /// <param name="targetMorphNames">
+        /// 操作対象モーフ名配列。 tlTable.MorphNames を用いるならば null 。
+        /// </param>
         /// <param name="tlTable">モーフ別タイムラインテーブル。</param>
         /// <param name="unitSeconds">
         /// ユニット基準長(「ア」の長さ)に相当する秒数値。
@@ -73,15 +76,21 @@ namespace ruche.mmd.tools
         /// キーフレームリストの先頭と終端で、
         /// 含まれている全モーフのウェイト値をゼロ初期化するならば true 。
         /// </param>
-        /// <param name="edgeWeightHeld">
+        /// <param name="naturalLink">
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
-        /// ウェイト値を保持するならば true 。
+        /// ウェイト値から自然に繋ぐならば true 。
+        /// </param>
+        /// <param name="keyFrameReplacing">
+        /// クライアント側が対応していれば、キーフレームリスト挿入範囲の
+        /// 既存キーフレームを削除して置き換えるならば true 。
         /// </param>
         public delegate void TimelineTableSendDelegate(
+            string[] targetMorphNames,
             MorphTimelineTable tlTable,
             decimal unitSeconds,
             bool edgeWeightZero,
-            bool edgeWeightHeld);
+            bool naturalLink,
+            bool keyFrameReplacing);
 
         /// <summary>
         /// ファイルフォーマット情報構造体。
@@ -594,7 +603,7 @@ namespace ruche.mmd.tools
         /// <summary>
         /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
         /// </summary>
-        public Action<MorphWeightDataList> MorphWeightsSender
+        public Action<IEnumerable<MorphWeightData>> MorphWeightsSender
         {
             get { return this.EditViewModel.MorphWeightsSender; }
             set
@@ -623,18 +632,36 @@ namespace ruche.mmd.tools
 
         /// <summary>
         /// クライアント側が対応していれば、キーフレームリスト挿入位置前後の
-        /// ウェイト値を保持するか否かを取得または設定する。
+        /// ウェイト値から自然に繋ぐか否かを取得する。
         /// </summary>
-        public bool IsEdgeWeightHeld
+        public bool IsNaturalLink
         {
-            get { return this.Config.IsEdgeWeightHeld; }
+            get { return this.Config.IsNaturalLink; }
             set
             {
-                var old = this.IsEdgeWeightHeld;
-                this.Config.IsEdgeWeightHeld = value;
-                if (this.IsEdgeWeightHeld != old)
+                var old = this.IsNaturalLink;
+                this.Config.IsNaturalLink = value;
+                if (this.IsNaturalLink != old)
                 {
-                    this.NotifyPropertyChanged(nameof(IsEdgeWeightHeld));
+                    this.NotifyPropertyChanged(nameof(IsNaturalLink));
+                }
+            }
+        }
+
+        /// <summary>
+        /// クライアント側が対応していれば、キーフレームリスト挿入範囲の
+        /// 既存キーフレームを削除して置き換えるか否かを取得する。
+        /// </summary>
+        public bool IsKeyFrameReplacing
+        {
+            get { return this.Config.IsKeyFrameReplacing; }
+            set
+            {
+                var old = this.IsKeyFrameReplacing;
+                this.Config.IsKeyFrameReplacing = value;
+                if (this.IsKeyFrameReplacing != old)
+                {
+                    this.NotifyPropertyChanged(nameof(IsKeyFrameReplacing));
                 }
             }
         }
@@ -1018,10 +1045,19 @@ namespace ruche.mmd.tools
                 return;
             }
 
+            // プリセットから操作対象モーフ名配列作成
+            var morphNames =
+                this.EditViewModel.SelectedPreset?.Value?
+                    .SelectMany(im => im.Value.MorphWeights)
+                    .Select(mw => mw.MorphName)
+                    .Distinct()
+                    .ToArray();
+
             var spanRange = this.EditViewModel.SpanRange;
             var spanSeconds = this.EditViewModel.EditConfig.SpanSeconds;
             bool edgeWeightZero = this.EditViewModel.IsEdgeWeightZero;
-            bool edgeWeightHeld = this.IsEdgeWeightHeld;
+            bool naturalLink = this.IsNaturalLink;
+            bool keyFrameReplacing = this.IsKeyFrameReplacing;
 
             this.EditViewModel
                 .StartMakeMorphTimelineTable()
@@ -1042,7 +1078,13 @@ namespace ruche.mmd.tools
                         }
 
                         // 送信
-                        sender(tlTable, unitSeconds, edgeWeightZero, edgeWeightHeld);
+                        sender(
+                            morphNames,
+                            tlTable,
+                            unitSeconds,
+                            edgeWeightZero,
+                            naturalLink,
+                            keyFrameReplacing);
                     });
         }
 
@@ -1058,21 +1100,34 @@ namespace ruche.mmd.tools
                 return;
             }
 
-            var presets = this.EditViewModel.Presets;
-            var index = this.EditViewModel.SelectedPresetIndex;
-            if (index < 0 || index >= presets.Count)
-            {
-                return;
-            }
-            var infoSet = presets[index].Value;
-
+            // 口形状ID決定
             LipId lipId;
             if (!Enum.TryParse(param.ToString(), true, out lipId))
             {
                 return;
             }
 
-            sender(infoSet[lipId].MorphWeights);
+            // モーフ情報セット取得
+            var infoSet = this.EditViewModel.SelectedPreset?.Value;
+            if (infoSet == null)
+            {
+                return;
+            }
+
+            // 対象口形状のモーフウェイトリスト取得
+            var targetMorphWeights = infoSet[lipId].MorphWeights;
+
+            // 対象口形状に含まれないモーフをウェイト値 0 で作成
+            var zeroMorphWeights =
+                infoSet
+                    .SelectMany(im => im.Value.MorphWeights)
+                    .Select(mw => mw.MorphName)
+                    .Distinct()
+                    .Where(n => targetMorphWeights.All(mw => mw.MorphName != n))
+                    .Select(n => new MorphWeightData { MorphName = n, Weight = 0 });
+
+            // 連結して送信
+            sender(targetMorphWeights.Concat(zeroMorphWeights));
         }
 
         /// <summary>

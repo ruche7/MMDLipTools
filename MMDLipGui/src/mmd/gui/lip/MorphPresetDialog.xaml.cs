@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using ruche.mmd.morph;
@@ -31,7 +32,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
         /// </summary>
-        public Action<MorphWeightDataList> MorphWeightsSender
+        public Action<IEnumerable<MorphWeightData>> MorphWeightsSender
         {
             get { return ((dynamic)this.DataContext).MorphWeightsSender; }
             set { ((dynamic)this.DataContext).MorphWeightsSender = value; }

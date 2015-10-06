@@ -94,12 +94,6 @@ namespace ruche.mmm
                 return;
             }
 
-            // 一旦全モーフのウェイト値を 0 にする
-            foreach (var morph in model.Morphs)
-            {
-                morph.CurrentWeight = 0;
-            }
-
             // モーフ設定
             foreach (var mw in morphWeights)
             {
@@ -135,19 +129,42 @@ namespace ruche.mmm
                         return (m == null) ? 0 : m.Frames.GetFrame(frame).Weight;
                     });
 
+            // 必要であれば範囲内の既存キーフレームを削除する
+            if (keyFrames.Count > 0 && cmdParam.IsKeyFrameReplacing)
+            {
+                // 範囲取得
+                var begin = keyFrames.Min(f => f.Frame);
+                var end = keyFrames.Max(f => f.Frame);
+
+                // 対象モーフを処理する
+                var morphs =
+                    from name in cmdParam.GetTargetMorphNames()
+                    let m = model.Morphs[name]
+                    where m != null
+                    select m;
+                foreach (var morph in morphs)
+                {
+                    // 範囲内のキーフレームを削除
+                    Array.ForEach(
+                        morph.Frames
+                            .Select(f => f.FrameNumber)
+                            .Where(frame => frame >= begin && frame <= end)
+                            .ToArray(),
+                        frame => morph.Frames.RemoveKeyFrame(frame));
+                }
+            }
+
             // モーフ名ごとにグループ化してキーフレーム設定
             foreach (var morphKeyFrames in keyFrames.GroupBy(f => f.MorphName))
             {
                 // モーフ情報取得
                 var morph = model.Morphs[morphKeyFrames.Key];
-                if (morph != null)
-                {
-                    // キーフレーム追加
-                    morph.Frames.AddKeyFrame(
-                        morphKeyFrames
-                            .Select(f => new MorphFrameData(f.Frame, f.Weight))
-                            .ToList());
-                }
+
+                // キーフレーム追加
+                morph?.Frames.AddKeyFrame(
+                    morphKeyFrames
+                        .Select(f => new MorphFrameData(f.Frame, f.Weight))
+                        .ToList());
             }
         }
 

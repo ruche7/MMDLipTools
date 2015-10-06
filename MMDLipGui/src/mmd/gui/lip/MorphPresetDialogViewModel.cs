@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using ruche.mmd.morph;
 using ruche.wpf.viewModel;
@@ -160,7 +162,7 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// モーフウェイトリストの送信を行うデリゲートを取得または設定する。
         /// </summary>
-        public Action<MorphWeightDataList> MorphWeightsSender
+        public Action<IEnumerable<MorphWeightData>> MorphWeightsSender
         {
             get { return _morphWeightsSender; }
             set
@@ -180,7 +182,7 @@ namespace ruche.mmd.gui.lip
                 }
             }
         }
-        private Action<MorphWeightDataList> _morphWeightsSender = null;
+        private Action<IEnumerable<MorphWeightData>> _morphWeightsSender = null;
 
         /// <summary>
         /// MorphWeightsSender に有効な値が設定されているか否かを取得する。
@@ -353,7 +355,20 @@ namespace ruche.mmd.gui.lip
                 return;
             }
 
-            sender(vm.Items[index].Info.MorphWeights);
+            // 対象口形状のモーフウェイトリスト取得
+            var targetMorphWeights = vm.Items[index].Info.MorphWeights;
+
+            // 対象口形状に含まれないモーフをウェイト値 0 で作成
+            var zeroMorphWeights =
+                vm.Items
+                    .SelectMany(i => i.Info.MorphWeights)
+                    .Select(mw => mw.MorphName)
+                    .Distinct()
+                    .Where(n => targetMorphWeights.All(mw => mw.MorphName != n))
+                    .Select(n => new MorphWeightData { MorphName = n, Weight = 0 });
+
+            // 連結して送信
+            sender(targetMorphWeights.Concat(zeroMorphWeights));
         }
 
         /// <summary>
