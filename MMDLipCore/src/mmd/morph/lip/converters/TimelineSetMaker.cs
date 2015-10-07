@@ -332,7 +332,6 @@ namespace ruche.mmd.morph.lip.converters
             }
 
             // タイムラインに追加
-            area.RemoveUselessPoints();
             tlSet[id].KeyAreas.Add(area);
 
             // 次の音の開始位置を返す
@@ -406,8 +405,8 @@ namespace ruche.mmd.morph.lip.converters
             Action<TimelineKeyArea> areaAdder =
                 a =>
                 {
-                    // キーが足りなければ追加しない
-                    if (a.Points.Count < 2)
+                    // キーが足りない or ウェイト値がすべて 0 なら追加しない
+                    if (a.Points.Count < 2 || a.Points.All(pw => pw.Value <= 0))
                     {
                         return;
                     }
@@ -419,12 +418,8 @@ namespace ruche.mmd.morph.lip.converters
                         a.Points[a.EndPlace] = 0;
                     }
 
-                    // 0 より大きいウェイト値が1つでもあれば追加
-                    a.RemoveUselessPoints();
-                    if (a.Points.Values.Any(w => w > 0))
-                    {
-                        tlSet.Closed.KeyAreas.Add(a);
-                    }
+                    // 追加
+                    tlSet.Closed.KeyAreas.Add(a);
                 };
 
             var area = new TimelineKeyArea();

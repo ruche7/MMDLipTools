@@ -185,33 +185,6 @@ namespace ruche.mmd.morph
                 .LastOrDefault();
 
         /// <summary>
-        /// 無意味なキーを削除する。
-        /// </summary>
-        public void RemoveUselessPoints()
-        {
-            for (int i = 0; i + 2 < this.Points.Count; )
-            {
-                // 3つのキーを取得
-                var p0 = this.Points.Keys[i];
-                var w0 = this.Points.Values[i];
-                var p1 = this.Points.Keys[i + 1];
-                var w1 = this.Points.Values[i + 1];
-                var p2 = this.Points.Keys[i + 2];
-                var w2 = this.Points.Values[i + 2];
-
-                // 挟まれているキーが補間に不要なら削除
-                if (Interpolate(p0, w0, p2, w2, p1) == w1)
-                {
-                    this.Points.RemoveAt(i + 1);
-                }
-                else
-                {
-                    ++i;
-                }
-            }
-        }
-
-        /// <summary>
         /// 自身のクローンを作成する。
         /// </summary>
         /// <returns>自身のクローン。</returns>
