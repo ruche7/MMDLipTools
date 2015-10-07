@@ -66,6 +66,8 @@ MikuMikuDance/MikuMikuMoving用口パクモーションファイル作成ツール『MikuMikuLipMak
 --自動命名保存を行う場合は @kbd{Ctrl+S}; のショートカット入力が便利です。
 +~手順 4 ～ 7 を繰り返して、必要なモーションファイルを作成していきます。
 
+なお、作成したVMDファイルをMikuMikuDanceで読み込もうとすると警告ダイアログが表示されますが、構わず読み込んでしまって問題ありません。
+
 *画面説明 [#explain]
 
 **メイン画面 [#explain-main]
@@ -290,6 +292,7 @@ MikuMikuDance/MikuMikuMoving用口パクモーションファイル作成ツール『MikuMikuLipMak
 *更新履歴 [#history]
 
 :2015-10-08|
---version 1.0.1 を対象とした。内容は変更なし。
+--version 1.0.1 を対象とした。
+--作成したVMDファイルをMikuMikuDanceで読み込む際の注意点を追記。
 :2015-10-08|
 --初版。
