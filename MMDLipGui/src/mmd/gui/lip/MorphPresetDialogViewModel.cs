@@ -356,12 +356,12 @@ namespace ruche.mmd.gui.lip
             }
 
             // 対象口形状のモーフウェイトリスト取得
-            var targetMorphWeights = vm.Items[index].Info.MorphWeights;
+            var targetMorphWeights = vm.Items[index].MorphWeights;
 
             // 対象口形状に含まれないモーフをウェイト値 0 で作成
             var zeroMorphWeights =
                 vm.Items
-                    .SelectMany(i => i.Info.MorphWeights)
+                    .SelectMany(i => i.MorphWeights)
                     .Select(mw => mw.MorphName)
                     .Distinct()
                     .Where(n => targetMorphWeights.All(mw => mw.MorphName != n))

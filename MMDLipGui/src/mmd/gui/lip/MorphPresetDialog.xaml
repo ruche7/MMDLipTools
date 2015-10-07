@@ -231,7 +231,7 @@
                                     Grid.Row="0" />
                                 <ListBox
                                     x:Name="listMorphWeights"
-                                    ItemsSource="{Binding Info.MorphWeights}"
+                                    ItemsSource="{Binding MorphWeights}"
                                     SelectedIndex="{Binding SelectedMorphWeightIndex}"
                                     Grid.Row="2">
                                     <ListBox.ItemContainerStyle>

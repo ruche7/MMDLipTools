@@ -43,7 +43,7 @@ namespace ruche.mmd.gui.lip
                         _ =>
                             this.SelectedMorphWeightIndex >= 0 &&
                             this.SelectedMorphWeightIndex + 1 <
-                                this.Info.MorphWeights.Count);
+                                this.MorphWeights.Count);
             }
 
             /// <summary>
@@ -52,9 +52,9 @@ namespace ruche.mmd.gui.lip
             public LipId Id { get; }
 
             /// <summary>
-            /// モーフ情報を取得する。
+            /// モーフ名とそのウェイト値のリストを取得する。
             /// </summary>
-            public MorphInfo Info { get; }
+            public MorphWeightDataList MorphWeights => this.Info.MorphWeights;
 
             /// <summary>
             /// アクセス名を取得する。
@@ -84,10 +84,7 @@ namespace ruche.mmd.gui.lip
                 get { return _selectedMorphWeightIndex; }
                 set
                 {
-                    var v =
-                        Math.Min(
-                            Math.Max(-1, value),
-                            this.Info.MorphWeights.Count - 1);
+                    var v = Math.Min(Math.Max(-1, value), this.MorphWeights.Count - 1);
                     if (v != _selectedMorphWeightIndex)
                     {
                         _selectedMorphWeightIndex = v;
@@ -96,6 +93,11 @@ namespace ruche.mmd.gui.lip
                 }
             }
             private int _selectedMorphWeightIndex = -1;
+
+            /// <summary>
+            /// モーフ情報を取得する。
+            /// </summary>
+            private MorphInfo Info { get; }
 
             /// <summary>
             /// 空のモーフウェイト情報を新規追加するコマンドを取得する。
@@ -123,10 +125,10 @@ namespace ruche.mmd.gui.lip
             private void ExecuteAddCommand(object param)
             {
                 // 追加
-                this.Info.MorphWeights.Add(new MorphWeightData());
+                this.MorphWeights.Add(new MorphWeightData());
 
                 // 追加された項目を選択
-                this.SelectedMorphWeightIndex = this.Info.MorphWeights.Count - 1;
+                this.SelectedMorphWeightIndex = this.MorphWeights.Count - 1;
             }
 
             /// <summary>
@@ -135,13 +137,13 @@ namespace ruche.mmd.gui.lip
             private void ExecuteDeleteCommand(object param)
             {
                 var index = this.SelectedMorphWeightIndex;
-                if (index < 0 || index >= this.Info.MorphWeights.Count)
+                if (index < 0 || index >= this.MorphWeights.Count)
                 {
                     return;
                 }
 
                 // 削除
-                this.Info.MorphWeights.RemoveAt(index);
+                this.MorphWeights.RemoveAt(index);
 
                 // 選択インデックスを保持
                 this.SelectedMorphWeightIndex = index;
@@ -153,12 +155,12 @@ namespace ruche.mmd.gui.lip
             private void ExecuteUpCommand(object param)
             {
                 var index = this.SelectedMorphWeightIndex;
-                if (index <= 0 || index >= this.Info.MorphWeights.Count)
+                if (index <= 0 || index >= this.MorphWeights.Count)
                 {
                     return;
                 }
 
-                this.Info.MorphWeights.Move(index, index - 1);
+                this.MorphWeights.Move(index, index - 1);
             }
 
             /// <summary>
@@ -167,12 +169,12 @@ namespace ruche.mmd.gui.lip
             private void ExecuteDownCommand(object param)
             {
                 var index = this.SelectedMorphWeightIndex;
-                if (index < 0 || index + 1 >= this.Info.MorphWeights.Count)
+                if (index < 0 || index + 1 >= this.MorphWeights.Count)
                 {
                     return;
                 }
 
-                this.Info.MorphWeights.Move(index, index + 1);
+                this.MorphWeights.Move(index, index + 1);
             }
         }
 

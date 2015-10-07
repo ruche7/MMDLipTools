@@ -155,16 +155,19 @@ namespace ruche.mmm
             }
 
             // モーフ名ごとにグループ化してキーフレーム設定
-            foreach (var morphKeyFrames in keyFrames.GroupBy(f => f.MorphName))
+            var morphKeyFrames =
+                from g in keyFrames.GroupBy(f => f.MorphName)
+                let m = model.Morphs[g.Key]
+                where m != null
+                select
+                    new
+                    {
+                        Morph = m,
+                        Frames = g.Select(f => new MorphFrameData(f.Frame, f.Weight)),
+                    };
+            foreach (var mk in morphKeyFrames)
             {
-                // モーフ情報取得
-                var morph = model.Morphs[morphKeyFrames.Key];
-
-                // キーフレーム追加
-                morph?.Frames.AddKeyFrame(
-                    morphKeyFrames
-                        .Select(f => new MorphFrameData(f.Frame, f.Weight))
-                        .ToList());
+                mk.Morph.Frames.AddKeyFrame(mk.Frames.ToList());
             }
         }
 

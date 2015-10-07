@@ -148,17 +148,31 @@
                 Command="{Binding TimelineSendCommand}"
                 Icon="{StaticResource icon}"
                 InputGestureText="{Binding TimelineSendGestureText}" />
-            <MenuItem
-                Header="登録位置前後のウェイト値を保持(_W)"
-                IsCheckable="True"
-                IsChecked="{Binding IsEdgeWeightHeld}">
-                <MenuItem.ToolTip>
-                    <TextBlock>
-                        キーフレーム登録時、登録先の現在のモーフ状態に対して<LineBreak />
-                        極力自然にモーションが始まる/終わるように補正します。<LineBreak />
-                        既定ではチェック ON です。
-                    </TextBlock>
-                </MenuItem.ToolTip>
+            <MenuItem Header="キーフレーム登録オプション(_O)">
+                <MenuItem
+                    Header="モーションの繋ぎを自然にする(_N)"
+                    IsCheckable="True"
+                    IsChecked="{Binding IsNaturalLink}">
+                    <MenuItem.ToolTip>
+                        <TextBlock>
+                            キーフレーム登録先の現在のモーフ状態に対して<LineBreak />
+                            極力自然にモーションが始まる/終わるように補正します。<LineBreak />
+                            既定ではチェック ON です。
+                        </TextBlock>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem
+                    Header="既存キーフレームを削除する(_R)"
+                    IsCheckable="True"
+                    IsChecked="{Binding IsKeyFrameReplacing}">
+                    <MenuItem.ToolTip>
+                        <TextBlock>
+                            キーフレーム登録範囲の既存キーフレームを削除します。<LineBreak />
+                            選択プリセット内に含まれるモーフのみが対象です。<LineBreak />
+                            既定ではチェック ON です。
+                        </TextBlock>
+                    </MenuItem.ToolTip>
+                </MenuItem>
             </MenuItem>
             <Separator />
             <MenuItem
