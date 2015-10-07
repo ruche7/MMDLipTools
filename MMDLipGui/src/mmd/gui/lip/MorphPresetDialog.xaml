@@ -24,7 +24,10 @@
         <CommandBinding Command="Close" Executed="OnCloseCommandExecuted" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Gesture="Alt+Right" Command="{Binding EditCommand}" />
+        <KeyBinding
+            Gesture="Alt+Right"
+            Command="{Binding EditCommand}"
+            CommandParameter="{Binding SelectedIndex, ElementName=listPresets}" />
         <KeyBinding Gesture="Alt+Left" Command="{Binding ApplyCommand}" />
         <KeyBinding Gesture="F8" Command="{Binding MorphWeightsSendCommand}" />
     </Window.InputBindings>
@@ -43,7 +46,7 @@
         <!-- OK -->
         <StackPanel Margin="8" DockPanel.Dock="Bottom">
             <Button
-                Content="OK(_O)"
+                Content="閉じる(_X)"
                 Command="Close"
                 HorizontalAlignment="Right"
                 MinWidth="80"
@@ -65,13 +68,16 @@
                 <Grid.InputBindings>
                     <KeyBinding
                         Gesture="Alt+Delete"
-                        Command="{Binding DeleteCommand}"/>
+                        Command="{Binding DeleteCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}" />
                     <KeyBinding
                         Gesture="Alt+Up"
-                        Command="{Binding PresetUpCommand}"/>
+                        Command="{Binding PresetUpCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}" />
                     <KeyBinding
                         Gesture="Alt+Down"
-                        Command="{Binding PresetDownCommand}"/>
+                        Command="{Binding PresetDownCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}" />
                 </Grid.InputBindings>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -103,6 +109,7 @@
 
                     <Button
                         Command="{Binding DeleteCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}"
                         ToolTip="Alt+Delete"
                         Grid.Column="0">
                         <StackPanel Orientation="Horizontal">
@@ -112,6 +119,7 @@
                     </Button>
                     <Button
                         Command="{Binding PresetUpCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}"
                         ToolTip="Alt+↑"
                         VerticalAlignment="Stretch"
                         VerticalContentAlignment="Top"
@@ -120,6 +128,7 @@
                     </Button>
                     <Button
                         Command="{Binding PresetDownCommand}"
+                        CommandParameter="{Binding SelectedIndex, ElementName=listPresets}"
                         ToolTip="Alt+↓"
                         VerticalAlignment="Stretch"
                         VerticalContentAlignment="Bottom"
@@ -147,6 +156,7 @@
 
                 <Button
                     Command="{Binding EditCommand}"
+                    CommandParameter="{Binding SelectedIndex, ElementName=listPresets}"
                     ToolTip="Alt+→"
                     HorizontalContentAlignment="Right"
                     Grid.Row="1">
@@ -208,13 +218,16 @@
                                         Command="{Binding AddCommand}"/>
                                     <KeyBinding
                                         Gesture="Alt+Delete"
-                                        Command="{Binding DeleteCommand}"/>
+                                        Command="{Binding DeleteCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}" />
                                     <KeyBinding
                                         Gesture="Alt+Up"
-                                        Command="{Binding UpCommand}"/>
+                                        Command="{Binding UpCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}" />
                                     <KeyBinding
                                         Gesture="Alt+Down"
-                                        Command="{Binding DownCommand}"/>
+                                        Command="{Binding DownCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}" />
                                 </Grid.InputBindings>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -313,6 +326,7 @@
                                     </Button>
                                     <Button
                                         Command="{Binding DeleteCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}"
                                         ToolTip="Alt+Delete"
                                         Grid.Column="2">
                                         <StackPanel Orientation="Horizontal">
@@ -322,6 +336,7 @@
                                     </Button>
                                     <Button
                                         Command="{Binding UpCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}"
                                         ToolTip="Alt+↑"
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Top"
@@ -330,6 +345,7 @@
                                     </Button>
                                     <Button
                                         Command="{Binding DownCommand}"
+                                        CommandParameter="{Binding SelectedIndex, ElementName=listMorphWeights}"
                                         ToolTip="Alt+↓"
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Bottom"

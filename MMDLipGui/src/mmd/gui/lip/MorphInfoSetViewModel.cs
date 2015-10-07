@@ -32,18 +32,18 @@ namespace ruche.mmd.gui.lip
                 this.DeleteCommand =
                     new DelegateCommand(
                         this.ExecuteDeleteCommand,
-                        _ => this.SelectedMorphWeightIndex >= 0);
+                        p => (p is int) && (int)p >= 0);
                 this.UpCommand =
                     new DelegateCommand(
                         this.ExecuteUpCommand,
-                        _ => this.SelectedMorphWeightIndex >= 1);
+                        p => (p is int) && (int)p >= 1);
                 this.DownCommand =
                     new DelegateCommand(
                         this.ExecuteDownCommand,
-                        _ =>
-                            this.SelectedMorphWeightIndex >= 0 &&
-                            this.SelectedMorphWeightIndex + 1 <
-                                this.MorphWeights.Count);
+                        p =>
+                            (p is int) &&
+                            (int)p >= 0 &&
+                            (int)p + 1 < this.MorphWeights.Count);
             }
 
             /// <summary>
@@ -77,24 +77,6 @@ namespace ruche.mmd.gui.lip
             }
 
             /// <summary>
-            /// 選択中のモーフウェイト情報インデックスを取得または設定する。
-            /// </summary>
-            public int SelectedMorphWeightIndex
-            {
-                get { return _selectedMorphWeightIndex; }
-                set
-                {
-                    var v = Math.Min(Math.Max(-1, value), this.MorphWeights.Count - 1);
-                    if (v != _selectedMorphWeightIndex)
-                    {
-                        _selectedMorphWeightIndex = v;
-                        this.NotifyPropertyChanged(nameof(SelectedMorphWeightIndex));
-                    }
-                }
-            }
-            private int _selectedMorphWeightIndex = -1;
-
-            /// <summary>
             /// モーフ情報を取得する。
             /// </summary>
             private MorphInfo Info { get; }
@@ -126,17 +108,15 @@ namespace ruche.mmd.gui.lip
             {
                 // 追加
                 this.MorphWeights.Add(new MorphWeightData());
-
-                // 追加された項目を選択
-                this.SelectedMorphWeightIndex = this.MorphWeights.Count - 1;
             }
 
             /// <summary>
             /// DeleteCommand を実行する。
             /// </summary>
+            /// <param name="param">選択中のモーフウェイト情報インデックス。</param>
             private void ExecuteDeleteCommand(object param)
             {
-                var index = this.SelectedMorphWeightIndex;
+                var index = (param is int) ? (int)param : -1;
                 if (index < 0 || index >= this.MorphWeights.Count)
                 {
                     return;
@@ -144,17 +124,15 @@ namespace ruche.mmd.gui.lip
 
                 // 削除
                 this.MorphWeights.RemoveAt(index);
-
-                // 選択インデックスを保持
-                this.SelectedMorphWeightIndex = index;
             }
 
             /// <summary>
             /// UpCommand を実行する。
             /// </summary>
+            /// <param name="param">選択中のモーフウェイト情報インデックス。</param>
             private void ExecuteUpCommand(object param)
             {
-                var index = this.SelectedMorphWeightIndex;
+                var index = (param is int) ? (int)param : -1;
                 if (index <= 0 || index >= this.MorphWeights.Count)
                 {
                     return;
@@ -166,9 +144,10 @@ namespace ruche.mmd.gui.lip
             /// <summary>
             /// DownCommand を実行する。
             /// </summary>
+            /// <param name="param">選択中のモーフウェイト情報インデックス。</param>
             private void ExecuteDownCommand(object param)
             {
-                var index = this.SelectedMorphWeightIndex;
+                var index = (param is int) ? (int)param : -1;
                 if (index < 0 || index + 1 >= this.MorphWeights.Count)
                 {
                     return;

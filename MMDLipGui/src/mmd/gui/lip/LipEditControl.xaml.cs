@@ -114,9 +114,10 @@ namespace ruche.mmd.gui.lip
                         dialog.Presets = presets;
                         dialog.MorphWeightsSender = morphWeightsSender;
 
-                        var result = dialog.ShowDialog();
+                        dialog.ShowDialog();
 
-                        return (result == true) ? dialog.Presets : null;
+                        // ×ボタンで閉じられても反映する
+                        return dialog.Presets;
                     };
             }
         }

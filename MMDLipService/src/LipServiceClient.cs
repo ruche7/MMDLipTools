@@ -181,7 +181,11 @@ namespace ruche.mmd.service.lip
                 this.WorkCancelSource.Cancel();
                 if (this.WorkTask != null)
                 {
-                    this.WorkTask.Wait();
+                    try
+                    {
+                        this.WorkTask.Wait();
+                    }
+                    catch { }
                     this.WorkTask.Dispose();
                     this.WorkTask = null;
                 }
@@ -190,9 +194,7 @@ namespace ruche.mmd.service.lip
             }
 
             // 通信終了
-            if (
-                this.Factory != null &&
-                this.Factory.State == CommunicationState.Opened)
+            if (this.Factory != null)
             {
                 try
                 {

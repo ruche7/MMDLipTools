@@ -9,7 +9,7 @@ namespace ruche.mmd.gui.lip
     /// </summary>
     [DataContract(Namespace = "")]
     [KnownType(typeof(MorphInfoSet))]
-    public sealed class MorphPreset : IEquatable<MorphPreset>, ICloneable
+    public sealed class MorphPreset : ICloneable
     {
         /// <summary>
         /// 既定のプリセット名。
@@ -62,28 +62,6 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         [DataMember]
         public MorphInfoSet Value { get; private set; }
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="other">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphPreset other) =>
-            (this.Name == other?.Name && this.Value.Equals(other?.Value));
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="obj">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj) => this.Equals(obj as MorphPreset);
-
-        /// <summary>
-        /// ハッシュコードを取得する。
-        /// </summary>
-        /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode() =>
-            (this.Name.GetHashCode() ^ this.Value.GetHashCode());
 
         /// <summary>
         /// 自身のクローンを作成する。

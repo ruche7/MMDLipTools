@@ -8,8 +8,7 @@ namespace ruche.mmd.morph
     /// モーフ名とそのウェイト値を保持する構造体。
     /// </summary>
     [DataContract(Namespace = "")]
-    public class MorphWeightData
-        : INotifyPropertyChanged, IEquatable<MorphWeightData>, ICloneable
+    public class MorphWeightData : INotifyPropertyChanged, ICloneable
     {
         /// <summary>
         /// コンストラクタ。
@@ -60,29 +59,6 @@ namespace ruche.mmd.morph
         /// プロパティの変更時に呼び出されるイベント。
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="other">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphWeightData other) =>
-            (this.MorphName == other?.MorphName && this.Weight == other?.Weight);
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="obj">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj) =>
-            this.Equals(obj as MorphWeightData);
-
-        /// <summary>
-        /// ハッシュコードを取得する。
-        /// </summary>
-        /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode() =>
-            (this.MorphName.GetHashCode() ^ this.Weight.GetHashCode());
 
         /// <summary>
         /// このオブジェクトの文字列表現を作成する。

@@ -39,22 +39,23 @@ namespace ruche.mmd.gui.lip
             this.PresetUpCommand =
                 new DelegateCommand(
                     this.ExecutePresetUpCommand,
-                    _ => this.SelectedPresetIndex >= 1);
+                    p => (p is int) && (int)p >= 1);
             this.PresetDownCommand =
                 new DelegateCommand(
                     this.ExecutePresetDownCommand,
-                    _ =>
-                        this.SelectedPresetIndex >= 0 &&
-                        this.SelectedPresetIndex + 1 < this.Presets.Count);
+                    p =>
+                        (p is int) &&
+                        (int)p >= 0 &&
+                        (int)p + 1 < this.Presets.Count);
             this.EditCommand =
                 new DelegateCommand(
                     this.ExecuteEditCommand,
-                    _ => this.SelectedPresetIndex >= 0);
+                    p => (p is int) && (int)p >= 0);
             this.ApplyCommand = new DelegateCommand(this.ExecuteApplyCommand);
             this.DeleteCommand =
                 new DelegateCommand(
                     this.ExecuteDeleteCommand,
-                    _ => this.SelectedPresetIndex >= 0);
+                    p => (p is int) && (int)p >= 0);
             this.MorphWeightsSendCommand =
                 new DelegateCommand(
                     this.ExecuteMorphWeightsSendCommand,
@@ -93,35 +94,11 @@ namespace ruche.mmd.gui.lip
                 {
                     _presets = v;
                     this.NotifyPropertyChanged(nameof(Presets));
-
-                    // 選択中インデックスも必要に応じて更新
-                    if (this.SelectedPresetIndex >= v.Count)
-                    {
-                        this.SelectedPresetIndex = v.Count - 1;
-                    }
                 }
             }
         }
         private MorphPresetList _presets =
             new MorphPresetList(new[] { new MorphPreset() });
-
-        /// <summary>
-        /// 現在選択中の口パクモーフプリセットのインデックスを取得または設定する。
-        /// </summary>
-        public int SelectedPresetIndex
-        {
-            get { return _selectedPresetIndex; }
-            set
-            {
-                var v = Math.Min(Math.Max(-1, value), this.Presets.Count - 1);
-                if (v != _selectedPresetIndex)
-                {
-                    _selectedPresetIndex = v;
-                    this.NotifyPropertyChanged(nameof(SelectedPresetIndex));
-                }
-            }
-        }
-        private int _selectedPresetIndex = -1;
 
         /// <summary>
         /// 編集中のプリセット名を取得または設定する。
@@ -222,9 +199,10 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// PresetUpCommand を実行する。
         /// </summary>
+        /// <param name="param">選択中のプリセットインデックス。</param>
         private void ExecutePresetUpCommand(object param)
         {
-            var index = this.SelectedPresetIndex;
+            var index = (param is int) ? (int)param : -1;
             if (index <= 0 || index >= this.Presets.Count)
             {
                 return;
@@ -236,9 +214,10 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// PresetDownCommand を実行する。
         /// </summary>
+        /// <param name="param">選択中のプリセットインデックス。</param>
         private void ExecutePresetDownCommand(object param)
         {
-            var index = this.SelectedPresetIndex;
+            var index = (param is int) ? (int)param : -1;
             if (index < 0 || index + 1 >= this.Presets.Count)
             {
                 return;
@@ -250,9 +229,10 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// EditCommand を実行する。
         /// </summary>
+        /// <param name="param">選択中のプリセットインデックス。</param>
         private void ExecuteEditCommand(object param)
         {
-            var index = this.SelectedPresetIndex;
+            var index = (param is int) ? (int)param : -1;
             if (index < 0 || index >= this.Presets.Count)
             {
                 return;
@@ -291,9 +271,6 @@ namespace ruche.mmd.gui.lip
             {
                 // 新規追加
                 this.Presets.Add(preset);
-
-                // 追加先を選択
-                this.SelectedPresetIndex = this.Presets.Count - 1;
             }
             else
             {
@@ -305,9 +282,6 @@ namespace ruche.mmd.gui.lip
                 {
                     // 置換
                     this.Presets[sameNameIndex] = preset;
-
-                    // 置換先を選択
-                    this.SelectedPresetIndex = sameNameIndex;
                 }
             }
         }
@@ -315,9 +289,10 @@ namespace ruche.mmd.gui.lip
         /// <summary>
         /// DeleteCommand を実行する。
         /// </summary>
+        /// <param name="param">選択中のプリセットインデックス。</param>
         private void ExecuteDeleteCommand(object param)
         {
-            var index = this.SelectedPresetIndex;
+            var index = (param is int) ? (int)param : -1;
             if (index < 0 || index >= this.Presets.Count)
             {
                 return;
@@ -331,9 +306,6 @@ namespace ruche.mmd.gui.lip
             {
                 // 削除
                 this.Presets.RemoveAt(index);
-
-                // 選択インデックスを保持
-                this.SelectedPresetIndex = index;
             }
         }
 

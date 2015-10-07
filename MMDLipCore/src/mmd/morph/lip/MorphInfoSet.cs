@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Collections;
 
@@ -14,9 +13,7 @@ namespace ruche.mmd.morph.lip
     [KnownType(typeof(MorphInfoTable))]
     [KnownType(typeof(MorphInfo))]
     public sealed class MorphInfoSet
-        : IEquatable<MorphInfoSet>,
-        IEnumerable<KeyValuePair<LipId, MorphInfo>>,
-        ICloneable
+        : IEnumerable<KeyValuePair<LipId, MorphInfo>>, ICloneable
     {
         /// <summary>
         /// 口形状ID配列。
@@ -175,27 +172,6 @@ namespace ruche.mmd.morph.lip
         /// </summary>
         [DataMember]
         private MorphInfoTable Table { get; } = new MorphInfoTable(LipIds.Length);
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="other">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public bool Equals(MorphInfoSet other) =>
-            (other != null && LipIds.All(id => this[id].Equals(other[id])));
-
-        /// <summary>
-        /// このオブジェクトが別のオブジェクトと等しいか否かを取得する。
-        /// </summary>
-        /// <param name="obj">調べるオブジェクト。</param>
-        /// <returns>等しいならば true 。そうでなければ false 。</returns>
-        public override bool Equals(object obj) => this.Equals(obj as MorphInfoSet);
-
-        /// <summary>
-        /// ハッシュコードを取得する。
-        /// </summary>
-        /// <returns>ハッシュコード。</returns>
-        public override int GetHashCode() => this.A.GetHashCode();
 
         /// <summary>
         /// 自身のクローンを作成する。
