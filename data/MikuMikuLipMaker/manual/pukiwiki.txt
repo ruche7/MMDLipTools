@@ -289,5 +289,5 @@ MikuMikuDance/MikuMikuMoving用口パクモーションファイル作成ツール『MikuMikuLipMak
 
 *更新履歴 [#history]
 
-:2015-10-05|
+:2015-10-08|
 --初版。
