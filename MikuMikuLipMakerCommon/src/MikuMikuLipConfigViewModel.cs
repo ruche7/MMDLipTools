@@ -1204,7 +1204,7 @@ namespace ruche.mmd.tools
             var kana = MakeAutoNamingString(this.EditViewModel.LipKana);
             var now = DateTime.Now;
             var date = now.ToString("yyMMdd");
-            var time = now.ToString("hhmmss");
+            var time = now.ToString("HHmmss");
 
             // ベースファイルパス決定
             string basePath = kana;
