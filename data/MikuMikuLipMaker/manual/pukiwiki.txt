@@ -8,7 +8,7 @@ MikuMikuDance/MikuMikuMoving用口パクモーションファイル作成ツール『MikuMikuLipMak
 
 現在は下記の環境に基づいて記載しています。
 
--MikuMikuLipMaker version 1.0.1
+-MikuMikuLipMaker version 1.0.3
 -[[MikuMikuMoving>https://sites.google.com/site/mikumikumoving/]] version 1.2.7.2
 --[[MikuMikuMovingとの連携>#mmm]]の項で用いたバージョンです。
 
@@ -291,6 +291,8 @@ MikuMikuDance/MikuMikuMoving用口パクモーションファイル作成ツール『MikuMikuLipMak
 
 *更新履歴 [#history]
 
+:2018-04-09|
+--version 1.0.3 を対象とした。
 :2015-10-08|
 --version 1.0.1 を対象とした。
 --作成したVMDファイルをMikuMikuDanceで読み込む際の注意点を追記。
