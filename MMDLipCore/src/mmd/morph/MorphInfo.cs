@@ -37,7 +37,7 @@ namespace ruche.mmd.morph
         /// モーフ名とそのウェイト値のリストを取得する。
         /// </summary>
         [DataMember]
-        public MorphWeightDataList MorphWeights { get; }
+        public MorphWeightDataList MorphWeights { get; private set; } = null;
 
         /// <summary>
         /// このオブジェクトの文字列表現を作成する。
@@ -50,6 +50,16 @@ namespace ruche.mmd.morph
         /// </summary>
         /// <returns>自身のクローン。</returns>
         public MorphInfo Clone() => new MorphInfo(this.MorphWeights.Clone());
+
+        /// <summary>
+        /// デシリアライズの直前に呼び出される。
+        /// </summary>
+        [OnDeserializing]
+        void OnDeserializing(StreamingContext context)
+        {
+            // null 回避
+            this.MorphWeights = new MorphWeightDataList();
+        }
 
         #region ICloneable の明示的実装
 

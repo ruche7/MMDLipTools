@@ -21,6 +21,7 @@ namespace ruche.mmd.gui.lip
         /// </summary>
         public MorphPresetConfig()
         {
+            this.Presets = null;
             this.ActivePresetName = this.Presets[0].Name;
         }
 
@@ -49,13 +50,36 @@ namespace ruche.mmd.gui.lip
                 }
             }
         }
-        private MorphPresetList _presets = DefaultPresets.Clone();
+        private MorphPresetList _presets = null;
 
         /// <summary>
         /// アクティブな口パクモーフプリセット名を取得または設定する。
         /// </summary>
         [DataMember]
         public string ActivePresetName { get; set; }
+
+        /// <summary>
+        /// デシリアライズの直前に呼び出される。
+        /// </summary>
+        [OnDeserializing]
+        void OnDeserializing(StreamingContext context)
+        {
+            // 空のリストで初期化
+            _presets = new MorphPresetList();
+        }
+
+        /// <summary>
+        /// デシリアライズの完了時に呼び出される。
+        /// </summary>
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            // 空っぽならデフォルト値追加
+            if (_presets.Count == 0)
+            {
+                _presets.Add(new MorphPreset());
+            }
+        }
 
         #region IExtensibleDataObject の明示的実装
 

@@ -84,13 +84,16 @@ namespace ruche.mmd.morph.lip
         /// <param name="table">初期値テーブル。</param>
         public MorphInfoSet(IDictionary<LipId, MorphInfo> table)
         {
-            foreach (var id in LipIds)
+            if (table != null)
             {
-                MorphInfo value = null;
-                table?.TryGetValue(id, out value);
-                value = value?.Clone() ?? CreateDefaultLipMorph(id);
-
-                this.Table.Add(id, value);
+                foreach (var id in LipIds)
+                {
+                    MorphInfo value = null;
+                    if (table.TryGetValue(id, out value) && value != null)
+                    {
+                        this.Table.Add(id, value.Clone());
+                    }
+                }
             }
         }
 
@@ -104,7 +107,14 @@ namespace ruche.mmd.morph.lip
             get
             {
                 ValidateLipId(id);
-                return this.Table[id];
+
+                MorphInfo result = null;
+                if (!this.Table.TryGetValue(id, out result) || result == null)
+                {
+                    result = CreateDefaultLipMorph(id);
+                    this.Table[id] = result;
+                }
+                return result;
             }
             set
             {
@@ -171,7 +181,7 @@ namespace ruche.mmd.morph.lip
         /// モーフ情報テーブルを取得する。
         /// </summary>
         [DataMember]
-        private MorphInfoTable Table { get; } = new MorphInfoTable(LipIds.Length);
+        private MorphInfoTable Table { get; set; } = new MorphInfoTable(LipIds.Length);
 
         /// <summary>
         /// 自身のクローンを作成する。
@@ -195,13 +205,23 @@ namespace ruche.mmd.morph.lip
         /// </exception>
         private void ValidateLipId(LipId id)
         {
-            if (!this.Table.ContainsKey(id))
+            if (!Enum.IsDefined(typeof(LipId), id))
             {
                 throw new InvalidEnumArgumentException(
                     nameof(id),
                     (int)id,
                     id.GetType());
             }
+        }
+
+        /// <summary>
+        /// デシリアライズの直前に呼び出される。
+        /// </summary>
+        [OnDeserializing]
+        void OnDeserializing(StreamingContext context)
+        {
+            // null 回避
+            this.Table = new MorphInfoTable(LipIds.Length);
         }
 
         #region IEnumerable の明示的実装
